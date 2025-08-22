@@ -1,0 +1,38 @@
+filename,unlock_name,point_cost,toggle,notes
+File:Gargoyle icon.png,Gargoyle Smasher,120,Yes|Permanent,Gargoyles are automatically dealt the finishing blow if the player has a rock hammer in their inventory.
+File:Rockslug icon.png,Slug Salter,80,Yes|Permanent,Rock slugs are automatically dealt the finishing blow if the player has a bag of salt in their inventory.
+File:Desert Lizard icon.png,Reptile Freezer,90,Yes|Permanent,Desert lizards are automatically dealt the finishing blow if the player has an ice cooler in their inventory.
+File:Mutated zygomite icon.png,'Shroom Sprayer ,110,Yes|Permanent,Mutated zygomites are automatically dealt the finishing blow if the player has fungicide spray and fungicide in their inventory.
+File:Broad arrowheads 5.png,Broader Fletching,300,Yes|Permanent,"Learn to fletch broad arrows (level 52 Fletching), broad bolts (level 55 Fletching), and amethyst broad bolts (level 76 Fletching)."
+File:Slayer helmet.png,Malevolent Masquerade ,400,Yes|Permanent,"Learn to assemble a Slayer helmet, which requires level 55 Crafting."
+File:Slayer ring.png,Ring Bling,300,Yes|Permanent,"Learn to craft a Slayer ring, which requires level 75 Crafting."
+File:Mithril dragon icon.png,I Hope You Mith Me,80,No,"Konar, Duradel, and Nieve will be able to assign you mithril dragons as your task."
+File:Aviansie icon.png,Watch the Birdie,80,No,"Konar, Duradel, Nieve, Chaeldar, and Krystilia will be able to assign you Aviansie as your task. Requires level 60 Agility or 60 Strength to unlock."
+File:Lizardmen icon.png,Reptile Got Ripped,75,No,"Konar, Duradel, Nieve, and Chaeldar will be able to assign Lizardmen as your task."
+File:Bigger and Badder.png, Bigger and Badder,150,Yes,Certain Slayer monsters will have the chance of spawning a Superior slayer monster|superior version whilst on a Slayer task.
+File:Wyvern bones.png,Stop the Wyvern,500,Yes,"Stops you getting Fossil Island Wyvern tasks, without counting towards your blocked task limit. This does not cancel a current fossil wyvern task."
+File:Midnight.png, Double Trouble,500,No,Slaying Dusk and Dawn now counts for two kills towards your task rather than one.
+File:Vampyre icon.png,Actual Vampyre Slayer,80,No,"Konar, Duradel, Nieve, and Chaeldar will be able to assign Vampyres as your task."
+File:Larran's_key_4.png,I Wildy More Slayer,0,Yes," Krystilia will be able to assign Jellies, Dust Devils, Nechryaels and Abyssal Demons as your task."
+File:Warped Terrorbird icon.png,Warped Reality,60,No,"Konar, Duradel, Nieve, and Chaeldar will be able to assign Slayer task/Warped creature|Warped creatures as your task.<ref name=""warped task"" group=""n"">After completion of The Path of Glouphrie.</ref>"
+File:Suqah leather.png,Suq-a-nother One,100,No, Number of suqahs assigned is increased to 186-250.
+File:Steel dragon (Construction) icon.png,Pedal to the Metals,100,No,"Number of bronze dragon|bronze, Iron dragon|iron, and steel dragons assigned is increased to 30-50, 61-100, and 40-60, respectively."
+File:Mithril dragon icon.png,I really Mith You,120,No,Number of mithril dragons assigned is increased to 25-35.
+File:Adamant dragon icon.png,Ada'mind Some More,100,No,Number of adamant dragons assigned is increased to 20-30.
+File:Rune dragon icon.png,RUUUUUNE,100,No,Number of rune dragons assigned is increased to 30-60.
+File:Spiritual mage icon.png,Spiritual Fervour,100,No, Number of spiritual creatures assigned is increased to 181-250.
+File:Aviansie icon.png,Birds of a Feather,100,No,Number of aviansie assigned is increased to 200-250.
+File:Greater demon icon.png,Greater Challenge,100,No,Number of greater demons assigned is increased to 200-250.
+File:Black demon icon.png,It's Dark in Here,100,No,Number of black demons assigned is increased to 200-250.
+File:Cave horror icon.png,Horrorific ,100,No,Number of cave horrors assigned is increased to 200-250. 
+File:Dust devil icon.png,To Dust You Shall Return ,100,No,Number of dust devils assigned is increased to 200-250.
+File:Skeletal Wyvern icon.png,Wyver-nother One,100,No,Number of Skeletal Wyverns assigned is increased to 50-75.
+File:Gargoyle icon.png,Get Smashed,100,No,Number of gargoyles assigned is increased to 200-250.
+File:Nechryael icon.png,Nechs Please,100,No,Number of nechryael assigned is increased to 200-250.
+File:Abyssal demon icon.png, Augment my Abbies,100,No,Number of abyssal demons assigned is increased to 200-250.
+File:Cave kraken icon.png,Krack On ,100,No, Number of cave kraken assigned is increased to 150-200.
+File:Locust rider icon.png,Get Scabaright on It,50,No,Number of scabarites assigned is increased to 130-170.
+File:Fossil Island wyverns icon.png,Wyver-nother Two,100,No,Number of Fossil Island Wyverns assigned is increased to 55-75.
+File:Basilisk icon.png,Basilonger ,100,No,Number of basilisks assigned is increased to 200-250.
+File:Araxyte icon.png,More eyes than sense,150,No,Number of araxytes assigned is increased to 200-250.
+File:Mature custodian stalker icon.png,Un-restraining Order,100,No,Number of custodian stalkers assigned is increased to 200-250.
