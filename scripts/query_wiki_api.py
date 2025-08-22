@@ -146,7 +146,15 @@ def slayer_rewards(name: str):
 
 def search_all(input: str) -> dict | None:
     """iteratively attempt all queries with input, returning appropriate one or none"""
-    fns = [item, spell, construction, skill, quest, generalized_search]
+    fns = [
+        item,
+        spell,
+        construction,
+        skill,
+        quest,
+        slayer_rewards,
+        generalized_search,
+    ]
     for fn in fns:
         result = fn(input)
         if result:
@@ -156,4 +164,4 @@ def search_all(input: str) -> dict | None:
 
 if __name__ == "__main__":
     # print(search_all("auto-weed"))
-    print(slayer_rewards("get smashed"))
+    print(search_all("get smashed"))
