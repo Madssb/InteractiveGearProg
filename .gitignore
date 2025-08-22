@@ -5,3 +5,5 @@ package-lock.json
 package.json
 data/views.csv
 *.pyc
+scrape_slayer_rewards.py
+src_text
