@@ -1,0 +1,32 @@
+name,filename,level,effect,drain rate,drain effect,members
+Thick Skin,Thick_Skin.png,1,+5% Defence,1 point per 36 seconds,1,No
+Burst of Strength,Burst_of_Strength.png,4,+5% Strength,1 point per 36 seconds,1,No
+Clarity of Thought,Clarity_of_Thought.png,7,+5% Attack,1 point per 36 seconds,1,No
+Sharp Eye,Sharp_Eye.png,8,+5% Ranged attack and +5% Ranged Strength,1 point per 36 seconds,1,No
+Mystic Will,Mystic_Will.png,9,+5% Magic Attack and Defence,1 point per 36 seconds,1,No
+Rock Skin,Rock_Skin.png,10,+10% Defence,1 point per 6 seconds,6,No
+Superhuman Strength,Superhuman_Strength.png,13,+10% Strength,1 point per 6 seconds ,6,No
+Improved Reflexes,Improved_Reflexes.png,16,+10% Attack,1 point per 6 seconds,6,No
+Rapid Restore,Rapid_Restore.png,19,"2x restore rate for all skills, except Hitpoints and Prayer",1 point per 36 seconds ,1,No
+Rapid Heal,Rapid_Heal.png,22,2x Restore rate for Hitpoints,1 point per 18 seconds,2,No
+Protect Item,Protect_Item.png,25,Keep one extra item upon death,1 point per 18 seconds,2,No
+Hawk Eye,Hawk_Eye.png,26,+10% Ranged Attack and +10% Ranged Strength,1 point per 6 seconds,6,No
+Mystic Lore,Mystic_Lore.png,27,+10% Magic Attack and Defence. +1% Magic damage,1 point per 6 seconds ,6,No
+Steel Skin,Steel_Skin.png,28,+15% Defence,1 point per 3 seconds,12,No
+Ultimate Strength,Ultimate_Strength.png,31,+15% Strength,1 point per 3 seconds,12,No
+Incredible Reflexes,Incredible_Reflexes.png,34,+15% Attack,1 point per 3 seconds,12,No
+Protect from Magic,Protect_from_Magic.png,37,"100% protection from magic attacks by NPCs, 40% from players",1 point per 3 seconds,12,No
+Protect from Missiles,Protect_from_Missiles.png,40,"100% protection from ranged attacks by NPCs, 40% from players",1 point per 3 seconds,12,No
+Protect from Melee,Protect_from_Melee.png,43,"100% protection from melee attacks by NPCs, 40% from players",1 point per 3 seconds,12,No
+Eagle Eye,Eagle_Eye.png,44,+15% Ranged attack and +15% Ranged Strength,1 point per 3 seconds,12,No
+Mystic Might,Mystic_Might.png,45,"+15% Magic Attack and Defence, and +2% Magic damage",1 point per 3 seconds,12,No
+Retribution,Retribution.png,46,"Upon death, deals damage up to 25% of the player's base Prayer level to targets in a 3x3 radius",1 point per 12 seconds ,3,Yes
+Redemption,Redemption.png,49,"Heals the player by 25% of their base Prayer level if they fall below 10% health, draining their prayer points fully",1 point per 6 seconds,6,Yes
+Smite,Smite.png,52,Reduces the opponent's prayer points by 25% of damage dealt,1 point per 2 seconds ,18,Yes
+Preserve,Preserve.png,55,Boosted stats last 50% longer,1 point per 18 seconds,2,Yes
+Chivalry,Chivalry.png,60,"+15% Attack, +18% Strength, and +20% Defence",1 point per 1.5 seconds,24,Yes
+Deadeye,Deadeye.png,62,"+18% Ranged attack, +18% Ranged Strength, and +5% Defence",1 point per 3 seconds,12,Yes
+Mystic Vigour,Mystic_Vigour.png,63,"+18% Magic Attack and Defence, +5% Defence, and +3% Magic damage",1 point per 3 seconds,12,Yes
+Piety,Piety.png,70,"+20% Attack, +23% Strength, and +25% Defence",1 point per 1.5 seconds,24,Yes
+Rigour,Rigour.png,74,"+20% Ranged attack, +23% Ranged Strength, and +25% Defence",1 point per 1.5 seconds,24,Yes
+Augury,Augury.png,77,"+25% Magic Attack and Defence, +25% Defence, and +4% Magic damage",1 point per 1.5 seconds,24,Yes

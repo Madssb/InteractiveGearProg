@@ -7,3 +7,4 @@ data/views.csv
 *.pyc
 scrape_slayer_rewards.py
 src_text
+.vscode/settings.json
