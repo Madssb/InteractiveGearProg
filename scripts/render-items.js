@@ -7,7 +7,7 @@ let itemsData = {};
 let nodegroups = [];
 
 /** Define a cache version to invalidate outdated stored charts */
-const CACHE_VERSION = "1.4.0"; // Update this whenever you make a major update
+const CACHE_VERSION = "1.4.1"; // Update this whenever you make a major update
 
 /**
  * Sanitizes a string to create a safe HTML element ID.
@@ -28,20 +28,13 @@ function handle_item(node) {
         console.warn(`Missing data for item: ${node}`);
         return null;
     }
-
-    // Detect if running on GitHub Pages and adjust the path accordingly
-    let basePath = window.location.hostname.includes("github.io")
-        ? "/InteractiveGearProg/"
-        : "/";
-
     let img = document.createElement("img");
-    img.src = basePath + itemData.imgSrc; // Ensures correct path
+    img.src = itemData.imgUrl; // Ensures correct path
     img.alt = node;
     nodeDiv.title = node;
     nodeDiv.id = sanitizeId(node);
     nodeDiv.appendChild(img);
-    nodeDiv.dataset.wikiLink = itemData.wikiLink;
-
+    nodeDiv.dataset.wikiLink = itemData.wikiUrl;
     return nodeDiv;
 }
 
@@ -49,29 +42,23 @@ function handle_item(node) {
  * Creates a node element representing a skill milestone.
  */
 function handle_skill(node) {
+    let parts = node.split(" ");
+    let lvlNum = parts[0];
+    let skillName = parts[1];
+    
+    
     let nodeDiv = document.createElement("div");
     nodeDiv.classList.add("node");
-    let itemData = itemsData[node];
+    let itemData = itemsData[skillName];
     if (!itemData) {
         console.warn(`Missing data for item: ${node}`);
     }
 
-
-    let parts = node.split(" ");
-    let lvlNum = parts[0];
-    let skillName = parts.slice(1).join(" ");
-    let skillNameUppercase = skillName.charAt(0).toUpperCase() + skillName.slice(1);
-
     let skillDiv = document.createElement("div");
     skillDiv.classList.add("skill");
 
-    // Detect if running on GitHub Pages and adjust the path accordingly
-    let basePath = window.location.hostname.includes("github.io")
-        ? "/InteractiveGearProg/"
-        : "/";
-
     let img = document.createElement("img");
-    img.src = basePath + `images/${skillNameUppercase}_icon.webp`; // Ensures correct path
+    img.src = itemData.imgUrl; // Ensures correct path
 
     let span = document.createElement("span");
     span.textContent = lvlNum;
@@ -149,7 +136,7 @@ async function loadChart() {
 
         try {
             const [items, sequence] = await Promise.all([
-                fetch("data/items.json").then(res => res.json()),
+                fetch("data/items_auto.json").then(res => res.json()),
                 fetch("data/sequence.json").then(res => res.json())
             ]);
             itemsData = items;
