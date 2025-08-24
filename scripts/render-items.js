@@ -7,7 +7,7 @@ let itemsData = {};
 let nodegroups = [];
 
 /** Define a cache version to invalidate outdated stored charts */
-const CACHE_VERSION = "1.4.1"; // Update this whenever you make a major update
+const CACHE_VERSION = "1.4.2"; // Update this whenever you make a major update
 
 /**
  * Sanitizes a string to create a safe HTML element ID.
@@ -69,7 +69,7 @@ function handle_skill(node) {
     nodeDiv.title = `Get ${lvlNum} ${skillName}`;
     nodeDiv.id = "lvl-" + sanitizeId(node);
     nodeDiv.appendChild(skillDiv);
-    nodeDiv.dataset.wikiLink = itemData.wikiLink;
+    nodeDiv.dataset.wikiLink = itemData.wikiUrl;
 
     return nodeDiv;
 }
