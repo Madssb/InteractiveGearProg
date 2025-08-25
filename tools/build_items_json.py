@@ -1,12 +1,8 @@
 import json
 import re
-from pathlib import Path
-from time import sleep
 
-from osrswiki_images import search_all
+from osrswiki_images import search_many
 
-items_filepath: Path = Path(__file__).parent / Path("../data/items_auto.json")
-items_json: dict = {}
 pat = re.compile(r"\d+ (\w+)")
 
 with open("data/sequence.json", mode="r", encoding="utf-8") as readfile:
@@ -25,19 +21,11 @@ def handle_levels(input: str):
 
 
 items = flatten(contents)
-for item in items:
-    item = handle_levels(item)
-    if item in items_json.keys():
-        print("already in dict: ", item)
-        continue
-    sleep(0.2)
-    entry = search_all(item)
-    if entry:
-        print("success: ", item)
-    else:
-        print("failed: ", item)
+for idx, item in enumerate(items):
+    items[0] = handle_levels(item)
 
-    items_json.update({item: entry})
+items_dict = search_many(items, skip_missing=False)
 
-with open(items_filepath, "w") as f:
-    json.dump(items_json, f)
+
+with open("/home/madssb/InteractiveGearProg/data/generated/items_auto.json", "w") as f:
+    json.dump(items_dict, f, indent=2)

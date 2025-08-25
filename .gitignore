@@ -10,4 +10,3 @@ src_text
 .vscode/settings.json
 *ne_110m*
 .env
-tools/goatcounter.py
