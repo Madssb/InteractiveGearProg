@@ -10,8 +10,11 @@ jobs:
     name: goatcounter api request job
     runs-on: ubuntu-latest
     steps:
-      - name: run goatcounter py
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: set up environment
         run: |
           python3 -m pip install --upgrade pip
           pip install requests==2.31.0
-          python3 ["tools/goatcounter.py"] ${{ secrets.GOATCOUNTER_API_KEY }}
+          python3 tools/goatcounter.py" ${{ secrets.GOATCOUNTER_API_KEY }}
