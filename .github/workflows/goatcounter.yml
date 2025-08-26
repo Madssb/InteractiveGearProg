@@ -1,4 +1,4 @@
-name: goatcounter api request
+name: goatcounter api request workflow
 
 # on:
 #   schedule:
@@ -6,8 +6,8 @@ name: goatcounter api request
 on: push
 
 jobs:
-  goatcounter api request:
-    name: goatcounter api request
+  goatcounter-api-request:
+    name: goatcounter api request job
     runs-on: ubuntu-latest
     steps:
       - name: run goatcounter py
