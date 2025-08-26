@@ -30,7 +30,7 @@ payload = search_many(items, skip_missing=False)
 
 
 with open(
-    ROOT_DIR / Path("data/generated/count.json") / Path("data/generated/items.json"),
+    ROOT_DIR / Path("data/generated/items.json"),
     mode="w",
     encoding="utf-8",
 ) as f:
