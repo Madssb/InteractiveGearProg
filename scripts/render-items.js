@@ -8,6 +8,9 @@ let nodegroups = [];
 
 /** Define a cache version to invalidate outdated stored charts */
 const CACHE_VERSION = "1.4.2"; // Update this whenever you make a major update
+const ITEMS_PATH = "data/generated/items.json";
+const SEQUENCE_PATH = "data/sequence.json";
+
 
 /**
  * Sanitizes a string to create a safe HTML element ID.
@@ -136,8 +139,8 @@ async function loadChart() {
 
         try {
             const [items, sequence] = await Promise.all([
-                fetch("data/items_auto.json").then(res => res.json()),
-                fetch("data/sequence.json").then(res => res.json())
+                fetch(ITEMS_PATH).then(res => res.json()),
+                fetch(SEQUENCE_PATH).then(res => res.json())
             ]);
             itemsData = items;
             nodegroups = Object.values(sequence);
