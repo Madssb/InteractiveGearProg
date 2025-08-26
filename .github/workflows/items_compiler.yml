@@ -1,0 +1,5 @@
+name: counter
+
+on:
+  push:
+    paths: ["data/sequence.json"]

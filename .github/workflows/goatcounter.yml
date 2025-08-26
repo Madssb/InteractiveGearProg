@@ -1,0 +1,10 @@
+name: counter
+
+on:
+  schedule:
+    - cron: "00 00 * * *"
+
+jobs:
+  build:
+    name:
+    runs-on: "ubuntu-latest"
