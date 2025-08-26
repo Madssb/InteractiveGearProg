@@ -1,6 +1,7 @@
 import argparse
 import json
 from datetime import date, timedelta
+from pathlib import Path
 
 import requests
 
@@ -8,6 +9,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument("key")
 args = parser.parse_args()
 goatcounter_api_key = args.key
+
+ROOT_DIR = Path(__file__).parents[1]
 
 base = "https://ladlor0interactive0prog.goatcounter.com/api/v0/stats/total"
 end = date.today()
@@ -25,7 +28,7 @@ monthly_viewcount = data.get("total")
 payload = {"viewcountMonth": monthly_viewcount}
 
 with open(
-    "/home/madssb/InteractiveGearProg/data/generated/count.json",
+    ROOT_DIR / Path("generated/count.json"),
     mode="w",
     encoding="utf-8",
 ) as f:
