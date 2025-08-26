@@ -4,3 +4,7 @@ node_modules/
 package-lock.json
 package.json
 data/views.csv
+*ne_110m*
+.vscode/*
+.env
+tools/scrape_slayer_rewards.py
