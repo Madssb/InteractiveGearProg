@@ -21,3 +21,11 @@ jobs:
 
       - name: "inspect new environment"
         run: ls data/generated
+
+      - name: push
+        run: |
+          git config user.name 'bot'
+          git config user.email 'madsbalto@gmail.com'
+          git add data/generated/count.json
+          git commit -m "automated count.json update [skip ci]"
+          git push
