@@ -18,3 +18,6 @@ jobs:
           python3 -m pip install --upgrade pip
           pip install requests==2.31.0
           python3 tools/goatcounter.py ${{ secrets.GOATCOUNTER_API_KEY }}
+
+      - name: "inspect new environment"
+        run: ls data/generated
