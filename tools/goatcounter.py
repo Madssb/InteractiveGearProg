@@ -12,8 +12,8 @@ try:
 except ModuleNotFoundError:
     pass
 
-API_KEY = os.getenv("GOATCOUNTER_API_KEY")
-if not API_KEY:
+GOATCOUNTER_API_KEY = os.getenv("GOATCOUNTER_API_KEY")
+if not GOATCOUNTER_API_KEY:
     raise SystemExit("GOATCOUNTER_API_KEY is not set")
 
 ROOT_DIR = Path(__file__).parents[1]
