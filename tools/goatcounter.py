@@ -4,8 +4,6 @@ from datetime import date, timedelta
 
 import requests
 
-print(requests.__version__)
-exit(1)
 parser = argparse.ArgumentParser()
 parser.add_argument("key")
 args = parser.parse_args()
