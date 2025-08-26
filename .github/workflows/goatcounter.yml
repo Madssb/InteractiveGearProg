@@ -1,9 +1,9 @@
 name: goatcounter api request workflow
 
-# on:
-#   schedule:
-#     - cron: "00 00 * * *"
-on: push
+on:
+  schedule:
+    - cron: "00 00 * * *"
+# on: push
 
 jobs:
   goatcounter-api-request:
