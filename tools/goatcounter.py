@@ -1,14 +1,20 @@
-import argparse
 import json
+import os
 from datetime import date, timedelta
 from pathlib import Path
 
 import requests
 
-parser = argparse.ArgumentParser()
-parser.add_argument("key")
-args = parser.parse_args()
-goatcounter_api_key = args.key
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv()
+except ModuleNotFoundError:
+    pass
+
+API_KEY = os.getenv("GOATCOUNTER_API_KEY")
+if not API_KEY:
+    raise SystemExit("GOATCOUNTER_API_KEY is not set")
 
 ROOT_DIR = Path(__file__).parents[1]
 
@@ -19,7 +25,7 @@ start = end - timedelta(days=31)
 resp = requests.get(
     base,
     params={"start": start.isoformat(), "end": end.isoformat()},
-    headers={"Authorization": f"Bearer {goatcounter_api_key}"},
+    headers={"Authorization": f"Bearer {GOATCOUNTER_API_KEY}"},
     timeout=10,
 )
 resp.raise_for_status()

@@ -5,29 +5,49 @@ on:
     - cron: "00 00 * * *"
 # on: push
 
+permissions:
+  contents: write
+
+concurrency:
+  group: goatcounter-daily
+  cancel-in-progress: false
+
 jobs:
   goatcounter-api-request:
     name: goatcounter api request job
     runs-on: ubuntu-latest
+
     steps:
-      - name: checkout code
+      - name: Checkout
         uses: actions/checkout@v4
+        # default uses GITHUB_TOKEN; no PAT needed
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          token: ${{secrets.PAT}}
+          python-version: "3.11"
+          cache: "pip"
 
-      - name: set up environment
+      - name: Generate count.json
+        env:
+          GOATCOUNTER_API_KEY: ${{ secrets.GOATCOUNTER_API_KEY }}
+        run: python tools/goatcounter.py
+
+      - name: inspect output
+        run: ls -l data/generated
+
+      - name: Push updated count.json (only if changed)
+        env:
+          GIT_AUTHOR_NAME: bot
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: bot
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
         run: |
-          python3 -m pip install --upgrade pip
-          pip install requests==2.31.0
-          python3 tools/goatcounter.py ${{ secrets.GOATCOUNTER_API_KEY }}
-
-      - name: "inspect new environment"
-        run: ls data/generated
-
-      - name: push
-        run: |
-          git config user.name 'bot'
-          git config user.email 'madsbalto@gmail.com'
+          set -eo pipefail
           git add data/generated/count.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
           git commit -m "automated count.json update [skip ci]"
           git push
