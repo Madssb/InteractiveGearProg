@@ -1,6 +1,8 @@
 import json
 import re
+from pathlib import Path
 
+ROOT_DIR = Path(__file__).parents[1]
 from osrswiki_images import search_many
 
 pat = re.compile(r"\d+ (\w+)")
@@ -24,8 +26,12 @@ items = flatten(contents)
 for idx, item in enumerate(items):
     items[0] = handle_levels(item)
 
-items_dict = search_many(items, skip_missing=False)
+payload = search_many(items, skip_missing=False)
 
 
-with open("/home/madssb/InteractiveGearProg/data/generated/items_auto.json", "w") as f:
-    json.dump(items_dict, f, indent=2)
+with open(
+    ROOT_DIR / Path("data/generated/count.json") / Path("data/generated/items.json"),
+    mode="w",
+    encoding="utf-8",
+) as f:
+    json.dump(payload, f, indent=2)
