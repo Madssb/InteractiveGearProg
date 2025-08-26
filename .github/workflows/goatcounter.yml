@@ -1,10 +1,17 @@
-name: counter
+name: goatcounter api request
 
-on:
-  schedule:
-    - cron: "00 00 * * *"
+# on:
+#   schedule:
+#     - cron: "00 00 * * *"
+on: push
 
 jobs:
-  build:
-    name:
-    runs-on: "ubuntu-latest"
+  goatcounter api request:
+    name: goatcounter api request
+    runs-on: ubuntu-latest
+    steps:
+      - name: run goatcounter py
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install requests==2.31.0
+          python3 tools/goatcounter.py ${{ secrets.GOATCOUNTER_API_KEY }}
