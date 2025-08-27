@@ -8,8 +8,12 @@ let nodegroups = [];
 
 /** Define a cache version to invalidate outdated stored charts */
 const CACHE_VERSION = "1.4.2"; // Update this whenever you make a major update
-const ITEMS_PATH = "data/generated/items.json";
-const SEQUENCE_PATH = "data/sequence.json";
+// Resolve paths based on this script's location: .../scripts/render-items.js
+const SCRIPT_BASE = new URL('.', document.currentScript.src);
+
+// data/ sits next to scripts/ at the site root
+const ITEMS_URL    = new URL('../data/generated/items.json', SCRIPT_BASE);
+const SEQUENCE_URL = new URL('../data/sequence.json',         SCRIPT_BASE);
 
 
 /**
@@ -139,8 +143,8 @@ async function loadChart() {
 
         try {
             const [items, sequence] = await Promise.all([
-                fetch(ITEMS_PATH).then(res => res.json()),
-                fetch(SEQUENCE_PATH).then(res => res.json())
+                fetch(ITEMS_URL).then(res => res.json()),
+                fetch(SEQUENCE_URL).then(res => res.json())
             ]);
             itemsData = items;
             nodegroups = Object.values(sequence);

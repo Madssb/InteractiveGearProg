@@ -1,7 +1,7 @@
 {
-  "Zaryte vambraces": {
-    "wikiUrl": "https://oldschool.runescape.wiki/w/Zaryte_vambraces",
-    "imgUrl": "https://oldschool.runescape.wiki/images/Zaryte_vambraces.png"
+  "Amulet of strength": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Amulet_of_strength",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Amulet_of_strength.png"
   },
   "Climbing boots": {
     "wikiUrl": "https://oldschool.runescape.wiki/w/Climbing_boots",
@@ -147,12 +147,18 @@
     "wikiUrl": "https://oldschool.runescape.wiki/w/Red_chinchompa",
     "imgUrl": "https://oldschool.runescape.wiki/images/Red_chinchompa.png"
   },
-  "70 ranged": null,
+  "ranged": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Ranged",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Ranged_icon.png"
+  },
   "Broader Fletching": {
     "wikiUrl": "https://oldschool.runescape.wiki/w/Slayer_Rewards",
     "imgUrl": "https://oldschool.runescape.wiki/images/Broad_arrowheads_5.png"
   },
-  "69 slayer": null,
+  "slayer": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Slayer",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Slayer_icon.png"
+  },
   "Ghommal's hilt 2": {
     "wikiUrl": "https://oldschool.runescape.wiki/w/Ghommal's_hilt_2",
     "imgUrl": "https://oldschool.runescape.wiki/images/Ghommal's_hilt_2.png"
@@ -177,8 +183,10 @@
     "wikiUrl": "https://oldschool.runescape.wiki/w/Crystal_halberd",
     "imgUrl": "https://oldschool.runescape.wiki/images/Crystal_halberd.png"
   },
-  "92 ranged": null,
-  "86 strength": null,
+  "strength": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Strength",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Strength_icon.png"
+  },
   "Crystal helm": {
     "wikiUrl": "https://oldschool.runescape.wiki/w/Crystal_helm",
     "imgUrl": "https://oldschool.runescape.wiki/images/Crystal_helm.png"
@@ -546,5 +554,9 @@
   "Zaryte crossbow": {
     "wikiUrl": "https://oldschool.runescape.wiki/w/Zaryte_crossbow",
     "imgUrl": "https://oldschool.runescape.wiki/images/Zaryte_crossbow.png"
+  },
+  "Zaryte vambraces": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Zaryte_vambraces",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Zaryte_vambraces.png"
   }
 }

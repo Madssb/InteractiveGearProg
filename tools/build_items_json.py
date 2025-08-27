@@ -2,13 +2,10 @@ import json
 import re
 from pathlib import Path
 
-ROOT_DIR = Path(__file__).parents[1]
 from osrswiki_images import search_many
 
+ROOT_DIR = Path(__file__).parents[1]
 pat = re.compile(r"\d+ (\w+)")
-
-with open("data/sequence.json", mode="r", encoding="utf-8") as readfile:
-    contents = json.load(readfile)
 
 
 def flatten(xss):
@@ -22,9 +19,12 @@ def handle_levels(input: str):
     return input
 
 
+with open("data/sequence.json", mode="r", encoding="utf-8") as readfile:
+    contents = json.load(readfile)
+
 items = flatten(contents)
 for idx, item in enumerate(items):
-    items[0] = handle_levels(item)
+    items[idx] = handle_levels(item)
 
 payload = search_many(items, skip_missing=False)
 
