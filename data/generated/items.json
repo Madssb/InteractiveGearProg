@@ -79,10 +79,6 @@
     "wikiUrl": "https://oldschool.runescape.wiki/w/Hallowed_crystal_shard",
     "imgUrl": "https://oldschool.runescape.wiki/images/Hallowed_crystal_shard.png"
   },
-  "bones": {
-    "wikiUrl": "https://oldschool.runescape.wiki/w/Bones",
-    "imgUrl": "https://oldschool.runescape.wiki/images/Bones.png"
-  },
   "Dark altar (Construction)": {
     "wikiUrl": "https://oldschool.runescape.wiki/w/Dark_altar_(Construction)",
     "imgUrl": "https://oldschool.runescape.wiki/images/Dark_altar_(Construction)_icon.png"
@@ -119,10 +115,6 @@
     "wikiUrl": "https://oldschool.runescape.wiki/w/Ash_sanctifier",
     "imgUrl": "https://oldschool.runescape.wiki/images/Ash_sanctifier.png"
   },
-  "Bigger and Badder": {
-    "wikiUrl": "https://oldschool.runescape.wiki/w/Slayer_Rewards",
-    "imgUrl": "https://oldschool.runescape.wiki/images/Bigger_and_Badder.png"
-  },
   "Ice Barrage": {
     "wikiUrl": "https://oldschool.runescape.wiki/w/Ice_Barrage",
     "imgUrl": "https://oldschool.runescape.wiki/images/Ice_Barrage.png"
@@ -150,10 +142,6 @@
   "ranged": {
     "wikiUrl": "https://oldschool.runescape.wiki/w/Ranged",
     "imgUrl": "https://oldschool.runescape.wiki/images/Ranged_icon.png"
-  },
-  "Broader Fletching": {
-    "wikiUrl": "https://oldschool.runescape.wiki/w/Slayer_Rewards",
-    "imgUrl": "https://oldschool.runescape.wiki/images/Broad_arrowheads_5.png"
   },
   "slayer": {
     "wikiUrl": "https://oldschool.runescape.wiki/w/Slayer",
@@ -282,14 +270,6 @@
   "Warped sceptre": {
     "wikiUrl": "https://oldschool.runescape.wiki/w/Warped_sceptre",
     "imgUrl": "https://oldschool.runescape.wiki/images/Warped_sceptre.png"
-  },
-  "Reptile Got Ripped": {
-    "wikiUrl": "https://oldschool.runescape.wiki/w/Slayer_Rewards",
-    "imgUrl": "https://oldschool.runescape.wiki/images/Lizardmen_icon.png"
-  },
-  "Greater Challenge": {
-    "wikiUrl": "https://oldschool.runescape.wiki/w/Slayer_Rewards",
-    "imgUrl": "https://oldschool.runescape.wiki/images/Greater_demon_icon.png"
   },
   "Prescription goggles": {
     "wikiUrl": "https://oldschool.runescape.wiki/w/Prescription_goggles",
@@ -558,5 +538,21 @@
   "Zaryte vambraces": {
     "wikiUrl": "https://oldschool.runescape.wiki/w/Zaryte_vambraces",
     "imgUrl": "https://oldschool.runescape.wiki/images/Zaryte_vambraces.png"
+  },
+  "Bigger and Badder": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Slayer_Rewards",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Bigger_and_Badder.png"
+  },
+  "Broader Fletching": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Slayer_Rewards",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Broad_arrowheads_5.png"
+  },
+  "Reptile Got Ripped": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Slayer_Rewards",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Lizardmen_icon.png"
+  },
+  "Greater Challenge": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Slayer_Rewards",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Greater_demon_icon.png"
   }
 }
