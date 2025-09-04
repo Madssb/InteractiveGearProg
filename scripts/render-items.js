@@ -6,15 +6,25 @@
 let itemsData = {};
 let nodegroups = [];
 
-/** Define a cache version to invalidate outdated stored charts */
-const CACHE_VERSION = "1.4.3"; // Update this whenever you make a major update
 // Resolve paths based on this script's location: .../scripts/render-items.js
 const SCRIPT_BASE = new URL('.', document.currentScript.src);
 
 // data/ sits next to scripts/ at the site root
-const ITEMS_URL    = new URL('../data/generated/items.json', SCRIPT_BASE);
+const ITEMS_URL    = new URL('../data/generated/items.json',  SCRIPT_BASE);
+const VERSION_URL = new URL('../data/generated/version.json', SCRIPT_BASE);
 const SEQUENCE_URL = new URL('../data/sequence.json',         SCRIPT_BASE);
 
+async function getRemoteCacheVersion() {
+  try {
+    const res = await fetch(VERSION_URL);
+    if (!res.ok) return null;
+    const data = await res.json();
+    // normalize to string for localStorage comparison
+    return String(data?.cacheVersion ?? "");
+  } catch {
+    return null;
+  }
+}
 
 /**
  * Sanitizes a string to create a safe HTML element ID.
@@ -59,6 +69,7 @@ function handle_skill(node) {
     let itemData = itemsData[skillName];
     if (!itemData) {
         console.warn(`Missing data for item: ${node}`);
+        return null;
     }
 
     let skillDiv = document.createElement("div");
@@ -85,7 +96,7 @@ function handle_skill(node) {
 /**
  * Renders the progression chart and caches it in localStorage.
  */
-function renderChart(chartContainer) {
+function renderChart(chartContainer, cacheVersion) {
     if (!chartContainer) {
         console.error("No valid chart container provided.");
         return;
@@ -113,24 +124,27 @@ function renderChart(chartContainer) {
     }
 
     localStorage.setItem("cachedChart", chartContainer.innerHTML);
-    localStorage.setItem("cacheVersion", CACHE_VERSION); // Store the cache version
+    if (cacheVersion != null) localStorage.setItem("cacheVersion", cacheVersion);
 }
 
 /**
  * Initializes the chart by checking for cached content.
  */
 async function loadChart() {
-    let chartContainer = document.getElementById("chart-container");
+    const chartContainer = document.getElementById("chart-container");
     if (!chartContainer) {
         console.error("No element with ID 'chart-container' found.");
         return Promise.reject("Chart container not found");
     }
 
-    let cachedChart = localStorage.getItem("cachedChart");
-    let cachedVersion = localStorage.getItem("cacheVersion");
+    const [cachedChart, cachedVersion, remoteVersion] = [
+        localStorage.getItem("cachedChart"),
+        localStorage.getItem("cacheVersion"),
+        await getRemoteCacheVersion(),
+    ];
 
     try {
-        if (cachedChart && cachedVersion === CACHE_VERSION) {
+        if (cachedChart && cachedVersion === remoteVersion) {
             chartContainer.innerHTML = cachedChart;
             console.log("Cached chart loaded successfully.");
             return;
@@ -148,7 +162,7 @@ async function loadChart() {
             ]);
             itemsData = items;
             nodegroups = Object.values(sequence);
-            renderChart(chartContainer);
+            renderChart(chartContainer, remoteVersion ?? "");
         } catch (error) {
             console.error("Error loading JSON:", error);
         }
