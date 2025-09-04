@@ -7,7 +7,7 @@ let itemsData = {};
 let nodegroups = [];
 
 /** Define a cache version to invalidate outdated stored charts */
-const CACHE_VERSION = "1.4.2"; // Update this whenever you make a major update
+const CACHE_VERSION = "1.4.3"; // Update this whenever you make a major update
 // Resolve paths based on this script's location: .../scripts/render-items.js
 const SCRIPT_BASE = new URL('.', document.currentScript.src);
 
