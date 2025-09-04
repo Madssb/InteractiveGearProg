@@ -125,7 +125,7 @@ function renderChart(chartContainer, cacheVersion) {
     }
 
     localStorage.setItem("cachedChart:bare", chartContainer.innerHTML);
-    if (cacheVersion != null) localStorage.setItem("cacheVersion", cacheVersion);
+    if (cacheVersion != null) localStorage.setItem("cacheVersion:bare", cacheVersion);
 }
 
 /**
@@ -186,7 +186,7 @@ function updateNodeVisualState(node) {
 }
 
 function initializeNodeStates() {
-    let chartContainer = document.getElementById("chart-container");
+    let chartContainer = document.getElementById("chart-container-bare-bones");
     if (!chartContainer) return;
 
     let savedStates = JSON.parse(localStorage.getItem("sharedNodeStates")) || {}; // Load from shared storage
@@ -216,8 +216,8 @@ function initializeNodeStates() {
 /**
  * Prevents dragging images within the chart container.
  */
-function preventDragging() {
-    document.querySelector("#chart-container").addEventListener("dragstart", (event) => {
+function preventDragging() {    
+    document.querySelector("#chart-container-bare-bones").addEventListener("dragstart", (event) => {
         if (event.target.tagName === "IMG") {
             event.preventDefault();
         }
