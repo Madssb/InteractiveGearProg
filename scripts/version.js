@@ -2,7 +2,7 @@
  * Syncs populates span with version id with latest version text for syncing index.html and changelog.html.
  */
 function init() {
-    fetch('pages/changelog.html')
+    fetch('/pages/changelog.html')
         .then(response => {
             // When the page is loaded convert it to text
             return response.text()
