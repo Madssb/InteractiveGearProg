@@ -35,6 +35,7 @@ payload = {"viewcountMonth": monthly_viewcount}
 
 with open(
     ROOT_DIR / Path("data/generated/count.json"),
+    
     mode="w",
     encoding="utf-8",
 ) as f:
