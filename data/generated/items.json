@@ -566,5 +566,9 @@
   "bread": {
     "wikiUrl": "https://oldschool.runescape.wiki/w/Bread",
     "imgUrl": "https://oldschool.runescape.wiki/images/Bread.png"
+  },
+  "Hallowed crystal shard": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Hallowed_crystal_shard",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Hallowed_crystal_shard.png"
   }
 }
