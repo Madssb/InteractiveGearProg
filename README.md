@@ -58,9 +58,8 @@ This updates:
 
 ## Deploying to GitHub Pages
 
-- You do not need a `CNAME` in this branch.
-- Set Pages to serve from your repo (e.g., `main` / root). Commit the generated `data/generated/*` files.
-- Your site will be at `https://<username>.github.io/<repo>/`.
+You can publish this branch directly with GitHub Pages. With minimal setup, your chart will be accessible at  
+`https://<username>.github.io/<repo>/` or under a custom domain you configure.
 
 ## File structure (minimal)
 
