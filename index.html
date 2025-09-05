@@ -11,6 +11,14 @@
 </head>
 
 <body>
+    <h1>Chart Generating Example</h1>
+    <h2>Making items appear</h2>
+    
+    <ul>
+        <li><code>data/sequence.json</code> Decides what items are shown in the chart, and their sequencing. Example: [[a],[b,c],[d]] a renders as first item, b and c as a group in the middle, and d as the last item.</li>
+        <li><code>data/generated/items.json</code> provides the required image- and wikiUrls per item that the chart requires, and can be generated with a provided python script</li>
+        <li><code>tools/build_items_json.py</code> is the aforementioned python script which generates the <code>items.json</code> needed based on the items it finds in <code>sequence.json</code>. It requires the <a href="https://github.com/Madssb/osrswiki_images">osrswiki_images</a> python package.</li>
+    </ul>
     <div class="chart" id="chart-container"></div>
     <footer>
         <p>All images used in this tool are sourced from the
