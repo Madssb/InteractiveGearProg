@@ -33,7 +33,7 @@ No frameworks. Static HTML/CSS/JS only.
         ["Dragon scimitar", "Berserker ring (i)"]
       ]
 
-- `styles/styles.css` — layout/spacing/colors.
+- `styles/style.css` — layout/spacing/colors.
 
 - `scripts/right-clicks.js` — optional context menu (Wiki link, skip toggle). Safe to remove if unwanted.
 
@@ -73,8 +73,9 @@ You can publish this branch directly with GitHub Pages. With minimal setup, your
       render-items.js
       right-clicks.js
     styles/
-      styles.css
-      right-clicks.css
+      chart.css
+      right-click.css
+      style.css
     tools/
       build_items_json.py
     .gitignore
