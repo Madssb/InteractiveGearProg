@@ -1,13 +1,31 @@
+// DO NOT EDIT LOGIC. Only edit: CONTAINER_ID, SEQUENCE_URL, CACHE KEYS.
 /**
  * Global storage for item and node data.
  * - `itemsData`: Maps item names to their metadata (e.g., image source, wiki link).
- * - `nodegroups`: Stores ordered lists of nodes as defined in sequence-bare-bones.json.
+ * - `nodegroups`: Stores ordered lists of nodes as defined in sequence.json.
  */
 let itemsData = {};
 let nodegroups = [];
 
-/** Define a cache version to invalidate outdated stored charts */
-const CACHE_VERSION = "1.2.1-bare-bones"; // Update this when making major changes
+// Resolve paths based on this script's location: .../scripts/render-items.js
+const SCRIPT_BASE = new URL('.', document.currentScript.src);
+
+// data/ sits next to scripts/ at the site root
+const ITEMS_URL    = new URL('../data/generated/items.json',  SCRIPT_BASE);
+const VERSION_URL = new URL('../data/generated/version.json', SCRIPT_BASE);
+const SEQUENCE_URL = new URL('../data/generated/sequence-bare-bones.json',         SCRIPT_BASE);
+
+async function getRemoteCacheVersion() {
+  try {
+    const res = await fetch(VERSION_URL);
+    if (!res.ok) return null;
+    const data = await res.json();
+    // normalize to string for localStorage comparison
+    return String(data?.cacheVersion ?? "");
+  } catch {
+    return null;
+  }
+}
 
 /**
  * Sanitizes a string to create a safe HTML element ID.
@@ -28,52 +46,38 @@ function handle_item(node) {
         console.warn(`Missing data for item: ${node}`);
         return null;
     }
-
-    // Detect if running on GitHub Pages and adjust the path accordingly
-    let basePath = window.location.hostname.includes("github.io")
-        ? "/InteractiveGearProg/"
-        : "../"; // Localhost should still use relative paths
-
     let img = document.createElement("img");
-    img.src = basePath + itemData.imgSrc; // Ensures correct path
+    img.src = itemData.imgUrl; // Ensures correct path
     img.alt = node;
     nodeDiv.title = node;
     nodeDiv.id = sanitizeId(node);
     nodeDiv.appendChild(img);
-    nodeDiv.dataset.wikiLink = itemData.wikiLink;
-
+    nodeDiv.dataset.wikiLink = itemData.wikiUrl;
     return nodeDiv;
 }
-
 
 /**
  * Creates a node element representing a skill milestone.
  */
 function handle_skill(node) {
+    let parts = node.split(" ");
+    let lvlNum = parts[0];
+    let skillName = parts[1];
+    
+    
     let nodeDiv = document.createElement("div");
     nodeDiv.classList.add("node");
-    let itemData = itemsData[node];
+    let itemData = itemsData[skillName];
     if (!itemData) {
         console.warn(`Missing data for item: ${node}`);
         return null;
     }
 
-
-    let parts = node.split(" ");
-    let lvlNum = parts[0];
-    let skillName = parts.slice(1).join(" ");
-    let skillNameUppercase = skillName.charAt(0).toUpperCase() + skillName.slice(1);
-
     let skillDiv = document.createElement("div");
     skillDiv.classList.add("skill");
 
-    // Detect if running on GitHub Pages and adjust the path accordingly
-    let basePath = window.location.hostname.includes("github.io")
-        ? "/InteractiveGearProg/"
-        : "../";
-
     let img = document.createElement("img");
-    img.src = basePath + `images/${skillNameUppercase}_icon.webp`; // Ensures correct path
+    img.src = itemData.imgUrl; // Ensures correct path
 
     let span = document.createElement("span");
     span.textContent = lvlNum;
@@ -84,7 +88,7 @@ function handle_skill(node) {
     nodeDiv.title = `Get ${lvlNum} ${skillName}`;
     nodeDiv.id = "lvl-" + sanitizeId(node);
     nodeDiv.appendChild(skillDiv);
-    nodeDiv.dataset.wikiLink = itemData.wikiLink;
+    nodeDiv.dataset.wikiLink = itemData.wikiUrl;
 
     return nodeDiv;
 }
@@ -93,7 +97,7 @@ function handle_skill(node) {
 /**
  * Renders the progression chart and caches it in localStorage.
  */
-function renderChart(chartContainer) {
+function renderChart(chartContainer, cacheVersion) {
     if (!chartContainer) {
         console.error("No valid chart container provided.");
         return;
@@ -120,25 +124,28 @@ function renderChart(chartContainer) {
         }
     }
 
-    localStorage.setItem("cachedChartBareBones", chartContainer.innerHTML);
-    localStorage.setItem("cacheVersionBareBones", CACHE_VERSION); // Store the cache version
+    localStorage.setItem("cachedChart:bare", chartContainer.innerHTML);
+    if (cacheVersion != null) localStorage.setItem("cacheVersion:bare", cacheVersion);
 }
 
 /**
  * Initializes the chart by checking for cached content.
  */
 async function loadChart() {
-    let chartContainer = document.getElementById("chart-container-bare-bones");
+    const chartContainer = document.getElementById("chart-container-bare-bones");
     if (!chartContainer) {
         console.error("No element with ID 'chart-container-bare-bones' found.");
         return Promise.reject("Chart container not found");
     }
 
-    let cachedChart = localStorage.getItem("cachedChartBareBones");
-    let cachedVersion = localStorage.getItem("cacheVersionBareBones");
+    const [cachedChart, cachedVersion, remoteVersion] = [
+        localStorage.getItem("cachedChart:bare"),
+        localStorage.getItem("cacheVersion:bare"),
+        await getRemoteCacheVersion(),
+    ];
 
     try {
-        if (cachedChart && cachedVersion === CACHE_VERSION) {
+        if (cachedChart && cachedVersion === remoteVersion) {
             chartContainer.innerHTML = cachedChart;
             console.log("Cached chart loaded successfully.");
             return;
@@ -151,12 +158,12 @@ async function loadChart() {
 
         try {
             const [items, sequence] = await Promise.all([
-                fetch("../data/items.json").then(res => res.json()),
-                fetch("../data/sequence-bare-bones.json").then(res => res.json())
+                fetch(ITEMS_URL).then(res => res.json()),
+                fetch(SEQUENCE_URL).then(res => res.json())
             ]);
             itemsData = items;
             nodegroups = Object.values(sequence);
-            renderChart(chartContainer);
+            renderChart(chartContainer, remoteVersion ?? "");
         } catch (error) {
             console.error("Error loading JSON:", error);
         }
@@ -179,7 +186,7 @@ function updateNodeVisualState(node) {
 }
 
 function initializeNodeStates() {
-    let chartContainer = document.getElementById("chart-container-bare-bones"); // Corrected ID for bare bones
+    let chartContainer = document.getElementById("chart-container-bare-bones");
     if (!chartContainer) return;
 
     let savedStates = JSON.parse(localStorage.getItem("sharedNodeStates")) || {}; // Load from shared storage
@@ -206,11 +213,10 @@ function initializeNodeStates() {
 }
 
 
-
 /**
  * Prevents dragging images within the chart container.
  */
-function preventDragging() {
+function preventDragging() {    
     document.querySelector("#chart-container-bare-bones").addEventListener("dragstart", (event) => {
         if (event.target.tagName === "IMG") {
             event.preventDefault();

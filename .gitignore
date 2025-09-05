@@ -8,3 +8,7 @@ data/views.csv
 .vscode/*
 .env
 tools/scrape_slayer_rewards.py
+*.pyc
+scrape_slayer_rewards.py
+src_text
+

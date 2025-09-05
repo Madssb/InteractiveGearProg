@@ -13,9 +13,11 @@ the rest is standard HTML afaik.
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ladlor's Interactive Bare-Bones Progression Chart</title>
+    <title>Ladlor's Chart (Bare Bones)</title>
     <script src="../scripts/render-items-bare-bones.js" defer></script>
     <script src="../scripts/right-clicks.js"></script>
+    <script src="../scripts/version.js" defer></script>
+    <script src="../scripts/pagecount.js"></script>
     <link rel="stylesheet" href="../styles/styles.css">
     <link rel="stylesheet" href="../styles/right-clicks.css">
     <script data-goatcounter="https://ladlor0interactive0prog.goatcounter.com/count" async
@@ -23,30 +25,34 @@ the rest is standard HTML afaik.
 </head>
 
 <body>
-    <h1>Ladlor's Interactive "Bare-Bones" Progression Chart</h1>
+    <h1>Interactive "Bare-Bones" Progression Chart</h1>
+    <span class="subtitle">Curated by the Ironscape community — made by Ladlor</span>
     <div class="chart" id="chart-container-bare-bones"></div>
-    <h2>Acknowledgments</h2>
+    <h2>Acknowledgements</h2>
     <p>
         A special thank you to the <a href="https://discord.gg/ironscape" target="_blank">Ironscape Discord
-            Community</a> for their support and contributions in refining the sequencing of milestones. I would like
-        to
+            Community</a> for their support and contributions in refining the sequencing of milestones. I would like to
         acknowledge the following members for their invaluable efforts (in no particular order):
     </p>
     <ul>
         <li>
-            <strong>Drøgøn</strong>: Provided quality assurance and contributed extensive theorycrafting for new
-            metas.
-        </li>
-        <li>
             <strong>Parasailer</strong>: Author of <em>Parasailer's Gear Progression Chart</em> and co-author of
             <em>BRUHSailer</em>, the comprehensive Ironman account progression guide. The current gear progression
-            sequence is largely based on the aforementioned chart and, by extension, <em>BRUHSailer</em>.
+            sequence is largely based on the aforementioned chart, and by extension, <em>BRUHSailer</em>.
         </li>
+        <li>
+            <strong>So Iron Bruh</strong>: Provided quality assurance and co-authored <em>BRUHSailer</em>.
+        </li>
+
+        <li>
+            <strong>Drøgøn</strong>: Provided quality assurance and contributed extensive theorycrafting for new metas.
+        </li>
+
         <li>
             <strong>Raze</strong>: Assisted with quality assurance.
         </li>
         <li>
-            <strong>So Iron Bruh</strong>: Provided quality assurance and co-authored <em>BRUHSailer</em>.
+            <strong>Wolf</strong>: Provided insight into accounting for ancient shards.
         </li>
     </ul>
     <h2>Frequently Asked Questions</h2>
@@ -59,13 +65,16 @@ the rest is standard HTML afaik.
             you refresh or close the page.</p>
         <p><strong>Q:</strong> Does a more detailed version exist?</p>
         <p><strong>A:</strong> Yes! That one can be found <a href="../index.html">here</a>.</p>
-        <!-- Link to full FAQ page -->
-        <p>For more questions, visit the <a href="../pages/faq.html">full FAQ page</a>.</p>
+        <p>For more questions, visit the <a href="faq.html">full FAQ page</a>.</p>
     </div>
     <footer>
-        <p>Version 1.2.0 | <a href="../pages/changelog.html">View Changelog</a> | <a
-                href="../pages/privacy.html">Privacy
-                Policy</a></p>
+        <p>
+        <span id="version"></span> |
+        <a href="changelog.html">View Changelog</a> |
+        <a href="privacy.html">Privacy Policy</a> |
+        <a href="https://github.com/Madssb/InteractiveGearProg">Source Code</a> |
+        Monthly page visits: <span id="page-count"></span>
+        </p>
         <p>All images used in this tool are sourced from the
             <a href="https://oldschool.runescape.wiki/" target="_blank">Old School RuneScape Wiki</a>,
             and are licensed under the

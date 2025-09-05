@@ -1,0 +1,51 @@
+name: build items json
+
+on:
+  push:
+    paths: ["data/sequence.json"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: items-json-builder
+  cancel-in-progress: false
+
+jobs:
+  items-json:
+    name: items json builder
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install "osrswiki-images>=0.1"
+
+      - name: Build items.json
+        run: python tools/build_items_json.py
+
+      - name: Push updated items.json (only if changed)
+        env:
+          GIT_AUTHOR_NAME: bot
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: bot
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+        run: |
+          set -eo pipefail
+          git add data/generated/items.json
+          git add data/generated/version.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "automated items.json update [skip ci]"
+          git push

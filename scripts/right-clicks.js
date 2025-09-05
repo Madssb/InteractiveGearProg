@@ -78,8 +78,10 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     let timer;
 
-    document.getElementById('chart-container').addEventListener("touchstart", (e) => !timer ? timer = setTimeout(() => onlongtouch(e), touchduration) : null, false);
-    document.getElementById('chart-container').addEventListener("touchend", () => timer ? timer = clearTimeout(timer) : null, false);
+    const chart = document.getElementById('chart-container') || document.getElementById('chart-container-bare-bones') || document.querySelector('.chart'); // last resort
+
+    chart.addEventListener("touchstart", (e) => !timer ? timer = setTimeout(() => onlongtouch(e), touchduration) : null, false);
+    chart.addEventListener("touchend", () => timer ? timer = clearTimeout(timer) : null, false);
 
     // === CLICK OUTSIDE TO CLOSE ===
     document.addEventListener("click", (event) => {
