@@ -30,6 +30,19 @@ a:visited { color: #aa88ff; }
 
 /* Extras */
 .subtitle { font-size:.85em; font-style:italic; color:#aaa; text-align:center; display:block; margin-top:-10px; margin-bottom:30px; }
-.changelog h1,.changelog h2 { text-align:left; }
-.changelog ul { list-style-type: disc; margin-left:40px; }
-.changelog .back-link { margin-top:40px; }
+/* Restore normal list behavior */
+ul, li { text-align: left; }          /* stop centering list text */
+li { display: list-item; }            /* ensure bullets render */
+
+/* Changelog lists: classic indent, centered as a block */
+body.changelog > ul {
+  list-style: disc outside;           /* bullets outside, visible */
+  padding-left: 1.25rem;              /* indent */
+  margin: .5rem auto 1.25rem;         /* center the whole UL */
+  max-width: 70ch;                    /* keep it near the middle */
+}
+
+/* Nested lists get a bit more indent */
+body.changelog ul ul {
+  margin-left: 1.25rem;
+}
