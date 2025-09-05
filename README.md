@@ -35,6 +35,7 @@ The chart is interactive, allowing players to track their progress by marking it
 3. **Resetting Progress**: To reset your progress, clear your browser's local storage for this site.
 
 ## Local Development
+
 Running the chart locally is useful for offline access or for contributors who want to customize the progression sequence for their own needs. This flexibility allows for tailoring the tool to different game modes or personal preferences.
 
 If you want to modify or host the chart locally, follow these steps:
@@ -58,43 +59,34 @@ We welcome contributions from the community to improve this gear progression cha
 4. **Review Process**: Contributors will review your pull request and provide feedback or merge it into the main project.
 
 ## For Developers
+
 This project is built with plain HTML, CSS, and JavaScript, with no external dependencies. The chart’s interactivity relies on browser localStorage for tracking user progress. Key scripts include:
+
 - `render-items.js`: Fetches JSON data and renders the chart dynamically.
 - `right-clicks.js`: Adds a custom context menu for enhanced interactivity.
 
 ### Development Workflow
+
 - Edit the JSON files in `data/` to update the chart’s sequence or items.
 - Modify the JavaScript in `scripts/` for new features or bug fixes.
 
 ## File Structure
-| **Directory/File**       | **Description**                                              |
-|--------------------------|--------------------------------------------------------------|
-| `index.html`             | Main entry point for the interactive chart.                  |
-| `data/`                  | Contains JSON files for defining item and skill sequences.   |
-| └─ `items.json`          | Metadata for each item, including image source and wiki link.|
-| └─ `sequence.json`       | Defines the order of items and skills in the chart.          |
-| └─ `state.json`          | Tracks the user's progress (marked items).                   |
-| `scripts/`               | JavaScript files for rendering and interactive behavior.     |
-| └─ `render-items.js`     | Handles chart rendering and interactive features.            |
-| └─ `right-clicks.js`     | Implements the custom right-click menu.                      |
-| └─ `version.js`          | Synchronizes index.html versioning with changelog.html.      |
-| `styles/`                | CSS files for styling the chart and context menu.            |
-| └─ `styles.css`          | Main stylesheet for the chart.                               |
-| └─ `right-clicks.css`    | Styles for the right-click context menu.                     |
-| `pages/`                 | Additional HTML pages related to the project.                |
-| └─ `changelog.html`      | Lists changes and updates.                                   |
-| └─ `faq.html`            | Frequently asked questions.                                  |
-| └─ `privacy.html`        | Privacy-related information.                                 |
 
-
-## Acknowledgments
-A special thank you to the Ironscape Discord Community for their quality assurance and contributions in sequencing the milestones. Notable mentions:
-- **So Iron Bruh**: Quality assurance, co-author of *BRUHSailer*.  
-- **Parasailer**: Author of *Parasailer's Gear Progression Chart* and co-author of *BRUHSailer*.  
-- **Drøgøn**: Quality assurance and extensive theorycrafting for new meta strategies.  
-- **Raze**: Quality assurance and valuable feedback.  
+| **Directory/File**    | **Description**                                               |
+| --------------------- | ------------------------------------------------------------- |
+| `index.html`          | Main entry point for the interactive chart.                   |
+| `data/`               | Contains JSON files for defining item and skill sequences.    |
+| └─ `items.json`       | Metadata for each item, including image source and wiki link. |
+| └─ `sequence.json`    | Defines the order of items and skills in the chart.           |
+| `scripts/`            | JavaScript files for rendering and interactive behavior.      |
+| └─ `render-items.js`  | Handles chart rendering and interactive features.             |
+| └─ `right-clicks.js`  | Implements the custom right-click menu.                       |
+| `styles/`             | CSS files for styling the chart and context menu.             |
+| └─ `styles.css`       | Main stylesheet for the chart.                                |
+| └─ `right-clicks.css` | Styles for the right-click context menu.                      |
 
 ## License
+
 This project is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)](https://creativecommons.org/licenses/by-nc-sa/3.0/) license.
 
 All images are sourced from the OSRS Wiki, which also follows the same license.
