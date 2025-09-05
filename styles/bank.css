@@ -1,0 +1,108 @@
+html, body
+{
+    height: 99%;
+    width: 99%;
+}
+
+.background {
+  display: block;
+  /* background-image: url('../data/external/background.png'); */
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+  min-height: 100%;
+  /* border: 1px solid red; */
+}
+
+/* width must be 488px exactly */
+/* horizontally centered */
+
+/* top padding (y) ~ [2, 26] px */
+/* height (x) is constrained to [335, 800] px */
+/* bottom paddin (<) g constrained to [136, 190] px */
+
+
+
+/* outer and inner to achieve effect of two borders*/
+#bank-outer {
+  width: 488px;
+  min-height: 335px;
+  max-height: 800px;
+  border: 5px solid #121210;
+  height: auto;
+  margin: 0 auto;
+  position: relative;
+  margin-top: -5px; /* share border with bank header */
+}
+#bank-inner {
+  width: 486px;
+  min-height: 335px;
+  max-height: 800px;
+  /* background-color: blue; */
+  background-color: #494034;
+  border: 1px solid #494946;
+  height: auto;
+  margin: 0 auto;
+  position: relative;
+}
+
+
+
+
+
+body {
+    background-color: black;
+}
+
+#bank-title {
+  width: 488px;
+  height: 32px;
+  /* background-color: green; */
+  background-color: #494034;
+  border: 5px solid #121210;
+  height: auto;
+  margin: 0 auto;
+  text-align: center;
+  margin-top: 20px;
+}
+
+#bank-title span{
+    color: #FF981F;
+}
+
+
+#bank-header {
+  display: flex;
+  flex-flow: row wrap;
+  /* border: 1px solid #4E4E4C; */
+  width: 486px;
+  height: 41px;
+  background-color: #494034;
+}
+.header-element {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  width: 39px;
+  height: 39px;
+  background-color: #3A3329;
+  border: 1px solid #716451
+}
+.header-corner {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 40px;
+  background-color: #494034;
+  border-bottom: 1px solid #716451;
+}
+#header-item {
+  width: 40px;
+  height: 40px;
+}
+
+.active{
+  background-color: #494034;
+  border-bottom: none;
+}
