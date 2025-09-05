@@ -2,8 +2,8 @@ name: goatcounter api request workflow
 
 on:
   schedule:
-    - cron: "00 00 * * *"
-# on: push
+    - cron: "35 22 * * *"
+  workflow_dispatch: {}
 
 permissions:
   contents: write
