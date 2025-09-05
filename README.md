@@ -13,9 +13,9 @@ No frameworks. Static HTML/CSS/JS only.
 2. Edit `data/sequence.json` to list what you want rendered.
 3. Generate `data/generated/items.json`:
 
-   # requires Python 3.10+ and internet access to the OSRS Wiki
+   `pip install osrswiki_images`
 
-   python tools/build_items_json.py
+   `python tools/build_items_json.py`
 
    This script resolves every item in `sequence.json` using the OSRS Wiki API and bumps `data/generated/version.json` (used for cache invalidation).
 
