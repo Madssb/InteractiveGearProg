@@ -89,5 +89,6 @@ You can publish this branch directly with GitHub Pages. With minimal setup, your
 
 ## License and attribution
 
-- Your code: license as you wish (this template keeps your existing license file).
-- OSRS Wiki images and content: CC BY-NC-SA 3.0. Attribute the Wiki on your site (see footer in `index.html`).
+- Code in this repository: licensed under MIT (see LICENSE).
+
+- Images: not included in this repository. At runtime the page may display images hosted by the Old School RuneScape Wiki. Those images are licensed under CC BY-NC-SA 3.0 and are not covered by the MIT license. If you redistribute or locally mirror images, you must comply with CC BY-NC-SA 3.0 (attribution, non-commercial, share-alike). Include proper attribution on your site (see the footer in `index.html` for an example).
