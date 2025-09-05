@@ -1,14 +1,6 @@
 visualize.py
-idk/*
-node_modules/
-package-lock.json
-package.json
-data/views.csv
-*ne_110m*
+data/external/*
 .vscode/*
 .env
 tools/scrape_slayer_rewards.py
 *.pyc
-scrape_slayer_rewards.py
-src_text
-
