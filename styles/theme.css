@@ -46,3 +46,21 @@ body.changelog > ul {
 body.changelog ul ul {
   margin-left: 1.25rem;
 }
+
+/* acknowledgements: centered block with bullets */
+.acknowledgements {
+  text-align: center;      /* center heading + paragraph text */
+  margin: 2rem auto;
+}
+
+.acknowledgements ul {
+  list-style-position: inside;  /* bullets stay with text */
+  display: inline-block;        /* shrink-wrap list so it can be centered */
+  text-align: left;             /* bullet + text left aligned within block */
+  padding-left: 0;              /* override browser padding */
+  margin: 1rem auto;            /* center block horizontally */
+}
+
+.acknowledgements li {
+  margin: 0.5rem 0;
+}
