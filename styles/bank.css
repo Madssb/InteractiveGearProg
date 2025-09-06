@@ -1,12 +1,12 @@
 html, body
 {
     height: 99%;
-    width: 99%;
+    width: 99.5%;
+    background-color: black;
 }
 
-.background {
-  display: block;
-  /* background-image: url('../data/external/background.png'); */
+#background {
+  background-image: url('../data/external/background.png');
   margin-left: auto;
   margin-right: auto;
   max-width: 100%;
@@ -33,27 +33,18 @@ html, body
   margin: 0 auto;
   position: relative;
   margin-top: -5px; /* share border with bank header */
-}
+} 
 #bank-inner {
   width: 486px;
   min-height: 335px;
   max-height: 800px;
-  /* background-color: blue; */
-  background-color: #494034;
+  background-color: blue;
+  /* background-color: #494034; */
   border: 1px solid #494946;
   height: auto;
   margin: 0 auto;
   position: relative;
-}
-
-
-
-
-
-body {
-    background-color: black;
-}
-
+} 
 #bank-title {
   width: 488px;
   height: 32px;
@@ -105,4 +96,79 @@ body {
 .active{
   background-color: #494034;
   border-bottom: none;
+}
+
+.bank-tab{
+  background-color: red;
+  padding-left: 10px;
+
+}
+
+
+/* Outermost shell of bank interface with thick black 5px border*/
+#bank {
+  width: 478px;
+  height: 790px;
+  border: 5px solid #121210;
+  background-color: #494034;
+}
+/* Title section with text. Goes inside bank at the top. */
+#bank-title-section {
+  width: 476px;
+  height: 23px;
+  border: 1px solid #535451;
+  text-align: center;
+}
+
+#bank-title-section span {
+  color: #FF981F;
+
+}
+/* additional border */
+#margin {
+  width: 478px;
+  height: 4px;
+  background-color: #121210;
+}
+
+/* Main big chunk of the bank in thin silver 1px border*/
+#bank-main-section {
+  width: 476px;
+  height: 759px;
+  border: 1px solid #535451;
+}
+/*bank tab button section including the separating lines */
+#bank-tabs-section {
+  width: 476px;
+  height: 40px;
+  /* background-color: aqua; */
+  background-color: #2E2B23;
+  display: flex;
+  flex-direction: row;
+}
+
+/* bank tab buttons effectively have a set of borders, requiring an outer and an inner div. color is darker*/ 
+.bank-tab-button{
+  width: 37px;
+  height: 36px;
+  border: 1px solid #716451;
+  background-color: #3A3329;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+  margin-right: 1px;
+
+}
+.bank-tabs-corner {
+  width: 38px;
+  height: 39px;
+  border-bottom: solid 1px #2E2B23;
+  background-color: #494034;
+}
+/* Overrides bottom border for continuity with rest of bank section, and matches its color. */
+.active {
+  background-color: #494034;
+  height: 38px;
+  border-bottom:  #494034;
 }

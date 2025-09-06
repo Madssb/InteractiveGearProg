@@ -10,5 +10,11 @@
     "7": "https://oldschool.runescape.wiki/images/Harralander_tar.png",
     "8": "https://oldschool.runescape.wiki/images/Saradomin_brew(4).png",
     "9": "https://oldschool.runescape.wiki/images/Expert_mining_gloves.png"
+  },
+  "tab0": {
+    "abyssal whip": {
+        "wikiUrl": "https://oldschool.runescape.wiki/w/Abyssal_whip",
+        "imgUrl": "https://oldschool.runescape.wiki/images/Abyssal_whip.png"
+    }
   }
 }
