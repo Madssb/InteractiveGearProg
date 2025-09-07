@@ -172,3 +172,36 @@ html, body
   height: 38px;
   border-bottom:  #494034;
 }
+.active > img {
+  margin-bottom: 2px;
+}
+#bank-items-section {
+  background-color: green;
+  width: 370px;
+  height: 500px;
+  margin-left: 52px;
+  display: flex;
+  column-gap: 20px;
+}
+.bank-item {
+  background-color: cyan;
+  width: 32px;
+  height: 32px;
+}
+
+
+.bank-item > span {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  color: yellow;
+  font-size: 10px;
+}
+
+
+#bank-items-section > img {
+  background-color: turquoise;
+  margin-top: 3px;
+  max-width: 32px;
+  max-height: 32px;
+}

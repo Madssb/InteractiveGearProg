@@ -47,7 +47,7 @@ async function buildBankTabsSection(){
 /* 
 Instantiates active header element id from localStorage or the zero-th header element if none found
 */
-async function initializeActiveHeaderElement(){
+async function initializeActiveBankTabsElement(){
     if (document.getElementsByClassName("active").length > 2) {
         /* More than one active header elements is a bug*/
         console.error("more than one active header elements detected")
@@ -93,7 +93,7 @@ async function initializeClickListening(){
         return Promise.reject("Bank header not found");
     }
     bankHeader.addEventListener("click", (event) => {
-        let headerElementDiv = event.target.closest(".header-element");
+        let headerElementDiv = event.target.closest(".bank-tab-button");
         if (!headerElementDiv) return;
         console.log(headerElementDiv.id);
         updateActiveHeaderElementDiv(headerElementDiv);
@@ -103,7 +103,7 @@ async function initializeClickListening(){
 
 async function main(){
     await buildBankTabsSection();
-    await initializeActiveHeaderElement();
+    await initializeActiveBankTabsElement();
     await initializeClickListening();
 }
 
