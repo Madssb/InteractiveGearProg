@@ -155,9 +155,7 @@
         "Ring of suffering (i)"
     ],
     [
-        "Avernic treads"
-    ],
-    [
+        "Avernic treads",
         "Rite of vile transference"
     ],
     [
@@ -200,8 +198,12 @@
         "Ultor ring"
     ],
     [
-        "Dizana's quiver",
-        "Avernic defender"
+        "Dizana's quiver"
+    ],
+    [
+
+        "Avernic defender",
+        "Scythe of vitur"
     ],
     [
         "Tumeken's shadow",
@@ -223,7 +225,6 @@
     ],
     [
         "Saturated heart",
-        "Venator ring",
         "Venator bow"
     ],
     [
@@ -233,7 +234,6 @@
         "Torva platebody",
         "Torva platelegs",
         "Torva full helm",
-        "Scythe of vitur",
         "Zaryte crossbow",
         "Zaryte vambraces"
     ]
