@@ -1,134 +1,239 @@
 {
   "Try Again": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_attempts_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_attempts_icon.png",
+    "enabledOn": [
+      150, 165, 185, 200, 215, 230, 250, 265, 275, 290, 300, 315, 325, 340, 350,
+      365, 380, 390, 400
+    ]
   },
   "Persistence": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_attempts_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_attempts_icon.png",
+    "enabledOn": [
+      150, 165, 185, 200, 215, 230, 250, 265, 275, 290, 300, 315, 325, 340, 350,
+      365, 380, 390, 400
+    ]
   },
   "Softcore Run ": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_attempts_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_attempts_icon.png",
+    "enabledOn": [
+      150, 165, 185, 200, 215, 230, 250, 265, 275, 290, 300, 315, 325, 340, 350,
+      365, 380, 390
+    ]
   },
   "Hardcore Run": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_attempts_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_attempts_icon.png",
+    "enabledOn": [400]
   },
   "Walk for It": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_time_limit_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_time_limit_icon.png",
+    "enabledOn": [
+      165, 185, 200, 215, 230, 250, 265, 275, 290, 300, 300, 315, 325, 340, 350,
+      350, 365, 365, 380, 390, 400
+    ]
   },
   "Jog for It": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_time_limit_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_time_limit_icon.png",
+    "enabledOn": [
+      165, 185, 200, 215, 230, 250, 265, 275, 290, 300, 315, 325, 340, 350, 365,
+      380, 390
+    ]
   },
   "Run for It": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_time_limit_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_time_limit_icon.png",
+    "enabledOn": [-1]
   },
   "Sprint for It": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_time_limit_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_time_limit_icon.png",
+    "enabledOn": [-1]
   },
   "Need Some Help?": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_Walk_the_Path_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_Walk_the_Path_icon.png",
+    "enabledOn": [350]
   },
   "Need Less Help?": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_Walk_the_Path_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_Walk_the_Path_icon.png",
+    "enabledOn": [-1]
   },
   "No Help Needed": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_Walk_the_Path_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_Walk_the_Path_icon.png",
+    "enabledOn": [365, 380, 390, 400]
   },
   "Walk the Path": {
-    "imgUrl": "https:/oldschool.runescape.wiki/images/Invocations_-_Walk_the_Path_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_Walk_the_Path_icon.png",
+    "enabledOn": [300, 315, 325, 340, 350, 365]
   },
   "Pathseeker": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_path_level_up_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_path_level_up_icon.png",
+    "enabledOn": [-1]
   },
   "Pathfinder": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_path_level_up_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_path_level_up_icon.png",
+    "enabledOn": [-1]
   },
   "Pathmaster": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_path_level_up_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_path_level_up_icon.png",
+    "enabledOn": [-1]
   },
   "Quiet Prayers": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_prayer_effectiveness_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_prayer_effectiveness_icon.png",
+    "enabledOn": [-1]
   },
   "Deadly Prayers": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_prayer_effectiveness_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_prayer_effectiveness_icon.png",
+    "enabledOn": [
+      185, 200, 215, 230, 250, 265, 275, 290, 300, 315, 325, 340, 350, 365, 380,
+      390
+    ]
   },
   "On a Diet": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_On_a_Diet_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_On_a_Diet_icon.png",
+    "enabledOn": [
+      150, 165, 185, 200, 215, 230, 250, 265, 275, 290, 300, 315, 325, 340, 350,
+      365, 380, 390, 400
+    ]
   },
   "Dehydration": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_Dehydration_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_Dehydration_icon.png",
+    "enabledOn": [-1]
   },
   "Overly Draining": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_Overly_Draining_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Invocations_-_Overly_Draining_icon.png",
+    "enabledOn": [-1]
   },
   "Lively Larvae": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Kephri_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Kephri_icon.png",
+    "enabledOn": [-1]
   },
   "More Overlords": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Kephri_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Kephri_icon.png",
+    "enabledOn": [-1]
   },
   "Blowing Mud": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Kephri_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Kephri_icon.png",
+    "enabledOn": [
+      150, 165, 185, 200, 215, 230, 250, 265, 275, 290, 300, 315, 325, 340, 350,
+      365, 380, 390, 400
+    ]
   },
   "Medic!": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Kephri_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Kephri_icon.png",
+    "enabledOn": [-1]
   },
   "Aerial Assault": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Kephri_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Kephri_icon.png",
+    "enabledOn": [275, 290, 325, 340, 350, 350, 365, 365, 380, 390, 400]
   },
   "Not Just a Head": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Zebak_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Zebak_icon.png",
+    "enabledOn": [
+      215, 230, 250, 265, 275, 290, 300, 315, 325, 340, 350, 365, 380, 390, 400
+    ]
   },
   "Arterial Spray": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Zebak_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Zebak_icon.png",
+    "enabledOn": [
+      230, 250, 265, 275, 290, 300, 300, 315, 325, 340, 350, 350, 365, 365, 380,
+      390, 400
+    ]
   },
   "Blood Thinners": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Zebak_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Zebak_icon.png",
+    "enabledOn": [
+      230, 250, 265, 275, 290, 300, 300, 315, 325, 340, 350, 350, 365, 365, 380,
+      390, 400
+    ]
   },
   "Upset Stomach": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Zebak_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Zebak_icon.png",
+    "enabledOn": [
+      200, 215, 230, 250, 265, 275, 290, 300, 315, 325, 340, 350, 365, 380, 390,
+      400
+    ]
   },
   "Double Trouble": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Akkha_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Akkha_icon.png",
+    "enabledOn": [-1]
   },
   "Keep Back": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Akkha_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Akkha_icon.png",
+    "enabledOn": [-1]
   },
   "Stay Vigilant": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Akkha_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Akkha_icon.png",
+    "enabledOn": [265, 275, 290, 315, 325, 340, 350, 365, 380, 390, 400]
   },
   "Feeling Special?": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Akkha_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Akkha_icon.png",
+    "enabledOn": [
+      250, 265, 275, 290, 300, 315, 325, 340, 350, 365, 380, 390, 400
+    ]
   },
   "Mind the Gap!": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Ba-Ba_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Ba-Ba_icon.png",
+    "enabledOn": [
+      150, 165, 185, 200, 215, 230, 250, 265, 275, 290, 300, 315, 325, 340, 350,
+      365, 380, 390, 400
+    ]
   },
   "Gotta Have Faith": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Ba-Ba_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Ba-Ba_icon.png",
+    "enabledOn": [290, 340, 350, 365, 380, 390, 400]
   },
   "Jungle Japes": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Ba-Ba_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Ba-Ba_icon.png",
+    "enabledOn": [290, 340, 350, 365, 380, 390, 400]
   },
   "Shaking Things Up": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Ba-Ba_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Ba-Ba_icon.png",
+    "enabledOn": [
+      150, 165, 185, 200, 215, 230, 250, 265, 275, 290, 300, 315, 325, 340, 350,
+      365, 380, 390, 400
+    ]
   },
   "Boulderdash": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Ba-Ba_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Ba-Ba_icon.png",
+    "enabledOn": [350, 390, 400]
   },
   "Ancient Haste": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Tumeken's_Warden_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Tumeken's_Warden_icon.png",
+    "enabledOn": [
+      150, 165, 185, 200, 215, 230, 250, 265, 275, 290, 300, 315, 325, 340, 350,
+      365, 380, 390, 400
+    ]
   },
   "Acceleration": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Tumeken's_Warden_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Tumeken's_Warden_icon.png",
+    "enabledOn": [
+      150, 165, 185, 200, 215, 230, 250, 265, 275, 290, 300, 315, 325, 340, 350,
+      365, 380, 390, 400
+    ]
   },
   "Penetration": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Tumeken's_Warden_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Tumeken's_Warden_icon.png",
+    "enabledOn": [
+      150, 165, 185, 200, 215, 230, 250, 265, 275, 290, 300, 315, 325, 340, 350,
+      365, 380, 390, 400
+    ]
   },
   "Overclocked": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Tumeken's_Warden_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Tumeken's_Warden_icon.png",
+    "enabledOn": [
+      150, 165, 185, 200, 215, 230, 250, 265, 275, 290, 300, 315, 325, 340, 350,
+      365, 380, 390, 400
+    ]
   },
   "Overclocked 2": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Tumeken's_Warden_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Tumeken's_Warden_icon.png",
+    "enabledOn": [
+      150, 165, 185, 200, 215, 230, 250, 265, 275, 290, 300, 315, 325, 340, 350,
+      365, 380, 390, 400
+    ]
   },
   "Insanity": {
-    "imgUrl": "https://oldschool.runescape.wiki/images/Tumeken's_Warden_icon.png"
+    "imgUrl": "https://oldschool.runescape.wiki/images/Tumeken's_Warden_icon.png",
+    "enabledOn": [
+      150, 165, 185, 200, 215, 230, 250, 265, 275, 290, 300, 315, 325, 340, 350,
+      365, 380, 390, 400
+    ]
   }
 }

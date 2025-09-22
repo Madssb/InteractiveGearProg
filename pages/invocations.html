@@ -11,12 +11,14 @@
 </head>
 
 <body class="invocations">
-<h1>Invocation Planner Tool</h1>
-<p></p>
+<h1>Invocation Planner</h1>
+<span class="subtitle">Adapted from "Solo ToA: Learning 400s from scratch (post-changes)" by Parasailer — made by Ladlor</span>
 <p>Input raid level target (150-400):</p>
-<input id="raidLevel">
-<button type="button" onclick="myFunction()">Submit</button>
-<p id="demo"></p>
+<form>
+    <input id="raidLevel">
+    <button type="button" onclick="raidLevelParser()">Submit</button>
+</form>
 <div id="panel"></div>
+<p id="demo"></p>
 </body>
 </html>

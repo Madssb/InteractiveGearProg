@@ -14,55 +14,68 @@ async function getInvosJson(){
   }
 }
 
-async function buildPanel(){
+async function buildPanel() {
     const panelDiv = document.getElementById("panel");
-    if (!panelDiv) {
-        console.error("No element with ID 'panel' found.");
-        return Promise.reject("Bank header not found");
-    }
-    let invosJson = await getInvosJson();
-    for (const [key, item] of Object.entries(invosJson)){
-        /* Instantiate invocation container*/
-        let invocationContainerDiv = document.createElement("div");
-        invocationContainerDiv.classList.add("invocation-container")
-        let img = document.createElement("img");
-        img.src = item["imgUrl"];
-        let span =  document.createElement("span");
+    if (!panelDiv) return;
+
+    const invosJson = await getInvosJson();
+    const fragment = document.createDocumentFragment();
+
+    for (const [key, item] of Object.entries(invosJson)) {
+        const div = document.createElement("div");
+        div.classList.add("invocation-container");
+
+        const img = document.createElement("img");
+        img.src = item.imgUrl;
+        img.loading = "lazy"; // hint to browser
+
+        const span = document.createElement("span");
         span.textContent = key;
-        invocationContainerDiv.appendChild(img);
-        invocationContainerDiv.appendChild(span);
-        panelDiv.appendChild(invocationContainerDiv);
+
+        div.append(img, span);
+
+        for (const enabled of item.enabledOn) {
+            div.classList.add(String(enabled));
+        }
+
+        fragment.appendChild(div);
     }
+
+    panelDiv.appendChild(fragment);
 }
 
 
 /* handle raid level input, normalizing by rounding down to nearest threshold */
 function raidLevelParser() {
-    // Get the value of the input field with id="numb"
-    let raidLevel = document.getElementById("raidLevel").value;
-    // If raidLevel is Not a Number or less than one or greater than 10
-    let text;
-    if (isNaN(raidLevel) || raidLevel < 150 || raidLevel > 400) {
-        text = "Input not valid";
-        } else {
-        text = "Input OK";
-    }
+    let raidLevel = Number(document.getElementById("raidLevel").value);
     let thresholds = [
         150, 165, 185, 200, 215, 230, 250, 265, 275, 290,
-        300, 300, 315, 325, 340, 350, 350, 365, 365, 380,
-        390, 400
+        300, 315, 325, 340, 350, 365, 380, 390, 400
     ];
+    let roundedRaidLvl;
     if (thresholds.includes(raidLevel)){
         roundedRaidLvl = raidLevel;
     } else {
-        
+        for (let i = 0; i < thresholds.length; i++) { 
+            if (thresholds[i] > raidLevel) {
+                roundedRaidLvl = thresholds[i-1];
+                document.getElementById("demo").innerHTML = `Raid level: ${roundedRaidLvl}`;
+                break;
+            }
+        }
     }
-    document.getElementById("demo").innerHTML = text;
+    const elements1 = document.getElementsByClassName("invocation-container")
+    for (const el1 of elements1){
+        el1.classList.remove("active");
+    }
+    const elements = document.getElementsByClassName(String(roundedRaidLvl));
+    for (const el of elements) {
+        el.classList.add("active");
+    }
 }
 
 
 async function main() {
-    buildPanel();
-    raidLevelParser();
+    buildPanel();   
 }
 main();

@@ -30,6 +30,7 @@ body {
   align-items: center;
   /* background-color: blueviolet; */
   font-size: 10px;
+  opacity: 0.25;
 }
 img {
   width: 25px;
@@ -38,5 +39,6 @@ img {
   margin: auto;
   /* background-color: aqua; */
 }
-span {
+.active {
+  opacity: 1;
 }
