@@ -4,3 +4,24 @@ data/external/*
 .env
 tools/scrape_slayer_rewards.py
 *.pyc
+
+# React rewrite build artefacts
+/react-rewrite/node_modules
+/react-rewrite/dist
+/react-rewrite/dist-ssr
+
+# Logs
+/react-rewrite/logs
+/react-rewrite/*.log
+
+# IDE cruft
+/react-rewrite/.vscode
+/react-rewrite/.idea
+
+# OS junk
+.DS_Store
+*.sw?
+
+
+react-rewrite/node_modules
+react-rewrite/dist
