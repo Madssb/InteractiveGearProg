@@ -128,7 +128,7 @@ function Chart(){
             entity,
         });
     }
-    
+
     // turn nodes green on click
     const [nodeStates, setNodeStates] = useState({})
     function handleNodeClick(entity) {
@@ -151,6 +151,29 @@ function Chart(){
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
     }, []);
+
+
+    // Load saved states on mount
+    React.useEffect(() => {
+    try {
+        const saved = localStorage.getItem("nodeStates");
+        if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed === "object" && parsed !== null) {
+            setNodeStates(parsed);
+        }
+        }
+    } catch (err) {
+        console.error("Failed to parse saved nodeStates", err);
+    }
+    }, []);
+
+    // Save every time nodeStates changes
+    React.useEffect(() => {
+    if (Object.keys(nodeStates).length > 0) {
+        localStorage.setItem("nodeStates", JSON.stringify(nodeStates));
+    }
+    }, [nodeStates]);
 
     let nodegroups = Object.values(sequence);
     return (
