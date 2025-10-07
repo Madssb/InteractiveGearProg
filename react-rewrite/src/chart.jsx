@@ -56,6 +56,7 @@ function Node({ entity, onContextMenu, onClick, state }){
                     <img 
                         src={imgUrl}
                         alt=""
+                        draggable="false"
                     />
                     <span>{lvlNum}</span>
                 </div>
@@ -75,7 +76,8 @@ function Node({ entity, onContextMenu, onClick, state }){
         >
             <img 
                 src={imgUrl}
-                alt={entity} 
+                alt={entity}
+                draggable="false"
             />
         </div>
         </>
@@ -112,6 +114,8 @@ function NodeGroup({ entities, onContextMenu, onClick, nodeStates }) {
  * Handles context menu logic and node state (complete, skipped, etc.).
  */
 function Chart(){
+
+    // context menu
     const [menu, setMenu] = useState({
         visible: false,
         x: 0,
@@ -138,11 +142,10 @@ function Chart(){
         }))
     }
 
-
+    // menu close
     function handleCloseMenu() {
         setMenu({ ...menu, visible: false });
     }
-
     // Close context menu when clicking anywhere outside of it
     React.useEffect(() => {
     function handleClickOutside() {
@@ -151,6 +154,8 @@ function Chart(){
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
     }, []);
+
+    // prevent dragging
 
 
     // Load saved states on mount
