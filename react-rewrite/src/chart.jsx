@@ -20,7 +20,12 @@ function handleLevels(input) {
   return input;
 }
 
-function Node({ entity, onContextMenu }){
+
+/**
+ * Renders a node with entity, behavior dependent on if type is skill or non-skill.
+ * 
+ */
+function Node({ entity, onContextMenu, onClick, state }){
     // "86 ranged" is invalid key, "ranged" is valid.
     let itemData = items[handleLevels(entity)];
     
@@ -39,12 +44,13 @@ function Node({ entity, onContextMenu }){
         return (
             <>
             <div
-                className={`node ${type}`}
+                className={`node ${state} ${type}`}
                 title={entity}
                 id={sanitizeId(entity)}
                 data-wiki-url={wikiUrl}
                 aria-label={entity}
                 onContextMenu={(e) => onContextMenu(e, entity)}
+                onClick={() => onClick(entity)}
             >
                 <div className='skill'>
                     <img 
@@ -60,11 +66,12 @@ function Node({ entity, onContextMenu }){
     return (
         <>
         <div
-            className={`node ${type}`}
+            className={`node ${state} ${type}`}
             title={entity}
             id={id}
             data-wiki-url={wikiUrl}
             onContextMenu={(e) => onContextMenu(e, entity)}
+            onClick={() => onClick(entity)}
         >
             <img 
                 src={imgUrl}
@@ -75,18 +82,35 @@ function Node({ entity, onContextMenu }){
     )
 }
 
-function NodeGroup({ entities, onContextMenu }) {
+
+/**
+ * Renders a group of nodes
+ * 
+ */
+function NodeGroup({ entities, onContextMenu, onClick, nodeStates }) {
     return (
     <div className="node-group">
       {
         entities.map(entity => (
-            <Node key={entity} entity={entity} onContextMenu={onContextMenu}/>
+            <Node
+                key={entity}
+                entity={entity}
+                onContextMenu={onContextMenu}
+                onClick={onClick}
+                state={nodeStates[entity] || "incomplete"}
+            />
         ))
       }
     </div>
   );
 }
 
+
+
+/**
+ * Renders a chart composed of grouped nodes.
+ * Handles context menu logic and node state (complete, skipped, etc.).
+ */
 function Chart(){
     const [menu, setMenu] = useState({
         visible: false,
@@ -94,18 +118,26 @@ function Chart(){
         y: 0,
         entity: null,
     });
-
     function handleNodeContextMenu(e, entity) {
         console.log(entity)
-        console.log(menu)
         e.preventDefault();
         setMenu({
-        visible: true,
-        x: e.pageX,
-        y: e.pageY,
-        entity,
+            visible: true,
+            x: e.pageX,
+            y: e.pageY,
+            entity,
         });
     }
+    
+    // turn nodes green on click
+    const [nodeStates, setNodeStates] = useState({})
+    function handleNodeClick(entity) {
+        setNodeStates(prev => ({
+            ...prev,
+            [entity]: prev[entity] === "complete" ? "incomplete" : "complete"
+        }))
+    }
+
 
     function handleCloseMenu() {
         setMenu({ ...menu, visible: false });
@@ -113,7 +145,7 @@ function Chart(){
 
     // Close context menu when clicking anywhere outside of it
     React.useEffect(() => {
-    function handleClickOutside(e) {
+    function handleClickOutside() {
         setMenu(prev => (prev.visible ? { ...prev, visible: false } : prev));
     }
     document.addEventListener("click", handleClickOutside);
@@ -132,6 +164,8 @@ function Chart(){
                                     key={group}
                                     entities={group}
                                     onContextMenu={handleNodeContextMenu}
+                                    onClick={handleNodeClick}
+                                    nodeStates={nodeStates}
                                 />
                                 {i < nodegroups.length - 1 && (
                                     <div className='arrow'>→</div>
