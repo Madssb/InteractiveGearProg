@@ -1,7 +1,7 @@
 import items from 'data/generated/items.json';
 import sequence from 'data/sequence.json';
-import React from 'react';
-import 'styles/chart.css';
+import React, { useState } from 'react';
+import ContextMenu from './RightClick';
 
 /**
  * Sanitizes a string to create a safe HTML element ID.
@@ -20,8 +20,7 @@ function handleLevels(input) {
   return input;
 }
 
-
-function Node({ entity }){
+function Node({ entity, onContextMenu }){
     // "86 ranged" is invalid key, "ranged" is valid.
     let itemData = items[handleLevels(entity)];
     
@@ -45,6 +44,7 @@ function Node({ entity }){
                 id={sanitizeId(entity)}
                 data-wiki-url={wikiUrl}
                 aria-label={entity}
+                onContextMenu={(e) => onContextMenu(e, entity)}
             >
                 <div className='skill'>
                     <img 
@@ -64,6 +64,7 @@ function Node({ entity }){
             title={entity}
             id={id}
             data-wiki-url={wikiUrl}
+            onContextMenu={(e) => onContextMenu(e, entity)}
         >
             <img 
                 src={imgUrl}
@@ -74,12 +75,12 @@ function Node({ entity }){
     )
 }
 
-function NodeGroup({ entities }) {
+function NodeGroup({ entities, onContextMenu }) {
     return (
     <div className="node-group">
       {
         entities.map(entity => (
-            <Node key={entity} entity={entity}/>
+            <Node key={entity} entity={entity} onContextMenu={onContextMenu}/>
         ))
       }
     </div>
@@ -87,6 +88,38 @@ function NodeGroup({ entities }) {
 }
 
 function Chart(){
+    const [menu, setMenu] = useState({
+        visible: false,
+        x: 0,
+        y: 0,
+        entity: null,
+    });
+
+    function handleNodeContextMenu(e, entity) {
+        console.log(entity)
+        console.log(menu)
+        e.preventDefault();
+        setMenu({
+        visible: true,
+        x: e.pageX,
+        y: e.pageY,
+        entity,
+        });
+    }
+
+    function handleCloseMenu() {
+        setMenu({ ...menu, visible: false });
+    }
+
+    // Close context menu when clicking anywhere outside of it
+    React.useEffect(() => {
+    function handleClickOutside(e) {
+        setMenu(prev => (prev.visible ? { ...prev, visible: false } : prev));
+    }
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+    }, []);
+
     let nodegroups = Object.values(sequence);
     return (
         <>
@@ -95,7 +128,11 @@ function Chart(){
                     nodegroups.map(
                         (group, i) => (
                             <React.Fragment key={i}>
-                               <NodeGroup entities={group} />
+                               <NodeGroup
+                                    key={group}
+                                    entities={group}
+                                    onContextMenu={handleNodeContextMenu}
+                                />
                                 {i < nodegroups.length - 1 && (
                                     <div className='arrow'>→</div>
                                 )}
@@ -104,6 +141,15 @@ function Chart(){
                     )
                 }
             </div>
+            {menu.visible && (
+            <ContextMenu
+                x={menu.x}
+                y={menu.y}
+                title={menu.entity}
+                wikiUrl={items[handleLevels(menu.entity)]?.wikiUrl}
+                onClose={handleCloseMenu}
+            />
+            )}
         </>
     )
 }
