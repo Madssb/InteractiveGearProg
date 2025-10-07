@@ -7,24 +7,24 @@ let itemsData = {};
 let nodegroups = [];
 
 // Resolve paths based on this script's location: .../scripts/render-items.js
-const SCRIPT_BASE = new URL('.', document.currentScript.src);
+// const SCRIPT_BASE = new URL('.', document.currentScript.src);
 
 // data/ sits next to scripts/ at the site root
-const ITEMS_URL    = new URL('../data/generated/items.json',  SCRIPT_BASE);
-const VERSION_URL = new URL('../data/generated/version.json', SCRIPT_BASE);
-const SEQUENCE_URL = new URL('../data/sequence.json',         SCRIPT_BASE);
+// const ITEMS_URL    = new URL('../data/generated/items.json',  SCRIPT_BASE);
+// const VERSION_URL = new URL('../data/generated/version.json', SCRIPT_BASE);
+// const SEQUENCE_URL = new URL('../data/sequence.json',         SCRIPT_BASE);
 
-async function getRemoteCacheVersion() {
-  try {
-    const res = await fetch(VERSION_URL);
-    if (!res.ok) return null;
-    const data = await res.json();
-    // normalize to string for localStorage comparison
-    return String(data?.cacheVersion ?? "");
-  } catch {
-    return null;
-  }
-}
+// async function getRemoteCacheVersion() {
+//   try {
+//     const res = await fetch(VERSION_URL);
+//     if (!res.ok) return null;
+//     const data = await res.json();
+//     // normalize to string for localStorage comparison
+//     return String(data?.cacheVersion ?? "");
+//   } catch {
+//     return null;
+//   }
+// }
 
 /**
  * Sanitizes a string to create a safe HTML element ID.
@@ -36,138 +36,138 @@ function sanitizeId(name) {
 /**
  * Creates a node element representing an item.
  */
-function handle_item(node) {
-    let nodeDiv = document.createElement("div");
-    nodeDiv.classList.add("node");
+// function handle_item(node) {
+//     let nodeDiv = document.createElement("div");
+//     nodeDiv.classList.add("node");
 
-    let itemData = itemsData[node];
-    if (!itemData) {
-        console.warn(`Missing data for item: ${node}`);
-        return null;
-    }
-    let img = document.createElement("img");
-    img.src = itemData.imgUrl; // Ensures correct path
-    img.alt = node;
-    nodeDiv.title = node;
-    nodeDiv.id = sanitizeId(node);
-    nodeDiv.appendChild(img);
-    nodeDiv.dataset.wikiLink = itemData.wikiUrl;
-    return nodeDiv;
-}
+//     let itemData = itemsData[node];
+//     if (!itemData) {
+//         console.warn(`Missing data for item: ${node}`);
+//         return null;
+//     }
+//     let img = document.createElement("img");
+//     img.src = itemData.imgUrl; // Ensures correct path
+//     img.alt = node;
+//     nodeDiv.title = node;
+//     nodeDiv.id = sanitizeId(node);
+//     nodeDiv.appendChild(img);
+//     nodeDiv.dataset.wikiLink = itemData.wikiUrl;
+//     return nodeDiv;
+// }
 
 /**
  * Creates a node element representing a skill milestone.
  */
-function handle_skill(node) {
-    let parts = node.split(" ");
-    let lvlNum = parts[0];
-    let skillName = parts[1];
+// function handle_skill(node) {
+//     let parts = node.split(" ");
+//     let lvlNum = parts[0];
+//     let skillName = parts[1];
     
     
-    let nodeDiv = document.createElement("div");
-    nodeDiv.classList.add("node");
-    let itemData = itemsData[skillName];
-    if (!itemData) {
-        console.warn(`Missing data for item: ${node}`);
-        return null;
-    }
+//     let nodeDiv = document.createElement("div");
+//     nodeDiv.classList.add("node");
+//     let itemData = itemsData[skillName];
+//     if (!itemData) {
+//         console.warn(`Missing data for item: ${node}`);
+//         return null;
+//     }
 
-    let skillDiv = document.createElement("div");
-    skillDiv.classList.add("skill");
+//     let skillDiv = document.createElement("div");
+//     skillDiv.classList.add("skill");
 
-    let img = document.createElement("img");
-    img.src = itemData.imgUrl; // Ensures correct path
+//     let img = document.createElement("img");
+//     img.src = itemData.imgUrl; // Ensures correct path
 
-    let span = document.createElement("span");
-    span.textContent = lvlNum;
+//     let span = document.createElement("span");
+//     span.textContent = lvlNum;
 
-    skillDiv.appendChild(img);
-    skillDiv.appendChild(span);
-    nodeDiv.alt = `Get ${lvlNum} ${skillName}`;
-    nodeDiv.title = `Get ${lvlNum} ${skillName}`;
-    nodeDiv.id = "lvl-" + sanitizeId(node);
-    nodeDiv.appendChild(skillDiv);
-    nodeDiv.dataset.wikiLink = itemData.wikiUrl;
+//     skillDiv.appendChild(img);
+//     skillDiv.appendChild(span);
+//     nodeDiv.alt = `Get ${lvlNum} ${skillName}`;
+//     nodeDiv.title = `Get ${lvlNum} ${skillName}`;
+//     nodeDiv.id = "lvl-" + sanitizeId(node);
+//     nodeDiv.appendChild(skillDiv);
+//     nodeDiv.dataset.wikiLink = itemData.wikiUrl;
 
-    return nodeDiv;
-}
+//     return nodeDiv;
+// }
 
 
 /**
  * Renders the progression chart and caches it in localStorage.
  */
-function renderChart(chartContainer, cacheVersion) {
-    if (!chartContainer) {
-        console.error("No valid chart container provided.");
-        return;
-    }
+// function renderChart(chartContainer, cacheVersion) {
+//     if (!chartContainer) {
+//         console.error("No valid chart container provided.");
+//         return;
+//     }
 
-    chartContainer.innerHTML = "";
+//     chartContainer.innerHTML = "";
 
-    for (let nodegroup of nodegroups) {
-        let nodeGroupDiv = document.createElement("div");
-        nodeGroupDiv.classList.add("node-group");
+//     for (let nodegroup of nodegroups) {
+//         let nodeGroupDiv = document.createElement("div");
+//         nodeGroupDiv.classList.add("node-group");
 
-        for (let node of nodegroup) {
-            let nodeDiv = !isNaN(node.charAt(0)) ? handle_skill(node) : handle_item(node);
-            if (nodeDiv) nodeGroupDiv.appendChild(nodeDiv);
-        }
+//         for (let node of nodegroup) {
+//             let nodeDiv = !isNaN(node.charAt(0)) ? handle_skill(node) : handle_item(node);
+//             if (nodeDiv) nodeGroupDiv.appendChild(nodeDiv);
+//         }
 
-        chartContainer.appendChild(nodeGroupDiv);
+//         chartContainer.appendChild(nodeGroupDiv);
 
-        if (nodegroup !== nodegroups[nodegroups.length - 1]) {
-            let arrowDiv = document.createElement("div");
-            arrowDiv.classList.add("arrow");
-            arrowDiv.textContent = "→";
-            chartContainer.appendChild(arrowDiv);
-        }
-    }
+//         if (nodegroup !== nodegroups[nodegroups.length - 1]) {
+//             let arrowDiv = document.createElement("div");
+//             arrowDiv.classList.add("arrow");
+//             arrowDiv.textContent = "→";
+//             chartContainer.appendChild(arrowDiv);
+//         }
+//     }
 
-    localStorage.setItem("cachedChart", chartContainer.innerHTML);
-    if (cacheVersion != null) localStorage.setItem("cacheVersion", cacheVersion);
-}
+//     localStorage.setItem("cachedChart", chartContainer.innerHTML);
+//     if (cacheVersion != null) localStorage.setItem("cacheVersion", cacheVersion);
+// }
 
 /**
  * Initializes the chart by checking for cached content.
  */
-async function loadChart() {
-    const chartContainer = document.getElementById("chart-container");
-    if (!chartContainer) {
-        console.error("No element with ID 'chart-container' found.");
-        return Promise.reject("Chart container not found");
-    }
+// async function loadChart() {
+//     const chartContainer = document.getElementById("chart-container");
+//     if (!chartContainer) {
+//         console.error("No element with ID 'chart-container' found.");
+//         return Promise.reject("Chart container not found");
+//     }
 
-    const [cachedChart, cachedVersion, remoteVersion] = [
-        localStorage.getItem("cachedChart"),
-        localStorage.getItem("cacheVersion"),
-        await getRemoteCacheVersion(),
-    ];
+//     const [cachedChart, cachedVersion, remoteVersion] = [
+//         localStorage.getItem("cachedChart"),
+//         localStorage.getItem("cacheVersion"),
+//         await getRemoteCacheVersion(),
+//     ];
 
-    try {
-        if (cachedChart && cachedVersion === remoteVersion) {
-            chartContainer.innerHTML = cachedChart;
-            console.log("Cached chart loaded successfully.");
-            return;
-        } else {
-            throw new Error("Cache outdated or missing"); // Forces a fallback
-        }
-    } catch (error) {
-        console.warn("Cache load failed:", error);
-        console.log("Fetching fresh data...");
+//     try {
+//         if (cachedChart && cachedVersion === remoteVersion) {
+//             chartContainer.innerHTML = cachedChart;
+//             console.log("Cached chart loaded successfully.");
+//             return;
+//         } else {
+//             throw new Error("Cache outdated or missing"); // Forces a fallback
+//         }
+//     } catch (error) {
+//         console.warn("Cache load failed:", error);
+//         console.log("Fetching fresh data...");
 
-        try {
-            const [items, sequence] = await Promise.all([
-                fetch(ITEMS_URL).then(res => res.json()),
-                fetch(SEQUENCE_URL).then(res => res.json())
-            ]);
-            itemsData = items;
-            nodegroups = Object.values(sequence);
-            renderChart(chartContainer, remoteVersion ?? "");
-        } catch (error) {
-            console.error("Error loading JSON:", error);
-        }
-    }
-}
+//         try {
+//             const [items, sequence] = await Promise.all([
+//                 fetch(ITEMS_URL).then(res => res.json()),
+//                 fetch(SEQUENCE_URL).then(res => res.json())
+//             ]);
+//             itemsData = items;
+//             nodegroups = Object.values(sequence);
+//             // renderChart(chartContainer, remoteVersion ?? "");
+//         } catch (error) {
+//             console.error("Error loading JSON:", error);
+//         }
+//     }
+// }
 
 /**
  * Saves and restores node states in localStorage.
@@ -188,7 +188,7 @@ function initializeNodeStates() {
     let chartContainer = document.getElementById("chart-container");
     if (!chartContainer) return;
 
-    let savedStates = JSON.parse(localStorage.getItem("sharedNodeStates")) || {}; // Load from shared storage
+    // let savedStates = JSON.parse(localStorage.getItem("sharedNodeStates")) || {}; // Load from shared storage
 
     chartContainer.addEventListener("click", (event) => {
         let node = event.target.closest(".node");
@@ -215,19 +215,19 @@ function initializeNodeStates() {
 /**
  * Prevents dragging images within the chart container.
  */
-function preventDragging() {
-    document.querySelector("#chart-container").addEventListener("dragstart", (event) => {
-        if (event.target.tagName === "IMG") {
-            event.preventDefault();
-        }
-    });
-}
+// function preventDragging() {
+//     document.querySelector("#chart-container").addEventListener("dragstart", (event) => {
+//         if (event.target.tagName === "IMG") {
+//             event.preventDefault();
+//         }
+//     });
+// }
 
 /**
  * Initializes the application.
  */
 async function init() {
-    await loadChart();
+    // await loadChart();
     initializeNodeStates();
     preventDragging();
 }
