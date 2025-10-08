@@ -134,13 +134,16 @@ function Chart(){
         entity: null,
     });
     function handleNodeContextMenu(e, entity) {
-        e.preventDefault();
-        setMenu({
-            visible: true,
-            x: e.pageX,
-            y: e.pageY,
-            entity,
-        });
+    e.preventDefault();
+    const touch = e.touches?.[0] || e.changedTouches?.[0];
+    const x = touch?.pageX ?? e.pageX;
+    const y = touch?.pageY ?? e.pageY;
+    setMenu({
+        visible: true,
+        x,
+        y,
+        entity,
+    });
     }
 
     // long press behaves like right click
