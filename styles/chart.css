@@ -124,20 +124,27 @@
     display: grid;
     row-gap: 40px;
   }
+
   .node-group {
-    display: grid;
-    position: relative;
-    grid-template-columns: repeat(8, var(--node-size)); /* max 8 per row */
-    grid-auto-rows: var(--node-size);
-    justify-content: center;
-    align-items: center;
-    width: 100vw;
-    gap: var(--gap-sm);
+    display: flex;
     flex-wrap: wrap;
+    justify-content: center; /* centers horizontally */
+    align-items: center;
+    position: relative;
+    gap: var(--gap-sm);
+    width: 100vw;
+    max-width: 100%;
   }
+
+  .node-group > .node {
+    flex: 0 0 var(--node-size);
+    height: var(--node-size);
+  }
+
   .chart > .arrow {
     display: none;
   }
+
   .node-group:not(:last-child)::after {
     display: block;
     position: absolute;
@@ -146,8 +153,5 @@
     text-align: center;
     font-size: 25px;
     content: "↓";
-  }
-  .node-group > .node:nth-child(8n + 1) {
-    grid-column-start: 1;
   }
 }
