@@ -121,19 +121,18 @@
 /* Mobile: stack groups vertically; show down arrow between them */
 @media (max-width: 600px) {
   .chart {
-    display: grid;
-    row-gap: 40px;
-  }
-
-  .node-group {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center; /* centers horizontally */
+    flex-direction: column;
     align-items: center;
+    row-gap: 14px; /* between groups */
+  }
+  .node-group:not(:has(.node:nth-child(9))) {
+    display: grid;
     position: relative;
-    gap: var(--gap-sm);
+    grid-template-rows: var(--node-size);
+    justify-content: center;
+    align-items: center;
     width: 100vw;
-    max-width: 100%;
   }
 
   .node-group > .node {
@@ -142,16 +141,8 @@
   }
 
   .chart > .arrow {
-    display: none;
-  }
-
-  .node-group:not(:last-child)::after {
-    display: block;
-    position: absolute;
-    top: calc(var(--node-size) + 5px);
-    width: 100vw;
+    margin: 6px 0;
     text-align: center;
-    font-size: 25px;
-    content: "↓";
+    transform: rotate(90deg);
   }
 }
