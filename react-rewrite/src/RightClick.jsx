@@ -1,5 +1,5 @@
 
-function ContextMenu({ title, wikiUrl, onClose, onSkip, x, y}){
+function ContextMenu({ entity, wikiUrl, onClose, onSkip, x, y}){
     return (
         <>
         <div
@@ -11,7 +11,7 @@ function ContextMenu({ title, wikiUrl, onClose, onSkip, x, y}){
                 display: "block"
             }}
         >
-            <div id='menu-title'>{title}</div>
+            <div id='menu-title'>{entity}</div>
             <div id='button-container'>
                 <button
                     id='wiki-button' 
@@ -28,7 +28,7 @@ function ContextMenu({ title, wikiUrl, onClose, onSkip, x, y}){
                     id='skip-button'
                     className='menu-button'
                     onClick={() => {
-                        onSkip?.();
+                        onSkip(entity);
                         onClose();
                     }}
                 >

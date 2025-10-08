@@ -108,6 +108,8 @@ function NodeGroup({ entities, onContextMenu, onClick, nodeStates }) {
 }
 
 
+// long touch may not be implemented yet
+// right click skip alternative is not implemented yet
 
 /**
  * Renders a chart composed of grouped nodes.
@@ -141,6 +143,13 @@ function Chart(){
             [entity]: prev[entity] === "complete" ? "incomplete" : "complete"
         }))
     }
+    function handleSkipClick(entity) {
+        setNodeStates(prev => ({
+            ...prev,
+            [entity]: prev[entity] === "skipped" ? "incomplete" : "skipped"
+        }))
+    }
+
 
     // menu close
     function handleCloseMenu() {
@@ -210,6 +219,7 @@ function Chart(){
                 title={menu.entity}
                 wikiUrl={items[handleLevels(menu.entity)]?.wikiUrl}
                 onClose={handleCloseMenu}
+                onSkip={handleSkipClick}
             />
             )}
         </>

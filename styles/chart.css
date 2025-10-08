@@ -5,14 +5,14 @@
   --gap-md: 10px;
   --border-width: 2px;
 
-  /* State tokens (override in theme.css) */
+  /* State tokens */
   --state-incomplete-bg: transparent;
-  --state-complete-bg: #0a0; /* override */
-  --state-skipped-bg: #0a0; /* override */
-  --state-skipped-triangle: yellow; /* override */
+  --state-complete-bg: #0a0; /* */
+  --state-skipped-bg: rgb(130, 130, 130);
+  --state-skipped-triangle: yellow;
 
   /* Neutral border */
-  --node-border: #aaa; /* override */
+  --node-border: #aaa;
 }
 
 /* Container holding all groups */
@@ -91,11 +91,11 @@
 .complete {
   background-color: var(--state-complete-bg);
 }
-.state-2 {
+.skipped {
   background-color: var(--state-skipped-bg);
   position: relative; /* for triangle */
 }
-.state-2::after {
+.skipped::after {
   content: "";
   position: absolute;
   top: 0;
@@ -144,4 +144,8 @@
     font-size: 25px;
     content: "↓";
   }
+}
+
+.node {
+  overflow: visible;
 }

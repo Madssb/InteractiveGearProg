@@ -1,45 +1,45 @@
 document.addEventListener("DOMContentLoaded", () => {
     // Create menu container
-    const contextMenu = document.createElement("div");
-    contextMenu.id = "context-menu";
+    // const contextMenu = document.createElement("div");
+    // contextMenu.id = "context-menu";
 
     // Title element
-    const menuTitle = document.createElement("div");
-    menuTitle.id = "menu-title";
-    contextMenu.appendChild(menuTitle);
+    // const menuTitle = document.createElement("div");
+    // menuTitle.id = "menu-title";
+    // contextMenu.appendChild(menuTitle);
 
     // Create button container
-    const buttonContainer = document.createElement("div");
-    buttonContainer.id = "button-container";
+    // const buttonContainer = document.createElement("div");
+    // buttonContainer.id = "button-container";
 
-    let wikiButton = initializeWikiButton(buttonContainer);
-    let skipButton = initializeSkipButton(buttonContainer);
-    let cancelButton = initializeCancelButton(buttonContainer);
+    // let wikiButton = initializeWikiButton(buttonContainer);
+    // let skipButton = initializeSkipButton(buttonContainer);
+    // let cancelButton = initializeCancelButton(buttonContainer);
 
     // Append to menu and body
-    contextMenu.appendChild(buttonContainer);
-    document.body.appendChild(contextMenu);
+    // contextMenu.appendChild(buttonContainer);
+    // document.body.appendChild(contextMenu);
 
     // === LONG TOUCH/RIGHT CLICK EVENT ===
     const showContextMenu = (event) => {
-        let node = event.target.closest(".node");
-        if (!node) return;
-        event.preventDefault(); // Prevent default browser menu
+        // let node = event.target.closest(".node");
+        // if (!node) return;
+        // event.preventDefault();
 
         // Update title
-        menuTitle.textContent = node.title || "Unknown Item";
+        // menuTitle.textContent = node.title || "Unknown Item";
 
         // Configure Wiki Button
-        let wikiLink = node.dataset.wikiLink;
-        if (wikiLink) {
-            wikiButton.style.display = "block";
-            wikiButton.onclick = () => {
-                window.open(wikiLink, "_blank");
-                contextMenu.style.display = "none";
-            };
-        } else {
-            wikiButton.style.display = "none";
-        }
+        // let wikiLink = node.dataset.wikiLink;
+        // if (wikiLink) {
+        //     wikiButton.style.display = "block";
+        //     wikiButton.onclick = () => {
+        //         window.open(wikiLink, "_blank");
+        //         contextMenu.style.display = "none";
+        //     };
+        // } else {
+        //     wikiButton.style.display = "none";
+        // }
         
         // Configure Skip Button
         skipButton.onclick = () => {
@@ -91,57 +91,57 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-function initializeWikiButton(buttonContainer) {
-    const wikiButton = document.createElement("button");
-    wikiButton.id = "wiki-button";
-    wikiButton.classList.add("menu-button");
+// function initializeWikiButton(buttonContainer) {
+//     const wikiButton = document.createElement("button");
+//     wikiButton.id = "wiki-button";
+//     wikiButton.classList.add("menu-button");
 
-    const whiteText = document.createElement("span");
-    whiteText.classList.add("left-text");
-    whiteText.textContent = "Go to ";
+//     const whiteText = document.createElement("span");
+//     whiteText.classList.add("left-text");
+//     whiteText.textContent = "Go to ";
 
-    const orangeText = document.createElement("span");
-    orangeText.classList.add("right-text");
-    orangeText.textContent = "Wiki";
+//     const orangeText = document.createElement("span");
+//     orangeText.classList.add("right-text");
+//     orangeText.textContent = "Wiki";
 
-    wikiButton.appendChild(whiteText);
-    wikiButton.appendChild(orangeText);
-    buttonContainer.appendChild(wikiButton);
-    return wikiButton;
-}
+//     wikiButton.appendChild(whiteText);
+//     wikiButton.appendChild(orangeText);
+//     buttonContainer.appendChild(wikiButton);
+//     return wikiButton;
+// }
 
-function initializeSkipButton(buttonContainer) {
-    const skipButton = document.createElement("button");
-    skipButton.id = "skip-button";
-    skipButton.classList.add("menu-button");
+// function initializeSkipButton(buttonContainer) {
+//     const skipButton = document.createElement("button");
+//     skipButton.id = "skip-button";
+//     skipButton.classList.add("menu-button");
 
-    const whiteText = document.createElement("span");
-    whiteText.classList.add("left-text");
-    whiteText.textContent = "Mark as ";
+//     const whiteText = document.createElement("span");
+//     whiteText.classList.add("left-text");
+//     whiteText.textContent = "Mark as ";
 
-    const orangeText = document.createElement("span");
-    orangeText.classList.add("right-text");
-    orangeText.textContent = "Skipped";
+//     const orangeText = document.createElement("span");
+//     orangeText.classList.add("right-text");
+//     orangeText.textContent = "Skipped";
 
-    skipButton.appendChild(whiteText);
-    skipButton.appendChild(orangeText);
-    buttonContainer.appendChild(skipButton);
-    return skipButton;
-}
+//     skipButton.appendChild(whiteText);
+//     skipButton.appendChild(orangeText);
+//     buttonContainer.appendChild(skipButton);
+//     return skipButton;
+// }
 
-function initializeCancelButton(buttonContainer) {
-    const cancelButton = document.createElement("button");
-    cancelButton.id = "cancel-button";
-    cancelButton.classList.add("menu-button");
+// function initializeCancelButton(buttonContainer) {
+//     const cancelButton = document.createElement("button");
+//     cancelButton.id = "cancel-button";
+//     cancelButton.classList.add("menu-button");
 
-    const cancelText = document.createElement("span");
-    cancelText.classList.add("left-text");
-    cancelText.textContent = "Cancel";
+//     const cancelText = document.createElement("span");
+//     cancelText.classList.add("left-text");
+//     cancelText.textContent = "Cancel";
 
-    cancelButton.appendChild(cancelText);
-    buttonContainer.appendChild(cancelButton);
-    return cancelButton;
-}
+//     cancelButton.appendChild(cancelText);
+//     buttonContainer.appendChild(cancelButton);
+//     return cancelButton;
+// }
 
 
 function renderContextMenu(contextMenu, event) {
