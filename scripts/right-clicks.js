@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
         renderContextMenu(contextMenu, event);
     }
     // Right click event
-    document.addEventListener("contextmenu", showContextMenu);
+    // document.addEventListener("contextmenu", showContextMenu);
 
     const touchduration = 600; //length of time we want the user to touch before we do something
     const onlongtouch = (e) => {
@@ -144,39 +144,39 @@ document.addEventListener("DOMContentLoaded", () => {
 // }
 
 
-function renderContextMenu(contextMenu, event) {
-    // Ensure menu is temporarily visible to get accurate dimensions
-    contextMenu.style.display = "block";
-    contextMenu.style.visibility = "hidden"; // Prevents flickering
+// function renderContextMenu(contextMenu, event) {
+//     // Ensure menu is temporarily visible to get accurate dimensions
+//     contextMenu.style.display = "block";
+//     contextMenu.style.visibility = "hidden"; // Prevents flickering
 
-    const menuWidth = contextMenu.offsetWidth;
-    const menuHeight = contextMenu.offsetHeight;
-    const maxX = document.documentElement.clientWidth; // Use clientWidth for accurate screen width without scrollbars
-    const maxY = window.innerHeight + window.scrollY; // User height + how far we scrolled down to figure out the bottom edge
+//     const menuWidth = contextMenu.offsetWidth;
+//     const menuHeight = contextMenu.offsetHeight;
+//     const maxX = document.documentElement.clientWidth; // Use clientWidth for accurate screen width without scrollbars
+//     const maxY = window.innerHeight + window.scrollY; // User height + how far we scrolled down to figure out the bottom edge
 
-    let posX = event.pageX - menuWidth / 2; // Center menu horizontally at cursor
-    let posY = event.pageY; // Keep top edge at cursor position
+//     let posX = event.pageX - menuWidth / 2; // Center menu horizontally at cursor
+//     let posY = event.pageY; // Keep top edge at cursor position
 
-    // Right edge overflow: Shift left if menu overflows the screen
-    if (posX + menuWidth > maxX) {
-        posX = maxX - menuWidth; // Stick to right edge
-    }
-    // Left edge overflow: Shift right if menu goes off-screen
-    if (posX < 0) {
-        posX = 0;
-    }
-    // Bottom edge overflow: Move menu upwards if needed
-    if (posY + menuHeight > maxY) {
-        posY = maxY - menuHeight;
-    }
-    // Top edge overflow: Ensure the menu is always visible
-    if (posY < window.scrollY) {
-        posY = window.scrollY;
-    }
+//     // Right edge overflow: Shift left if menu overflows the screen
+//     if (posX + menuWidth > maxX) {
+//         posX = maxX - menuWidth; // Stick to right edge
+//     }
+//     // Left edge overflow: Shift right if menu goes off-screen
+//     if (posX < 0) {
+//         posX = 0;
+//     }
+//     // Bottom edge overflow: Move menu upwards if needed
+//     if (posY + menuHeight > maxY) {
+//         posY = maxY - menuHeight;
+//     }
+//     // Top edge overflow: Ensure the menu is always visible
+//     if (posY < window.scrollY) {
+//         posY = window.scrollY;
+//     }
 
-    // Apply computed position
-    contextMenu.style.top = `${posY}px`;
-    contextMenu.style.left = `${posX}px`;
-    contextMenu.style.visibility = "visible"; // Now show menu properly
-}
+//     // Apply computed position
+//     contextMenu.style.top = `${posY}px`;
+//     contextMenu.style.left = `${posX}px`;
+//     contextMenu.style.visibility = "visible"; // Now show menu properly
+// }
 

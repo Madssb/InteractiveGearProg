@@ -2,7 +2,6 @@ import items from 'data/generated/items.json';
 import sequence from 'data/sequence.json';
 import React, { useState } from 'react';
 import ContextMenu from './RightClick';
-
 /**
  * Sanitizes a string to create a safe HTML element ID.
  */
@@ -25,7 +24,7 @@ function handleLevels(input) {
  * Renders a node with entity, behavior dependent on if type is skill or non-skill.
  * 
  */
-function Node({ entity, onContextMenu, onClick, state }){
+function Node({ entity, onContextMenu, onTouchStart, onTouchEnd, onClick, state }){
     // "86 ranged" is invalid key, "ranged" is valid.
     let itemData = items[handleLevels(entity)];
     
@@ -50,6 +49,8 @@ function Node({ entity, onContextMenu, onClick, state }){
                 data-wiki-url={wikiUrl}
                 aria-label={entity}
                 onContextMenu={(e) => onContextMenu(e, entity)}
+                onTouchStart={(e) => onTouchStart(e, entity)}
+                onTouchEnd={onTouchEnd}
                 onClick={() => onClick(entity)}
             >
                 <div className='skill'>
@@ -72,6 +73,8 @@ function Node({ entity, onContextMenu, onClick, state }){
             id={id}
             data-wiki-url={wikiUrl}
             onContextMenu={(e) => onContextMenu(e, entity)}
+            onTouchStart={(e) => onTouchStart(e, entity)}
+            onTouchEnd={onTouchEnd}
             onClick={() => onClick(entity)}
         >
             <img 
@@ -94,7 +97,7 @@ function coordinatePicker(x,y){
  * Renders a group of nodes
  * 
  */
-function NodeGroup({ entities, onContextMenu, onClick, nodeStates }) {
+function NodeGroup({ entities, onContextMenu, onTouchStart, onTouchEnd, onClick, nodeStates }) {
     return (
     <div className="node-group">
       {
@@ -103,6 +106,8 @@ function NodeGroup({ entities, onContextMenu, onClick, nodeStates }) {
                 key={entity}
                 entity={entity}
                 onContextMenu={onContextMenu}
+                onTouchStart={onTouchStart}
+                onTouchEnd={onTouchEnd}
                 onClick={onClick}
                 state={nodeStates[entity] || "incomplete"}
             />
@@ -114,7 +119,6 @@ function NodeGroup({ entities, onContextMenu, onClick, nodeStates }) {
 
 
 // long touch may not be implemented yet
-// right click skip alternative is not implemented yet
 
 /**
  * Renders a chart composed of grouped nodes.
@@ -130,7 +134,6 @@ function Chart(){
         entity: null,
     });
     function handleNodeContextMenu(e, entity) {
-        console.log(entity)
         e.preventDefault();
         setMenu({
             visible: true,
@@ -138,6 +141,20 @@ function Chart(){
             y: e.pageY,
             entity,
         });
+    }
+
+    // long press behaves like right click
+    function handleNodeTouchStart(e, entity) {
+    e.persist?.(); // keep event for later
+    const timeoutId = setTimeout(() => {
+        handleNodeContextMenu(e, entity); // trigger context menu
+    }, 600); // long-press threshold
+    e.target.dataset.longPressTimeout = timeoutId;
+    }
+
+    function handleNodeTouchEnd(e) {
+    const timeoutId = e.target.dataset.longPressTimeout;
+    if (timeoutId) clearTimeout(timeoutId);
     }
 
     // turn nodes green on click
@@ -154,6 +171,7 @@ function Chart(){
             [entity]: prev[entity] === "skipped" ? "incomplete" : "skipped"
         }))
     }
+
 
 
     // menu close
@@ -206,6 +224,8 @@ function Chart(){
                                     key={group}
                                     entities={group}
                                     onContextMenu={handleNodeContextMenu}
+                                    onTouchStart={handleNodeTouchStart}
+                                    onTouchEnd={handleNodeTouchEnd}
                                     onClick={handleNodeClick}
                                     nodeStates={nodeStates}
                                 />
