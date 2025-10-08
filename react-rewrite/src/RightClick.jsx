@@ -1,13 +1,36 @@
 
+import { useLayoutEffect, useRef, useState } from 'react';
+
 function ContextMenu({ entity, wikiUrl, onClose, onSkip, x, y}){
+    // avoid menu screen clipping
+    const ref = useRef(null);
+    const [pos, setPos] = useState({ top: y, left: x });
+    useLayoutEffect(() => {
+        const el = ref.current;
+        if (!el) return;
+        const w = el.offsetWidth;
+        const h = el.offsetHeight;
+        const maxX = document.documentElement.clientWidth;
+        const maxY = window.innerHeight + window.scrollY;
+
+        let posX = x - w / 2;
+        let posY = y;
+        if (posX + w > maxX) posX = maxX - w;
+        if (posX < 0) posX = 0;
+        if (posY + h > maxY) posY = maxY - h;
+        if (posY < window.scrollY) posY = window.scrollY;
+
+        setPos({ top: posY, left: posX });
+    }, [x, y]);
     return (
         <>
         <div
+            ref={ref}
             id='context-menu'
             style={{
                 position:"absolute",
-                top: `${y}px`,
-                left: `${x}px`,
+                top: `${pos.top}px`,
+                left: `${pos.left}px`,
                 display: "block"
             }}
         >

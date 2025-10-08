@@ -84,6 +84,11 @@ function Node({ entity, onContextMenu, onClick, state }){
     )
 }
 
+function coordinatePicker(x,y){
+    const maxX = document.documentElement.clientWidth;
+    const maxY = window.innerHeight + window.scrollY;
+}
+
 
 /**
  * Renders a group of nodes
@@ -216,7 +221,7 @@ function Chart(){
             <ContextMenu
                 x={menu.x}
                 y={menu.y}
-                title={menu.entity}
+                entity={menu.entity}
                 wikiUrl={items[handleLevels(menu.entity)]?.wikiUrl}
                 onClose={handleCloseMenu}
                 onSkip={handleSkipClick}
