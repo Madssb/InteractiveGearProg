@@ -127,10 +127,12 @@
   .node-group {
     display: grid;
     position: relative;
-    grid-template-rows: var(--node-size);
+    grid-template-columns: repeat(auto-fill, minmax(var(--node-size), 1fr));
+    grid-template-rows: auto;
     justify-content: center;
     align-items: center;
     width: 100vw;
+    gap: var(--gap-sm);
   }
   .chart > .arrow {
     display: none;
@@ -144,8 +146,7 @@
     font-size: 25px;
     content: "↓";
   }
-}
-
-.node {
-  overflow: visible;
+  .node-group > .node:nth-child(8n + 1) {
+    grid-column-start: 1;
+  }
 }
