@@ -17,7 +17,8 @@ export default defineConfig({
       data: path.resolve(__dirname, '../data'),
       styles: path.resolve(__dirname, '../styles'),
       scripts: path.resolve(__dirname, '../scripts'),
-      pages: path.resolve(__dirname, '../pages')
+      pages: path.resolve(__dirname, '../src/pages'),
+      components: path.resolve(__dirname, '../src/components')
     }
   }
 })
