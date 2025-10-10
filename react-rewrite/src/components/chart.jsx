@@ -1,7 +1,7 @@
 import items from 'data/generated/items.json';
 import sequence from 'data/sequence.json';
 import React, { useState } from 'react';
-import ContextMenu from './RightClick';
+import ContextMenu from './ContextMenu';
 /**
  * Sanitizes a string to create a safe HTML element ID.
  */
@@ -86,12 +86,6 @@ function Node({ entity, onContextMenu, onTouchStart, onTouchEnd, onClick, state 
         </>
     )
 }
-
-function coordinatePicker(x,y){
-    const maxX = document.documentElement.clientWidth;
-    const maxY = window.innerHeight + window.scrollY;
-}
-
 
 /**
  * Renders a group of nodes
