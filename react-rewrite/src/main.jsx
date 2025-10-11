@@ -2,10 +2,10 @@ import { BrowserRouter, Route, Routes } from 'react-router';
 import 'styles/chart.css';
 import 'styles/right-click.css';
 import 'styles/theme.css';
-import ChangelogPage from './pages/ChangelogPage';
-import ChartPage from './pages/ChartPage';
-import FaqPage from './pages/FaqPage';
-import PrivacyPage from '/.pages/PrivacyPage';
+import ChangelogPage from './pages/ChangelogPage.jsx';
+import { ChartPage, ChartPageBareBones } from './pages/ChartPage.jsx';
+import FaqPage from './pages/FaqPage.jsx';
+import PrivacyPage from './pages/PrivacyPage.jsx';
 
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -18,6 +18,7 @@ function App() {
         <Route path="/changelog" element={<ChangelogPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/faq" element={<FaqPage />} />
+        <Route path="/barebones" element={<ChartPageBareBones />} />
       </Routes>
     </BrowserRouter>
   );
