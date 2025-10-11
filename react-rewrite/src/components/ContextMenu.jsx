@@ -1,7 +1,7 @@
 
 import { useLayoutEffect, useRef, useState } from 'react';
 
-function ContextMenu({ entity, wikiUrl, onClose, onSkip, x, y}){
+function ContextMenu({ entity, wikiUrl, onClose, onSkip, onHide, x, y}){
     // avoid menu screen clipping
     const ref = useRef(null);
     const [pos, setPos] = useState({ top: y, left: x });
@@ -57,6 +57,16 @@ function ContextMenu({ entity, wikiUrl, onClose, onSkip, x, y}){
                 >
                     <span className='left-text'>Mark as </span>
                     <span className='right-text'>Skipped</span>
+                </button>
+                <button
+                    id='hide-button'
+                    className='menu-button'
+                    onClick={() => {
+                        onHide(entity);
+                        onClose;
+                    }}
+                >
+                    <span className='left-text'>Hide</span>
                 </button>
                 <button
                     id='cancel-button'
