@@ -1,6 +1,7 @@
 function FaqPage(){
     return (
         <>
+        <p>peepee</p>
         </>
     )
 }
