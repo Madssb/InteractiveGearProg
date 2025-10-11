@@ -146,3 +146,18 @@
     transform: rotate(90deg);
   }
 }
+
+/* hiding nodes */
+.node.invisible {
+  display: none; /* or visibility: hidden; choose based on layout needs */
+}
+
+.node-group.all-hidden + .arrow {
+  display: none;
+}
+
+#show-button {
+  display: block; /* makes margin auto work */
+  margin: 1em auto; /* top/bottom spacing optional */
+  background-color: gray;
+}
