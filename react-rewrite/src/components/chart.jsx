@@ -1,7 +1,7 @@
 import items from 'data/generated/items.json';
-import sequence from 'data/sequence.json';
 import React, { useState } from 'react';
 import ContextMenu from './ContextMenu';
+import ShowButton from './ShowButton';
 /**
  * Sanitizes a string to create a safe HTML element ID.
  */
@@ -24,7 +24,7 @@ function handleLevels(input) {
  * Renders a node with entity, behavior dependent on if type is skill or non-skill.
  * 
  */
-function Node({ entity, onContextMenu, onTouchStart, onTouchEnd, onClick, state }){
+function Node({ entity, onContextMenu, onTouchStart, onTouchEnd, onClick, nodeState, nodeVisibility }){
     // "86 ranged" is invalid key, "ranged" is valid.
     let itemData = items[handleLevels(entity)];
     
@@ -43,7 +43,7 @@ function Node({ entity, onContextMenu, onTouchStart, onTouchEnd, onClick, state 
         return (
             <>
             <div
-                className={`node ${state} ${type}`}
+                className={`node ${nodeState} ${nodeVisibility} ${type}`}
                 title={entity}
                 id={sanitizeId(entity)}
                 data-wiki-url={wikiUrl}
@@ -68,7 +68,7 @@ function Node({ entity, onContextMenu, onTouchStart, onTouchEnd, onClick, state 
     return (
         <>
         <div
-            className={`node ${state} ${type}`}
+            className={`node ${nodeState} ${nodeVisibility} ${type}`}
             title={entity}
             id={id}
             data-wiki-url={wikiUrl}
@@ -91,9 +91,10 @@ function Node({ entity, onContextMenu, onTouchStart, onTouchEnd, onClick, state 
  * Renders a group of nodes
  * 
  */
-function NodeGroup({ entities, onContextMenu, onTouchStart, onTouchEnd, onClick, nodeStates }) {
+function NodeGroup({ entities, onContextMenu, onTouchStart, onTouchEnd, onClick, nodeStates, nodeVisibilities }) {
+    const allHidden = entities.every(e => nodeVisibilities[e] === "invisible");
     return (
-    <div className="node-group">
+    <div className={`node-group ${allHidden ? "all-hidden" : ""}`}>
       {
         entities.map(entity => (
             <Node
@@ -103,7 +104,9 @@ function NodeGroup({ entities, onContextMenu, onTouchStart, onTouchEnd, onClick,
                 onTouchStart={onTouchStart}
                 onTouchEnd={onTouchEnd}
                 onClick={onClick}
-                state={nodeStates[entity] || "incomplete"}
+                nodeState={nodeStates[entity] || "incomplete"}
+                nodeVisibility={nodeVisibilities[entity] || "visible"}
+
             />
         ))
       }
@@ -118,8 +121,8 @@ function NodeGroup({ entities, onContextMenu, onTouchStart, onTouchEnd, onClick,
  * Renders a chart composed of grouped nodes.
  * Handles context menu logic and node state (complete, skipped, etc.).
  */
-function Chart(){
-
+function Chart( {nodeGroups} ){
+    console.log("initialize chart")
     // context menu
     const [menu, setMenu] = useState({
         visible: false,
@@ -154,6 +157,22 @@ function Chart(){
     if (timeoutId) clearTimeout(timeoutId);
     }
 
+    // contextmenu invisibility. 
+    const [nodeVisibilities, setNodeVisibilities] = useState({})
+    
+    // hides nodes on hide button click in contextmenu
+    function handleHideClick(entity){
+        setNodeVisibilities(prev => ({
+            ...prev,
+            [entity]: "invisible"
+        }))
+    }
+
+    function handleShowClick(){
+        setNodeVisibilities({})
+    }
+
+
     // turn nodes green on click
     const [nodeStates, setNodeStates] = useState({})
     function handleNodeClick(entity) {
@@ -162,6 +181,7 @@ function Chart(){
             [entity]: prev[entity] === "complete" ? "incomplete" : "complete"
         }))
     }
+
     function handleSkipClick(entity) {
         setNodeStates(prev => ({
             ...prev,
@@ -192,10 +212,10 @@ function Chart(){
     try {
         const saved = localStorage.getItem("nodeStates");
         if (saved) {
-        const parsed = JSON.parse(saved);
-        if (typeof parsed === "object" && parsed !== null) {
-            setNodeStates(parsed);
-        }
+            const parsed = JSON.parse(saved);
+            if (typeof parsed === "object" && parsed !== null) {
+                setNodeStates(parsed);
+            }
         }
     } catch (err) {
         console.error("Failed to parse saved nodeStates", err);
@@ -204,29 +224,53 @@ function Chart(){
 
     // Save every time nodeStates changes
     React.useEffect(() => {
-    if (Object.keys(nodeStates).length > 0) {
-        localStorage.setItem("nodeStates", JSON.stringify(nodeStates));
-    }
+        if (Object.keys(nodeStates).length > 0) {
+            localStorage.setItem("nodeStates", JSON.stringify(nodeStates));
+        }
     }, [nodeStates]);
 
-    let nodegroups = Object.values(sequence);
+    // Load saved nodeVisibilities on mount
+    React.useEffect(() => {
+        try {
+            const savedVisibilities = localStorage.getItem("nodeVisibilities");
+            if (savedVisibilities) {
+                const parsedVisibilities = JSON.parse(savedVisibilities);
+                if (typeof parsedVisibilities === "object" && parsedVisibilities !== null) {
+                    setNodeVisibilities(parsedVisibilities)
+                }
+            }
+        } catch (err) {
+            console.error("Failed to parse saved nodeVisibilities")
+        }
+    }, [])
+
+    // save every time nodeVisibilities changes
+    React.useEffect(() => {
+        if (Object.keys(nodeVisibilities).length > 0) {
+            localStorage.setItem("nodeVisibilities", JSON.stringify(nodeVisibilities));
+        }
+    }, [nodeVisibilities]);
+
+
+    // let nodegroups = Object.values(sequence);
     return (
         <>
             <div className="chart">
                 {
-                    nodegroups.map(
-                        (group, i) => (
+                    nodeGroups.map(
+                        (nodeGroup, i) => (
                             <React.Fragment key={i}>
                                <NodeGroup
-                                    key={group}
-                                    entities={group}
+                                    key={nodeGroup}
+                                    entities={nodeGroup}
                                     onContextMenu={handleNodeContextMenu}
                                     onTouchStart={handleNodeTouchStart}
                                     onTouchEnd={handleNodeTouchEnd}
                                     onClick={handleNodeClick}
                                     nodeStates={nodeStates}
+                                    nodeVisibilities={nodeVisibilities}
                                 />
-                                {i < nodegroups.length - 1 && (
+                                {i < nodeGroups.length - 1 && (
                                     <div className='arrow'>→</div>
                                 )}
                             </React.Fragment>
@@ -234,6 +278,10 @@ function Chart(){
                     )
                 }
             </div>
+            <ShowButton
+                onShow={handleShowClick}
+                nodeVisibilities={nodeVisibilities}
+            />
             {menu.visible && (
             <ContextMenu
                 x={menu.x}
@@ -242,6 +290,7 @@ function Chart(){
                 wikiUrl={items[handleLevels(menu.entity)]?.wikiUrl}
                 onClose={handleCloseMenu}
                 onSkip={handleSkipClick}
+                onHide={handleHideClick}
             />
             )}
         </>
