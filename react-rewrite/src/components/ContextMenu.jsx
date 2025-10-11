@@ -1,5 +1,6 @@
 
 import { useLayoutEffect, useRef, useState } from 'react';
+import 'styles/context-menu.css';
 
 function ContextMenu({ entity, wikiUrl, onClose, onSkip, onHide, x, y}){
     // avoid menu screen clipping

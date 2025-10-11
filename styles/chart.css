@@ -7,12 +7,12 @@
 
   /* State tokens */
   --state-incomplete-bg: transparent;
-  --state-complete-bg: #0a0; /* */
-  --state-skipped-bg: rgb(130, 130, 130);
+  --state-complete-bg: #0e8f2b;
+  --state-skipped-bg: var(--state-complete-bg);
   --state-skipped-triangle: yellow;
 
   /* Neutral border */
-  --node-border: #aaa;
+  --node-border: hsl(0, 0%, 67%);
 }
 
 /* Container holding all groups */
