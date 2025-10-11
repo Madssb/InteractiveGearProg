@@ -1,5 +1,7 @@
 import changelog from 'data/changelog.json';
 import React from 'react';
+import 'styles/changelog.css';
+
 function Changelog(){
     let versions = Object.keys(changelog)
     return(
@@ -26,13 +28,13 @@ function ChangelogEntry( {version} ){
     return(
         <>
             <h2>Version {version}</h2>
-            <ul>
+            <ul className='changelog-entry'>
                 {changes.map(
                     (change) => (
                         <React.Fragment
                             key={change}
                         >
-                            <li>{change}</li>
+                            <li className='change'>{change}</li>
                         </React.Fragment>
                     )
                 )}
