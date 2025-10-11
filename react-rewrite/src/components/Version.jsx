@@ -1,4 +1,4 @@
-import count from 'data/generated/changelog.json';
+import count from 'data/changelog.json';
 import semver from 'semver';
 
 function Version(){
