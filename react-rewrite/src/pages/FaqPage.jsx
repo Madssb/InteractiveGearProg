@@ -1,9 +1,15 @@
+import BackHome from "../components/BackHome";
+import Faq from "../components/Faq";
+
 function FaqPage(){
     return (
         <>
-        <p>peepee</p>
+        <h1>Frequently Asked Questions</h1>
+        <Faq />
+        <BackHome />
         </>
     )
+    
 }
 
 
