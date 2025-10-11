@@ -122,7 +122,7 @@ function NodeGroup({ entities, onContextMenu, onTouchStart, onTouchEnd, onClick,
  * Handles context menu logic and node state (complete, skipped, etc.).
  */
 function Chart( {nodeGroups} ){
-    console.log("initialize chart")
+
     // context menu
     const [menu, setMenu] = useState({
         visible: false,
@@ -169,7 +169,8 @@ function Chart( {nodeGroups} ){
     }
 
     function handleShowClick(){
-        setNodeVisibilities({})
+        setNodeVisibilities({});
+        localStorage.setItem("nodeVisibilities", JSON.stringify({}));
     }
 
 
@@ -297,4 +298,4 @@ function Chart( {nodeGroups} ){
     )
 }
 
-export default Chart
+export { Chart, NodeGroup };
