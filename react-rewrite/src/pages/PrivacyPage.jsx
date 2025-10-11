@@ -1,3 +1,5 @@
+import BackHome from "../components/BackHome"
+
 function PrivacyPage(){
     return (
         <>
@@ -6,7 +8,7 @@ function PrivacyPage(){
                 personal data is collected or stored, and GoatCounter does not use cookies.</p>
 
             <p>GoatCounter is a privacy-focused analytics tool that complies with GDPR and other privacy regulations. For more
-                information, you can visit their
+                information, you can visit their{" "}
                 <a href="https://www.goatcounter.com/privacy" target="_blank">privacy policy</a>.
             </p>
 
@@ -17,7 +19,7 @@ function PrivacyPage(){
 
             <p>No personal information is stored or shared, and this data remains entirely within your browser. Local storage is
                 only used to improve functionality and does not track or share your activity with third parties.</p>
-            <p><link to="/">Back to Home</link></p>
+            <BackHome />
         </>
     )
 }
