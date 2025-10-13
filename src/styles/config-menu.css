@@ -1,0 +1,21 @@
+.config-menu {
+  display: inline-flex; /* shrink-wrap its contents */
+  flex-direction: column;
+  align-items: stretch; /* make children equal width */
+  gap: 0;
+  border: 2px solid black;
+  margin: 0 auto;
+}
+
+.config-menu .toggle-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 5px;
+  flex: 1 0 auto; /* do not shrink unevenly */
+  width: 100%; /* fill parent’s width */
+}
+
+.config-menu .toggle-btn.active {
+  background-color: green;
+}

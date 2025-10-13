@@ -1,6 +1,6 @@
 
 import '@/styles/context-menu.css';
-import { handleLevels } from '@/utils';
+import { handleLevels } from '@/utils/textSanitizers';
 import items from '@data/generated/items.json';
 import { useLayoutEffect, useRef, useState } from 'react';
 

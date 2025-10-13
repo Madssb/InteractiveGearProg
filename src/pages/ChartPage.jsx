@@ -1,11 +1,11 @@
 import Chart from "@/components/Chart.jsx";
+import ConfigMenu from "@/components/ConfigMenu";
 import ContextMenu from '@/components/ContextMenu.jsx';
 import ShowButton from '@/components/ShowButton.jsx';
 import Acknowledgements from '@/components/static/Acknowledgements.jsx';
 import FAQSection from '@/components/static/FAQSection.jsx';
 import Footer from '@/components/static/Footer.jsx';
-import ToggleButton from '@/components/ToggleButton.jsx';
-import TogglePanel from '@/components/TogglePanel.jsx';
+import '@/styles/ChartPage.css';
 import { useLocalStorageSet, useLocalStorageState } from '@/utils/useLocalStorageState';
 import sequenceBareBones from '@data/generated/sequence-bare-bones.json';
 import retirement from '@data/retirement.json';
@@ -13,11 +13,11 @@ import sequence from '@data/sequence.json';
 import React, { useState } from 'react';
 
 
-
 export default function ChartPage(){
     // chart rendering
     const [showRetirement, setShowRetirement] = useLocalStorageState(false);
     const [showBareBones, setShowBareBones] = useLocalStorageState(false);
+    const [showOptions, setShowOptions] = useState(false);
 
     const [nodesHiddenState, setNodesHiddenState] = useLocalStorageSet('nodesHiddenState', new Set());
     const [nodesCompleteState, setNodesCompleteState] = useLocalStorageSet('nodesCompleteState', new Set());
@@ -101,50 +101,35 @@ export default function ChartPage(){
     let nodeGroups = Object.values(sequence);
     let nodeGroupsBareBones = Object.values(sequenceBareBones);
     let nodeGroupsRetirement = Object.values(retirement);
-
+    const style = {"justifyContent": "space-between", "display":"flex", "alignItems": "center"}
     return (
         <>
-            <h1>Interactive Ironman Progression Chart</h1>
-            <span className="subtitle">Curated by the Ironscape community — made by Ladlor</span>
-            <TogglePanel>
-                <ToggleButton
-                    id="retirement-toggle"
-                    value={showRetirement}
-                    onToggle={setShowRetirement}
-                    label={"Re"}
-                    icon={"https://oldschool.runescape.wiki/images/Collection_log.png"}
+            
+            <div style={style}>
+                    <div />
+                    <div>
+                        <h1>Interactive Ironman Progression Chart</h1>
+                        <span className="subtitle">Curated by the Ironscape community — made by Ladlor</span>
+                    </div>
+                    <button
+                        className={showOptions ? "active": ""}
+                        onClick={() => setShowOptions(!showOptions)}
+                        id="options-button"
+                        aria-label="Show settings"
+                    >
+                        <img src="https://oldschool.runescape.wiki/images/Settings.png"/>
+                    </button>
+            </div>
+            {showOptions && (
+                <ConfigMenu
+                    showRetirement={showRetirement}
+                    setShowRetirement={setShowRetirement}
+                    showBareBones={showBareBones}
+                    setShowBareBones={setShowBareBones}
+                    hide={hide}
+                    setHide={setHide}
                 />
-                <ToggleButton
-                    id="bare-bones-toggle"
-                    value={showBareBones}
-                    onToggle={setShowBareBones}
-                    icon={"https://oldschool.runescape.wiki/images/Bones.png"}
-                    label={"Ba"}
-                />
-                <ToggleButton
-                    id="hide-skill"
-                    value={hide.skill}
-                    onToggle={v => setHide(prev => ({ ...prev, skill: v }))}
-                    label="Skill"
-                    icon={"https://oldschool.runescape.wiki/images/Stats_icon.png"}
-                />
-
-                <ToggleButton
-                    id="hide-construction"
-                    value={hide.construction}
-                    onToggle={v => setHide(prev => ({ ...prev, construction: v }))}
-                    label="Construction"
-                    icon={"https://oldschool.runescape.wiki/images/Construction_icon.png"}
-                />
-
-                <ToggleButton
-                    id="hide-slayer"
-                    value={hide.slayer}
-                    onToggle={v => setHide(prev => ({ ...prev, slayer: v }))}
-                    label="Slayer"
-                    icon={"https://oldschool.runescape.wiki/images/Slayer_icon.png"}
-                />
-            </TogglePanel>
+            )}
             {showBareBones && (
                 <Chart
                     nodeGroups={nodeGroupsBareBones} 

@@ -1,4 +1,4 @@
-import { handleLevels, sanitizeId } from '@/utils';
+import { handleLevels, sanitizeId } from '@/utils/textSanitizers';
 import items from '@data/generated/items.json';
 import React from 'react';
 

@@ -23,6 +23,7 @@
   row-gap: 50px;
   align-items: center;
   justify-content: center;
+  margin-top: 10px;
 }
 
 /* Group of nodes laid out left→right, 2 rows tall */
