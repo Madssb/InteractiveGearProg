@@ -6,6 +6,7 @@ import Acknowledgements from '@/components/static/Acknowledgements.jsx';
 import FAQSection from '@/components/static/FAQSection.jsx';
 import Footer from '@/components/static/Footer.jsx';
 import '@/styles/ChartPage.css';
+import migrateLegacySharedNodeStates from '@/utils/migrateState';
 import { useLocalStorageSet, useLocalStorageState } from '@/utils/useLocalStorageState';
 import sequenceBareBones from '@data/generated/sequence-bare-bones.json';
 import retirement from '@data/retirement.json';
@@ -102,6 +103,7 @@ export default function ChartPage(){
     let nodeGroupsBareBones = Object.values(sequenceBareBones);
     let nodeGroupsRetirement = Object.values(retirement);
     const style = {"justifyContent": "space-between", "display":"flex", "alignItems": "center"}
+    migrateLegacySharedNodeStates(setNodesCompleteState);
     return (
         <>
             

@@ -1,5 +1,9 @@
 # TO-DO list
 
+# make show hidden items a toggle
+
+It has been requested that the show hidden button merely shows hidden alternatives rather than permanently restore them.
+
 ## cleanup styles/\*.css so that responsibilities are very clear
 
 - confusion persists around theme.css
