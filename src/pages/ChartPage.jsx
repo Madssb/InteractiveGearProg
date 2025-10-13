@@ -15,8 +15,8 @@ import React, { useState } from 'react';
 
 export default function ChartPage(){
     // chart rendering
-    const [showRetirement, setShowRetirement] = useLocalStorageState(false);
-    const [showBareBones, setShowBareBones] = useLocalStorageState(false);
+    const [showRetirement, setShowRetirement] = useLocalStorageState('showRetirement', false);
+    const [showBareBones, setShowBareBones] = useLocalStorageState('showBareBones', false);
     const [showOptions, setShowOptions] = useState(false);
 
     const [nodesHiddenState, setNodesHiddenState] = useLocalStorageSet('nodesHiddenState', new Set());
