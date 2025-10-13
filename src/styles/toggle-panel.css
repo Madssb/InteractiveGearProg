@@ -1,0 +1,10 @@
+.toggle-panel {
+  display: flex;
+  align-items: center;
+  gap: 0px;
+}
+.toggle-panel .toggle-btn {
+  border-radius: 5px;
+  width: 40px;
+  height: 40px;
+}

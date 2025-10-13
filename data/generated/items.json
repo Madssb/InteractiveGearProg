@@ -683,5 +683,140 @@
     "wikiUrl": "https://oldschool.runescape.wiki/w/Zaryte_vambraces",
     "imgUrl": "https://oldschool.runescape.wiki/images/Zaryte_vambraces.png",
     "type": "item"
+  },
+  "Spectral spirit shield": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Spectral_spirit_shield",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Spectral_spirit_shield.png",
+    "type": "item"
+  },
+  "Arcane spirit shield": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Arcane_spirit_shield",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Arcane_spirit_shield.png",
+    "type": "item"
+  },
+  "Elysian spirit shield": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Elysian_spirit_shield",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Elysian_spirit_shield.png",
+    "type": "item"
+  },
+  "Inquisitor's mace": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Inquisitor's_mace",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Inquisitor's_mace.png",
+    "type": "item"
+  },
+  "Inquisitor's hauberk": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Inquisitor's_hauberk",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Inquisitor's_hauberk.png",
+    "type": "item"
+  },
+  "Inquisitor's plateskirt": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Inquisitor's_plateskirt",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Inquisitor's_plateskirt.png",
+    "type": "item"
+  },
+  "Nightmare staff": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Nightmare_staff",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Nightmare_staff.png",
+    "type": "item"
+  },
+  "Eldritch orb": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Eldritch_orb",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Eldritch_orb.png",
+    "type": "item"
+  },
+  "Harmonised orb": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Harmonised_orb",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Harmonised_orb.png",
+    "type": "item"
+  },
+  "Volatile orb": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Volatile_orb",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Volatile_orb.png",
+    "type": "item"
+  },
+  "Zamorak godsword": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Zamorak_godsword",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Zamorak_godsword.png",
+    "type": "item"
+  },
+  "Saradomin godsword": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Saradomin_godsword",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Saradomin_godsword.png",
+    "type": "item"
+  },
+  "Armadyl godsword": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Armadyl_godsword",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Armadyl_godsword.png",
+    "type": "item"
+  },
+  "Ancient godsword": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Ancient_godsword",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Ancient_godsword.png",
+    "type": "item"
+  },
+  "Staff of the dead": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Staff_of_the_dead",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Staff_of_the_dead.png",
+    "type": "item"
+  },
+  "Soulflame horn": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Soulflame_horn",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Soulflame_horn.png",
+    "type": "item"
+  },
+  "Tonalztics of ralos": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Tonalztics_of_ralos",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Tonalztics_of_ralos.png",
+    "type": "item"
+  },
+  "Tyrannical ring": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Tyrannical_ring",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Tyrannical_ring.png",
+    "type": "item"
+  },
+  "Treasonous ring": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Treasonous_ring",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Treasonous_ring.png",
+    "type": "item"
+  },
+  "Ring of the gods": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Ring_of_the_gods",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Ring_of_the_gods.png",
+    "type": "item"
+  },
+  "Craw's bow": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Craw's_bow",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Craw's_bow_(u).png",
+    "type": "item"
+  },
+  "Thammaron's sceptre": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Thammaron's_sceptre",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Thammaron's_sceptre.png",
+    "type": "item"
+  },
+  "Viggora's chainmace": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Viggora's_chainmace",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Viggora's_chainmace_(u).png",
+    "type": "item"
+  },
+  "dragonfire shield": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Dragonfire_shield",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Dragonfire_shield.png",
+    "type": "item"
+  },
+  "Dragonfire ward": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Dragonfire_ward",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Dragonfire_ward.png",
+    "type": "item"
+  },
+  "Ancient wyvern shield": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Ancient_wyvern_shield",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Ancient_wyvern_shield.png",
+    "type": "item"
+  },
+  "Inquisitor's great helm": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Inquisitor's_great_helm",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Inquisitor's_great_helm.png",
+    "type": "item"
   }
 }

@@ -43,7 +43,7 @@ def is_valid_record(rec: Dict[str, str]) -> bool:
     return True
 
 
-def load_json(path: Path) -> Dict:
+def load_json(path: Path) -> List:
     if not path.exists():
         return {}
     with path.open("r", encoding="utf-8") as f:
@@ -51,11 +51,42 @@ def load_json(path: Path) -> Dict:
 
 
 def fetch_sequence_vals() -> List[str]:
-    contents = load_json(ROOT_DIR / Path("data/sequence.json"))
-    items = flatten(contents)
+    sequence = load_json(ROOT_DIR / Path("data/sequence.json"))
+    retirement = load_json(ROOT_DIR / Path("data/retirement.json"))
+    all = sequence + retirement
+    items = flatten(all)
     for idx, item in enumerate(items):
         items[idx] = handle_levels(item)
     return items
+
+
+def remove_filtered(sequence, filter_list):
+    result = []
+    for item in sequence:
+        if isinstance(item, list):
+            # Recurse into sublists
+            cleaned = remove_filtered(item, filter_list)
+            if cleaned:  # only keep non-empty sublists
+                result.append(cleaned)
+        elif isinstance(item, str):
+            # Only keep strings not in filter_list
+            if item not in filter_list:
+                result.append(item)
+        else:
+            # Preserve unexpected non-list, non-str items as-is
+            result.append(item)
+    return result
+
+
+def update_bare_bones():
+    sequence = load_json(ROOT_DIR / Path("data/sequence.json"))
+    filter = load_json(ROOT_DIR / Path("data/filter.json"))
+    sequence_bare_bones = remove_filtered(sequence, filter)
+
+    out = ROOT_DIR / Path("data/generated/sequence-bare-bones.json")
+    out.parent.mkdir(parents=True, exist_ok=True)
+    with out.open("w", encoding="utf-8") as f:
+        json.dump(sequence_bare_bones, f, indent=2, ensure_ascii=False)
 
 
 def build_worklist(
@@ -87,20 +118,6 @@ def update_items_cache():
         json.dump(items, f, indent=2, ensure_ascii=False)
 
 
-def update_version_count():
-    """Updates version.json which lets render-items.js recognize if cached chart is out of date, and force a re-render."""
-    path = ROOT_DIR / Path("data/generated/version.json")
-    path.parent.mkdir(parents=True, exist_ok=True)
-    try:
-        with path.open("r", encoding="utf-8") as f:
-            data = json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        data = {"cacheVersion": 0}
-    data["cacheVersion"] = int(data.get("cacheVersion", 0)) + 1
-    with path.open("w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
-
-
 if __name__ == "__main__":
     update_items_cache()
-    update_version_count()
+    update_bare_bones()
