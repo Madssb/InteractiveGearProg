@@ -17,10 +17,5 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
       '@data': path.resolve(__dirname, './data')
     }
-  },
-  build: {
-    rollupOptions: {
-      input: 'index.template.html'
-    }
   }
 })
