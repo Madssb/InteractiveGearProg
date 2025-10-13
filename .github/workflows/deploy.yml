@@ -28,6 +28,9 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Add CNAME
+        run: echo 'ladlorchart.com' > dist/CNAME
+
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3
         with:
