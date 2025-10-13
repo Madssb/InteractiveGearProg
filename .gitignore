@@ -4,3 +4,6 @@ data/external/*
 .env
 tools/scrape_slayer_rewards.py
 *.pyc
+.vite/*
+dist/*
+node_modules/
