@@ -7,11 +7,14 @@ import FAQSection from '@/components/static/FAQSection.jsx';
 import Footer from '@/components/static/Footer.jsx';
 import '@/styles/ChartPage.css';
 import migrateLegacySharedNodeStates from '@/utils/migrateState';
+import updateSequenceLanceRule from '@/utils/sequenceRules.js';
 import { useLocalStorageSet, useLocalStorageState } from '@/utils/useLocalStorageState';
 import sequenceBareBones from '@data/generated/sequence-bare-bones.json';
 import retirement from '@data/retirement.json';
 import sequence from '@data/sequence.json';
 import React, { useState } from 'react';
+
+import removeStarredItems from '@/utils/removeStarredItems.js';
 
 
 export default function ChartPage(){
@@ -95,10 +98,20 @@ export default function ChartPage(){
         return () => document.removeEventListener("click", handleClickOutside);
     }, []);
 
-    let nodeGroups = Object.values(sequence);
-    let nodeGroupsBareBones = Object.values(sequenceBareBones);
+    let nodeGroups = Object.values(removeStarredItems(sequence));
+    let nodeGroupsBareBones = Object.values(removeStarredItems(sequenceBareBones));
     let nodeGroupsRetirement = Object.values(retirement);
     const style = {"justifyContent": "space-between", "display":"flex", "alignItems": "center"}
+    
+    // if scythe is missing, lance is worth getting at the same step where ferocious gloves lives.
+    const [nodeGroupsState, setNodeGroupsState] = useState(nodeGroups);
+    const [nodeGroupsBareBonesState, setNodeGroupsBareBonesState] = useState(nodeGroupsBareBones)
+    React.useEffect(() => {
+        setNodeGroupsState(prev => updateSequenceLanceRule(nodesHiddenState, prev));
+        setNodeGroupsBareBonesState(prev => updateSequenceLanceRule(nodesHiddenState, prev));
+    }, [nodesHiddenState])
+
+    
     migrateLegacySharedNodeStates(setNodesCompleteState);
     return (
         <>
@@ -130,7 +143,7 @@ export default function ChartPage(){
             )}
             {showBareBones && (
                 <Chart
-                    nodeGroups={nodeGroupsBareBones} 
+                    nodeGroups={nodeGroupsBareBonesState} 
                     hide={hide}
                     nodesHiddenState={nodesHiddenState}
                     nodesCompleteState={nodesCompleteState}
@@ -143,7 +156,7 @@ export default function ChartPage(){
             )}
             {!showBareBones && (
                 <Chart
-                    nodeGroups={nodeGroups} 
+                    nodeGroups={nodeGroupsState} 
                     hide={hide}
                     nodesHiddenState={nodesHiddenState}
                     nodesCompleteState={nodesCompleteState}

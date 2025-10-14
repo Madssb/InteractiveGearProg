@@ -55,6 +55,7 @@ def fetch_sequence_vals() -> List[str]:
     retirement = load_json(ROOT_DIR / Path("data/retirement.json"))
     all = sequence + retirement
     items = flatten(all)
+    items = [s.lstrip("*") for s in items]
     for idx, item in enumerate(items):
         items[idx] = handle_levels(item)
     return items

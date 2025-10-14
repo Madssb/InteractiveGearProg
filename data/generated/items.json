@@ -818,5 +818,10 @@
     "wikiUrl": "https://oldschool.runescape.wiki/w/Inquisitor's_great_helm",
     "imgUrl": "https://oldschool.runescape.wiki/images/Inquisitor's_great_helm.png",
     "type": "item"
+  },
+  "Dragon hunter lance": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Dragon_hunter_lance",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Dragon_hunter_lance.png",
+    "type": "item"
   }
 }
