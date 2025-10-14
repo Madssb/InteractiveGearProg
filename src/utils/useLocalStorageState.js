@@ -1,31 +1,22 @@
 import { useEffect, useState } from 'react';
 
-export function useLocalStorageState(key, defaultValue = {}) {
-  const [state, setState] = useState(defaultValue);
-
-  // Load once on mount
-  useEffect(() => {
+export function useLocalStorageState(key, defaultValue) {
+  const [state, setState] = useState(() => {
     try {
       const saved = localStorage.getItem(key);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (typeof parsed === 'object' && parsed !== null) {
-          setState(parsed);
-        }
-      }
-    } catch (err) {
-      console.error(`Failed to parse saved state for ${key}`, err);
+      return saved !== null ? JSON.parse(saved) : defaultValue;
+    } catch {
+      return defaultValue;
     }
-  }, [key]);
+  });
 
-  // Save whenever state changes
   useEffect(() => {
     try {
-      if (Object.keys(state).length > 0) {
-        localStorage.setItem(key, JSON.stringify(state));
+      if (state === undefined || state === null) {
+        localStorage.removeItem(key);
       } else {
-      localStorage.removeItem(key);
-    }
+        localStorage.setItem(key, JSON.stringify(state));
+      }
     } catch (err) {
       console.error(`Failed to save state for ${key}`, err);
     }

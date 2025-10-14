@@ -22,7 +22,14 @@ export default function ChartPage(){
 
     const [nodesHiddenState, setNodesHiddenState] = useLocalStorageSet('nodesHiddenState', new Set());
     const [nodesCompleteState, setNodesCompleteState] = useLocalStorageSet('nodesCompleteState', new Set());
- 
+    const [hide, setHide] = useLocalStorageState('hide', {
+        item: false,
+        prayer: false,
+        construction: false,
+        slayer: false,
+        spell: false,
+        skill: false,
+    });
     function handleHideClick(entity){
         setNodesHiddenState(prev => {
             const next = new Set(prev);
@@ -87,17 +94,6 @@ export default function ChartPage(){
         document.addEventListener("click", handleClickOutside);
         return () => document.removeEventListener("click", handleClickOutside);
     }, []);
-
-    const [hide, setHide] = useState({
-        item: false,
-        prayer: false,
-        construction: false,
-        slayer: false,
-        spell: false,
-        skill: false,
-    });
-
-
 
     let nodeGroups = Object.values(sequence);
     let nodeGroupsBareBones = Object.values(sequenceBareBones);

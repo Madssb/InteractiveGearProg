@@ -1,5 +1,9 @@
 # TO-DO list
 
+# retirement home visibility choice persistence
+
+retirement home panel visibility is not rememberred upon reload at the moment, and should be addressed asap. Persistence is a core feature
+
 # make show hidden items a toggle
 
 It has been requested that the show hidden button merely shows hidden alternatives rather than permanently restore them.
