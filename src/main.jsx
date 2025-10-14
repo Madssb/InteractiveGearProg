@@ -6,12 +6,12 @@ import '@/styles/chart.css';
 import '@/styles/theme.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter, Route, Routes } from 'react-router';
+import { HashRouter, Route, Routes } from 'react-router';
 
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route path="/" element={<ChartPage />} />
         <Route path="/index.html" element={<ChartPage />} />
@@ -19,7 +19,7 @@ function App() {
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/faq" element={<FaqPage />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 

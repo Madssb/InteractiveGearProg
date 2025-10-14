@@ -10,7 +10,7 @@ export default function FAQSection(){
                 <p><strong>Q:</strong> How is my progress saved?</p>
                 <p><strong>A:</strong> Your progress is saved using local storage in your browser. It will remain intact even if
                     you refresh or close the page.</p>
-                <p>For more questions, visit the <Link to="faq">full FAQ page</Link>.</p>
+                <p>For more questions, visit the <Link to="/faq">full FAQ page</Link>.</p>
             </div>
         </>
     )
