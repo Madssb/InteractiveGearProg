@@ -823,5 +823,25 @@
     "wikiUrl": "https://oldschool.runescape.wiki/w/Dragon_hunter_lance",
     "imgUrl": "https://oldschool.runescape.wiki/images/Dragon_hunter_lance.png",
     "type": "item"
+  },
+  "Elidinis' ward (f)": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Elidinis'_ward_(f)",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Elidinis'_ward_(f).png",
+    "type": "item"
+  },
+  "Webweaver bow": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Webweaver_bow",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Webweaver_bow.png",
+    "type": "item"
+  },
+  "Accursed sceptre": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Accursed_sceptre",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Accursed_sceptre.png",
+    "type": "item"
+  },
+  "Ursine chainmace": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Ursine_chainmace",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Ursine_chainmace.png",
+    "type": "item"
   }
 }
