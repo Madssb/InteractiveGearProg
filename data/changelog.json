@@ -1,9 +1,10 @@
 {
   "1.5.0": [
-    "Implemented hide featre: can now hide nodes from the chart, and re-render on 'show hidden'.",
+    "Implemented hide feature: can now hide nodes from the chart, and re-render on 'show hidden'.",
     "removed redundant feature made redundant by the hide feature.",
     "Added the retirement home category for those that want to hunt BIS that is otherwise too niche for the main chart",
-    "added option to filter construction milestones, level milestones, and slayer reward unlocks."
+    "added option to filter construction milestones, level milestones, and slayer reward unlocks.",
+    "dragon hunter lance re-appears on the chart if hiding scythe"
   ],
   "1.4.4": [
     "Removed dragon hunter lance, made obsolete by scythe for purposes of the chart."
