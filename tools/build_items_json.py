@@ -5,7 +5,6 @@ from typing import Dict, Iterable, List, Set
 
 from osrswiki_images import search_many
 
-ROOT_DIR = Path(__file__).parents[1]
 pat = re.compile(r"\d+ (\w+)")
 
 WIKI_W = "https://oldschool.runescape.wiki/w/"
@@ -51,14 +50,18 @@ def load_json(path: Path) -> List:
 
 
 def fetch_sequence_vals() -> List[str]:
-    sequence = load_json(ROOT_DIR / Path("data/sequence.json"))
-    retirement = load_json(ROOT_DIR / Path("data/retirement.json"))
-    all = sequence + retirement
-    items = flatten(all)
-    items = [s.lstrip("*") for s in items]
-    for idx, item in enumerate(items):
-        items[idx] = handle_levels(item)
-    return items
+    items_dir = Path("data/logic")
+    item_srcs = list(items_dir.glob("*.json"))
+    items_nested = []
+    for path in item_srcs:
+        items_nested.extend(load_json(path))
+    # sequence-bare-bones is a subset of sequence and can be omitted.
+    items_flat = flatten(items_nested)
+    items_stripped = [s.lstrip("*") for s in items_flat]
+    items_processed = []
+    for item in items_stripped:
+        items_processed.append(handle_levels(item))
+    return items_processed
 
 
 def remove_filtered(sequence, filter_list):
@@ -80,11 +83,10 @@ def remove_filtered(sequence, filter_list):
 
 
 def update_bare_bones():
-    sequence = load_json(ROOT_DIR / Path("data/sequence.json"))
-    filter = load_json(ROOT_DIR / Path("data/filter.json"))
+    sequence = load_json(Path("data/logic/sequence.json"))
+    filter = load_json(Path("data/filter.json"))
     sequence_bare_bones = remove_filtered(sequence, filter)
-
-    out = ROOT_DIR / Path("data/generated/sequence-bare-bones.json")
+    out = Path("data/generated/sequence-bare-bones.json")
     out.parent.mkdir(parents=True, exist_ok=True)
     with out.open("w", encoding="utf-8") as f:
         json.dump(sequence_bare_bones, f, indent=2, ensure_ascii=False)
@@ -107,13 +109,13 @@ def update_items_cache():
     make. Also parse for invalid records. make api requests, update items with results.
     """
     sequence = fetch_sequence_vals()
-    items = load_json(ROOT_DIR / Path("data/generated/items.json"))
+    items = load_json(Path("data/generated/items.json"))
     worklist = build_worklist(sequence, items)
     payload = search_many(worklist, skip_missing=False)
     for k, v in payload.items():
         if v is not None:  # only merge successful resolves
             items[k] = v
-    out = ROOT_DIR / Path("data/generated/items.json")
+    out = Path("data/generated/items.json")
     out.parent.mkdir(parents=True, exist_ok=True)
     with out.open("w", encoding="utf-8") as f:
         json.dump(items, f, indent=2, ensure_ascii=False)

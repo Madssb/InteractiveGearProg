@@ -10,8 +10,8 @@ import migrateLegacySharedNodeStates from '@/utils/migrateState';
 import updateSequenceLanceRule from '@/utils/sequenceRules.js';
 import { useLocalStorageSet, useLocalStorageState } from '@/utils/useLocalStorageState';
 import sequenceBareBones from '@data/generated/sequence-bare-bones.json';
-import retirement from '@data/retirement.json';
-import sequence from '@data/sequence.json';
+import retirement from '@data/logic/retirement.json';
+import sequence from '@data/logic/sequence.json';
 import React, { useState } from 'react';
 
 import removeStarredItems from '@/utils/removeStarredItems.js';

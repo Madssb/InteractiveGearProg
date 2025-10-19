@@ -1,5 +1,5 @@
 import '@/styles/changelog.css';
-import changelog from '@data/changelog.json';
+import changelog from '@data/contents/changelog.json';
 import React from 'react';
 
 export default function Changelog(){

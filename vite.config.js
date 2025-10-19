@@ -6,12 +6,6 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   base: '/',
   plugins: [react()],
-  server: {
-    fs: {
-      // Allow serving files from one directory up
-      allow: ['.']
-    }
-  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

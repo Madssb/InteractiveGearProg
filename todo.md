@@ -1,5 +1,7 @@
 # TO-DO list
 
+# declare scope of chart in FAQ.
+
 # implement data/items/\*.json and add build-items.py reading support
 
 build-items.py could look for any `data/items/*.json` and build items.json for items contained in all, simplifying maintenance, and allowing for adding new categories easily.

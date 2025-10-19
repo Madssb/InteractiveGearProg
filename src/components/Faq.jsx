@@ -1,5 +1,5 @@
 import '@/styles/faq.css';
-import faq from '@data/faq.json';
+import faq from '@data/contents/faq.json';
 
 export default function Faq(){
     let questions = Object.keys(faq);
