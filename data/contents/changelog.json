@@ -1,4 +1,8 @@
 {
+  "1.5.1": [
+    "",
+    "Re-added Dragon hunter lance, as it has merits as conditionally BiS even over scythe in CoX (e.g. 2+16 scale). More importantly however, this decision reflects walking back dependencies for the chart"
+  ],
   "1.5.0": [
     "Implemented hide feature: can now hide nodes from the chart, and re-render on 'show hidden'.",
     "removed redundant feature made redundant by the hide feature.",

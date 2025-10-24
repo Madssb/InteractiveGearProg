@@ -93,7 +93,7 @@
   ["Eye of ayak", "Confliction gauntlets"],
   ["Toxic blowpipe"],
   ["Osmumten's fang"],
-  ["Ferocious gloves", "*Dragon hunter lance"],
+  ["Ferocious gloves", "Dragon hunter lance"],
   ["Rigour", "Augury"],
   ["Infernal cape"],
   ["Oathplate chest", "Oathplate legs", "Oathplate helm"],
@@ -112,11 +112,5 @@
   ["Masori body (f)", "Masori chaps (f)", "Masori mask (f)", "Elidinis' ward"],
   ["Saturated heart", "Venator bow"],
   ["Ghommal's hilt 5"],
-  [
-    "Torva platebody",
-    "Torva platelegs",
-    "Torva full helm",
-    "Zaryte crossbow",
-    "Zaryte vambraces"
-  ]
+  ["Zaryte crossbow", "Zaryte vambraces"]
 ]
