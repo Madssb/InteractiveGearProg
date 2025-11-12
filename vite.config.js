@@ -11,5 +11,8 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
       '@data': path.resolve(__dirname, './data')
     }
+  },
+  server: {
+    port: 5173
   }
 })
