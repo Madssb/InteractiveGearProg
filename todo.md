@@ -1,16 +1,12 @@
 # TO-DO list
 
-# declare scope of chart in FAQ.
+## declare scope of chart in FAQ.
 
-# implement data/items/\*.json and add build-items.py reading support
+## implement data/items/\*.json and add build-items.py reading support
 
 build-items.py could look for any `data/items/*.json` and build items.json for items contained in all, simplifying maintenance, and allowing for adding new categories easily.
 
-# retirement home visibility choice persistence
-
-retirement home panel visibility is not rememberred upon reload at the moment, and should be addressed asap. Persistence is a core feature
-
-# make show hidden items a toggle
+## make show hidden items a toggle
 
 It has been requested that the show hidden button merely shows hidden alternatives rather than permanently restore them.
 
