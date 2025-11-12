@@ -1,5 +1,6 @@
 import ChangelogPage from '@/pages/ChangelogPage.jsx';
 import ChartPage from '@/pages/ChartPage.jsx';
+import CustomizePage from '@/pages/CustomizePage.jsx';
 import FaqPage from '@/pages/FaqPage.jsx';
 import PrivacyPage from '@/pages/PrivacyPage.jsx';
 import '@/styles/chart.css';
@@ -18,6 +19,7 @@ function App() {
         <Route path="/changelog" element={<ChangelogPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/faq" element={<FaqPage />} />
+        <Route path="/customize" element={<CustomizePage />} />
       </Routes>
     </HashRouter>
   );
