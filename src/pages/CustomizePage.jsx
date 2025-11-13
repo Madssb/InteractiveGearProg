@@ -1,27 +1,54 @@
 import Chart from "@/components/Chart.jsx";
 import ContextMenu from '@/components/ContextMenu.jsx';
 import SequenceForm from '@/components/SequenceForm';
-import ShowButton from '@/components/ShowButton.jsx';
 import Footer from '@/components/static/Footer.jsx';
-import React, { useState } from 'react';
-
-
-
 import { useLocalStorageSet, useLocalStorageState } from '@/utils/useLocalStorageState';
-// needs a component that represents a sequence input submission htmlform
-// needs function that upon submission of the input sequence, makes an api request and gets an items output
+import LZString from "lz-string";
+import React, { useState } from 'react';
+import { useLocation } from "react-router";
 
 
-
-// submission happens. inputSequenceState updated with value input.
-
-
-
-export default function CustomizePage(){
-    
+export default function CustomizePage(){    
     const [inputSequenceState, setInputSequenceState] = useLocalStorageState('inputSequenceState', false);
     const [outputItemsState, setOutputItemsState] = useLocalStorageState('outputItemsState', false);
     const [nodesCompleteState, setNodesCompleteState] = useLocalStorageSet('nodesCompleteState', new Set());
+
+    // initialize from Share-URL
+    const location = useLocation();
+
+    React.useEffect(() => {
+        const param = new URLSearchParams(location.search).get("data");
+        if (!param) return;
+
+        const json = LZString.decompressFromEncodedURIComponent(param);
+        if (!json) return;
+
+        const parsed = JSON.parse(json);
+
+        if (parsed.seq) setInputSequenceState(parsed.seq);
+        if (parsed.items) setOutputItemsState(parsed.items);
+    }, [location.search]);
+
+    function makeShareLink() {
+        if (!inputSequenceState || !outputItemsState) return;
+
+        const payload = {
+            seq: inputSequenceState,
+            items: outputItemsState
+        };
+
+        const json = JSON.stringify(payload);
+        const encoded = LZString.compressToEncodedURIComponent(json);
+        const base = window.location.origin + window.location.pathname;
+        const shareUrl = `${base}#/customize?data=${encoded}`;
+        navigator.clipboard.writeText(shareUrl);
+    }
+
+    function extractSequence() {
+        if (!inputSequenceState) return;
+        const json = JSON.stringify(inputSequenceState);
+        navigator.clipboard.writeText(json);
+    }
 
 
     const [showInput, setShowInput] = useState(false);
@@ -76,6 +103,14 @@ export default function CustomizePage(){
         setMenu({ ...menu, visible: false });
     }
 
+    function handleDelete(entity) {
+        setInputSequenceState(seq =>
+            seq
+                .map(group => group.filter(item => item !== entity))
+                .filter(group => group.length > 0)
+        );
+    }
+
     React.useEffect(() => {
         function handleClickOutside() {
             setMenu(prev => (prev.visible ? { ...prev, visible: false } : prev));
@@ -83,20 +118,51 @@ export default function CustomizePage(){
         document.addEventListener("click", handleClickOutside);
         return () => document.removeEventListener("click", handleClickOutside);
     }, []);
+    const panelStyle = {"justifyContent": "center", "display":"flex", "alignItems": "center"}
+    const buttonStyle = {"backgroundColor": "gray"}
+    const topStyle = {"justifyContent": "space-between", "display":"flex", "alignItems": "center"}
 
+    const actions = [
+        { handler: handleInputClick, label: "Show input" },
+        { handler: makeShareLink,    label: "Share" },
+        { handler: extractSequence,  label: "Extract" }
+    ];    
     return (
         <>
-        <div>
-            <h1>Custom Chart</h1>
-             <span className="subtitle">Made by Ladlor</span>
+        <div id="titleBar" style={{ position: "relative", height: "80px" }}>
+            <div style={{
+                position: "absolute",
+                left: "50%",
+                top: "50%",
+                transform: "translate(-50%, -50%)",
+                textAlign: "center"
+            }}>
+                <h1>Custom Chart</h1>
+                <span className="subtitle">Made by Ladlor</span>
+            </div>
+            <div style={{
+                position: "absolute",
+                right: "0",
+                top: "50%",
+                transform: "translateY(-50%)",
+                display: "flex",
+                gap: "8px"
+            }}>
+                {actions.map(a => (
+                    <button
+                        key={a.label}
+                        onClick={a.handler}
+                        style={buttonStyle}
+                    >
+                        {a.label}
+                    </button>
+                ))}
+            </div>
         </div>
-        <ShowButton
-            onShow={handleInputClick}
-            buttonText={"Show input"}
-        />
+
         {showInput && (
             <SequenceForm
-                inputSequenceState={inputSequenceState}
+                outputItemsState={outputItemsState}
                 setInputSequenceState={setInputSequenceState}
                 setOutputItemsState={setOutputItemsState}
             />
@@ -119,12 +185,11 @@ export default function CustomizePage(){
             y={menu.y}
             entity={menu.entity}
             onClose={handleCloseMenu}
+            onDelete={handleDelete}
+            items={outputItemsState}
         />
         )}
         <Footer />
         </>
     )
 }
-// hide argument is missing. governs categorywide hiding
-// nodesHiddenState missing. governs items hidden or no
-// 

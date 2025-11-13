@@ -5,11 +5,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from osrswiki_images import search_many
 from pydantic import BaseModel
 
-
-def flatten(nested: list[list[str]]) -> list[str]:
-    return [x for sub in nested for x in sub]
-
-
 app = FastAPI()
 
 app.add_middleware(
@@ -24,8 +19,8 @@ app.add_middleware(
 )
 
 
-class Sequence(BaseModel):
-    sequence: list[list[str]]
+class Request(BaseModel):
+    sequence: list[str]
 
 
 class ItemInfo(BaseModel):
@@ -44,10 +39,9 @@ def read_root():
 
 
 @app.post("/sequence/")
-async def create_sequence(payload: Sequence):
+async def create_sequence(payload: Request):
     seq = payload.sequence
-    flat_seq = flatten(seq)
-    items = search_many(flat_seq)
+    items = search_many(seq)
     return Items(items=items)
 
 

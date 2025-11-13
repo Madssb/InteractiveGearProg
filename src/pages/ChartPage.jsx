@@ -1,7 +1,6 @@
 import Chart from "@/components/Chart.jsx";
 import ConfigMenu from "@/components/ConfigMenu";
 import ContextMenu from '@/components/ContextMenu.jsx';
-import ShowButton from '@/components/ShowButton.jsx';
 import Acknowledgements from '@/components/static/Acknowledgements.jsx';
 import FAQSection from '@/components/static/FAQSection.jsx';
 import Footer from '@/components/static/Footer.jsx';
@@ -184,10 +183,12 @@ export default function ChartPage(){
                 />
             )}
             {nodesHiddenState.size > 0 && (
-            <ShowButton
-                onShow={handleShowClick}
-                buttonText={"Show hidden items"}
-            />
+            <button
+                id="show-button"
+                onClick={handleShowClick}
+            >
+                Show hidden items
+            </button>
             )}   
             {menu.visible && (
             <ContextMenu
@@ -196,6 +197,7 @@ export default function ChartPage(){
                 entity={menu.entity}
                 onClose={handleCloseMenu}
                 onHide={handleHideClick}
+                items={items}
             />
             )}
             <Acknowledgements />
