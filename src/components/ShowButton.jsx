@@ -1,11 +1,11 @@
-export default function ShowButton({ onShow }){
+export default function ShowButton({ onShow, buttonText }){
     return (
         <>
             <button
                 id="show-button"
                 onClick={onShow}
             >
-                <span id="show-text">Show hidden items</span>
+                <span id="show-text">{buttonText}</span>
             </button>
         </>
     )

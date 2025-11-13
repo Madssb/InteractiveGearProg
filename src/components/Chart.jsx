@@ -1,12 +1,20 @@
 import { handleLevels, sanitizeId } from '@/utils/textSanitizers';
-import items from '@data/generated/items.json';
 import React from 'react';
 
 /**
  * Renders a node with entity, behavior dependent on if type is skill or non-skill.
  * 
  */
-function Node({ entity, onContextMenu, onTouchStart, onTouchEnd, onClick, nodeCompleteState, nodeHiddenState }){
+function Node({
+        entity,
+        items,
+        onContextMenu,
+        onTouchStart,
+        onTouchEnd,
+        onClick,
+        nodeCompleteState, 
+        nodeHiddenState
+    }){
     // "86 ranged" is invalid key, "ranged" is valid.
     let itemData = items[handleLevels(entity)];
     
@@ -73,37 +81,54 @@ function Node({ entity, onContextMenu, onTouchStart, onTouchEnd, onClick, nodeCo
  * Renders a group of nodes
  * 
  */
-function NodeGroup({ entities, onContextMenu, onTouchStart, onTouchEnd, onClick, nodesCompleteState, nodesHiddenState, hide }) {
+function NodeGroup({
+        entities, 
+        items,
+        onContextMenu, 
+        onTouchStart, 
+        onTouchEnd, 
+        onClick, 
+        nodesCompleteState, 
+        nodesHiddenState, 
+        hide
+    }) {
     // entities in nodesHiddenState omitted from rendering
-    const entitiesNotHidden = entities.filter(e => {
-        if (nodesHiddenState.has(e)){
-            return false;
-        } else {
-            return true;
-        }
-    })
-    const entitiesNotHiddenNotFiltered = entitiesNotHidden.filter(e => {
-        const key = handleLevels(e);
-        const itemData = items[key];
-        if (!itemData) {
-            console.warn(`Missing data for entity: ${e}`);
-            return false;
-        }
-        return !hide[itemData.type];
-    });
+    let final;
+    if (hide && nodesHiddenState){
+        const entitiesNotHidden = entities.filter(e => {
+            if (nodesHiddenState.has(e)){
+                return false;
+            } else {
+                return true;
+            }
+        })
+        const entitiesNotHiddenNotFiltered = entitiesNotHidden.filter(e => {
+            const key = handleLevels(e);
+            const itemData = items[key];
+            if (!itemData) {
+                console.warn(`Missing data for entity: ${e}`);
+                return false;
+            }
+            return !hide[itemData.type];
+        });
+        final = entitiesNotHiddenNotFiltered
+    } else {
+        final = entities;
+    }
     return (
     <div className={"node-group"}>
       {
-        entitiesNotHiddenNotFiltered.map(entity => (
+        final.map(entity => (
             <Node
                 key={entity}
+                items={items}
                 entity={entity}
                 onContextMenu={onContextMenu}
                 onTouchStart={onTouchStart}
                 onTouchEnd={onTouchEnd}
                 onClick={onClick}
-                nodeCompleteState={nodesCompleteState.has(entity)}
-                nodeHiddenState={nodesHiddenState.has(entity)}
+                nodeCompleteState={nodesCompleteState?.has(entity)}
+                nodeHiddenState={nodesHiddenState?.has(entity)}
 
             />
         ))
@@ -118,6 +143,7 @@ function NodeGroup({ entities, onContextMenu, onTouchStart, onTouchEnd, onClick,
 */
 export default function Chart( {
         nodeGroups,
+        items,
         hide,
         nodesHiddenState,
         nodesCompleteState,
@@ -127,15 +153,20 @@ export default function Chart( {
         handleNodeClick,
         arrows
     } ){
-    const visibleGroups = nodeGroups.filter(group =>
-    group.some(entity => {
-        if (nodesHiddenState.has(entity)) return false;
-        const key = handleLevels(entity);
-        const itemData = items[key];
-        if (!itemData) return false;
-        return !hide[itemData.type];
-    })
-    );
+    let visibleGroups;
+    if (hide){
+        visibleGroups = nodeGroups.filter(group =>
+        group.some(entity => {
+            if (nodesHiddenState.has(entity)) return false;
+            const key = handleLevels(entity);
+            const itemData = items[key];
+            if (!itemData) return false;
+            return !hide[itemData.type];
+        })
+        );
+    } else {
+        visibleGroups = nodeGroups;
+    }
     return (
         <div
         className={"chart"}
@@ -147,6 +178,7 @@ export default function Chart( {
                             <NodeGroup
                                 key={nodeGroup}
                                 entities={nodeGroup}
+                                items={items}
                                 onContextMenu={handleNodeContextMenu}
                                 onTouchStart={handleNodeTouchStart}
                                 onTouchEnd={handleNodeTouchEnd}
@@ -163,7 +195,5 @@ export default function Chart( {
                 )
             }
         </div>
-
     )
 }
-
