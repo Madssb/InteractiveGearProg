@@ -1,9 +1,11 @@
+import { useState } from "react";
+
 async function getItems(
     sequenceArray,
     outputItemsState,
     setOutputItemsState
 ){
-    const url = "http://127.0.0.1:8000/sequence/";
+    const url = "https://api.ladlorchart.com/sequence/";
     const flat = sequenceArray.flat();
     const keySet = new Set(Object.keys(outputItemsState));
     const payload = flat.filter(item => !keySet.has(item));;
@@ -33,7 +35,7 @@ export default function SequenceForm({
     setOutputItemsState,
     outputItemsState
 }){
-    const [loading, setLoading] = usestate(false);
+    const [loading, setLoading] = useState(false);
     async function handleSubmit(e) {
         e.preventDefault();
         let raw = e.target.sequence.value.trim();
