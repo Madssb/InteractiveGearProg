@@ -1,11 +1,15 @@
 # fastapi dev backend/main.py --port 8000
 
+from typing import Annotated
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from osrswiki_images import search_many
-from pydantic import BaseModel
+from pydantic import BaseModel, conlist
 
-app = FastAPI()
+SequenceType = Annotated[list[str], conlist(str, min_items=1, max_items=500)]
+# Autodocs is considered risky.
+app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 
 app.add_middleware(
     CORSMiddleware,
@@ -20,7 +24,7 @@ app.add_middleware(
 
 
 class Request(BaseModel):
-    sequence: list[str]
+    sequence: SequenceType
 
 
 class ItemInfo(BaseModel):

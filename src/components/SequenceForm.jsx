@@ -33,45 +33,46 @@ export default function SequenceForm({
     setOutputItemsState,
     outputItemsState
 }){
-  function handleSubmit(e) {
-    e.preventDefault();
-    let raw = e.target.sequence.value.trim();
+    const [loading, setLoading] = usestate(false);
+    async function handleSubmit(e) {
+        e.preventDefault();
+        let raw = e.target.sequence.value.trim();
 
-    if (!(raw.startsWith("[") && raw.endsWith("]"))) {
-        console.log("Input not valid, must be list[list[str]]")
-        return;
-    }
-    let sequenceArray;
-    try {
-        console.log(raw);
-        sequenceArray = JSON.parse(raw);
-        console.log(sequenceArray);
-    } catch {
-        console.log("Invalid JSON")
-        return;
-    }
-    if (!(sequenceArray instanceof Array)){
-       console.log("Not an Array");
-       return;
-    }
-    // API expects list[list[str]], and user will be heldhand.
-    sequenceArray.forEach((nodeGroup, index, array) => {
-        if (!(nodeGroup instanceof Array)){
-            console.log(`Input must be list[list[str]], got: ${nodeGroup} (index${index})`)
+        if (!(raw.startsWith("[") && raw.endsWith("]"))) {
+            console.log("Input not valid, must be list[list[str]]")
             return;
         }
-        nodeGroup.forEach((node, index2, array2) => {
-            if (!(typeof node === "string")){
-                console.log(`Input must be list[list[str]], got: ${node} (in ${nodeGroup})`)
+        let sequenceArray;
+        try {
+            console.log(raw);
+            sequenceArray = JSON.parse(raw);
+            console.log(sequenceArray);
+        } catch {
+            console.log("Invalid JSON")
+            return;
+        }
+        if (!(sequenceArray instanceof Array)){
+        console.log("Not an Array");
+        return;
+        }
+        // API expects list[list[str]], and user will be heldhand.
+        sequenceArray.forEach((nodeGroup, index, array) => {
+            if (!(nodeGroup instanceof Array)){
+                console.log(`Input must be list[list[str]], got: ${nodeGroup} (index${index})`)
                 return;
             }
+            nodeGroup.forEach((node, index2, array2) => {
+                if (!(typeof node === "string")){
+                    console.log(`Input must be list[list[str]], got: ${node} (in ${nodeGroup})`)
+                    return;
+                }
+            })
         })
-    })
-    setInputSequenceState(sequenceArray);
-    getItems(sequenceArray, outputItemsState, setOutputItemsState);
-
-
-  }
+        setInputSequenceState(sequenceArray);
+        setLoading(true);
+        await getItems(sequenceArray, outputItemsState, setOutputItemsState);
+        setLoading(false);
+    }
 
   const style = {
     "display":"flex",
@@ -88,7 +89,8 @@ export default function SequenceForm({
             style={{ width: "100%" }}
             autoComplete="off"
         ></textarea>
-      <input type="submit" value="Submit" />
+        <input type="submit" value="Submit" />
+        {loading && <p>Loading...</p>}
     </form>
   );
 }
