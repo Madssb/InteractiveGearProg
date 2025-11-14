@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from osrswiki_images import search_many
 from pydantic import BaseModel, conlist
 
-SequenceType = Annotated[list[str], conlist(str, min_items=1, max_items=500)]
+SequenceType = Annotated[list[str], conlist(str, min_length=1, max_length=500)]
 # Autodocs is considered risky.
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 
