@@ -1,20 +1,19 @@
 import Chart from "@/components/Chart.jsx";
 import ConfigMenu from "@/components/ConfigMenu";
 import ContextMenu from '@/components/ContextMenu.jsx';
-import ShowButton from '@/components/ShowButton.jsx';
 import Acknowledgements from '@/components/static/Acknowledgements.jsx';
 import FAQSection from '@/components/static/FAQSection.jsx';
 import Footer from '@/components/static/Footer.jsx';
 import '@/styles/ChartPage.css';
 import migrateLegacySharedNodeStates from '@/utils/migrateState';
+import removeStarredItems from '@/utils/removeStarredItems.js';
 import updateSequenceLanceRule from '@/utils/sequenceRules.js';
 import { useLocalStorageSet, useLocalStorageState } from '@/utils/useLocalStorageState';
+import items from '@data/generated/items.json';
 import sequenceBareBones from '@data/generated/sequence-bare-bones.json';
 import retirement from '@data/logic/retirement.json';
 import sequence from '@data/logic/sequence.json';
 import React, { useState } from 'react';
-
-import removeStarredItems from '@/utils/removeStarredItems.js';
 
 
 export default function ChartPage(){
@@ -143,7 +142,8 @@ export default function ChartPage(){
             )}
             {showBareBones && (
                 <Chart
-                    nodeGroups={nodeGroupsBareBonesState} 
+                    nodeGroups={nodeGroupsBareBonesState}
+                    items={items}
                     hide={hide}
                     nodesHiddenState={nodesHiddenState}
                     nodesCompleteState={nodesCompleteState}
@@ -156,7 +156,8 @@ export default function ChartPage(){
             )}
             {!showBareBones && (
                 <Chart
-                    nodeGroups={nodeGroupsState} 
+                    nodeGroups={nodeGroupsState}
+                    items={items}
                     hide={hide}
                     nodesHiddenState={nodesHiddenState}
                     nodesCompleteState={nodesCompleteState}
@@ -169,7 +170,8 @@ export default function ChartPage(){
             )}
             {showRetirement && (
                 <Chart
-                    nodeGroups={nodeGroupsRetirement} 
+                    nodeGroups={nodeGroupsRetirement}
+                    items={items}
                     hide={hide}
                     nodesHiddenState={nodesHiddenState}
                     nodesCompleteState={nodesCompleteState}
@@ -181,9 +183,12 @@ export default function ChartPage(){
                 />
             )}
             {nodesHiddenState.size > 0 && (
-            <ShowButton
-                onShow={handleShowClick}
-            />
+            <button
+                id="show-button"
+                onClick={handleShowClick}
+            >
+                Show hidden items
+            </button>
             )}   
             {menu.visible && (
             <ContextMenu
@@ -192,6 +197,7 @@ export default function ChartPage(){
                 entity={menu.entity}
                 onClose={handleCloseMenu}
                 onHide={handleHideClick}
+                items={items}
             />
             )}
             <Acknowledgements />

@@ -1,10 +1,9 @@
 
 import '@/styles/context-menu.css';
 import { handleLevels } from '@/utils/textSanitizers';
-import items from '@data/generated/items.json';
 import { useLayoutEffect, useRef, useState } from 'react';
 
-export default function ContextMenu({ entity, onClose, onHide, x, y}){
+export default function ContextMenu({ entity, onClose, onHide, onDelete, items, x, y}){
     
     let wikiUrl = items[handleLevels(entity)]["wikiUrl"];
     // avoid menu screen clipping
@@ -52,16 +51,31 @@ export default function ContextMenu({ entity, onClose, onHide, x, y}){
                     <span className='left-text'>go to </span>
                     <span className='right-text'>Wiki</span>
                 </button>}
-                <button
-                    id='hide-button'
-                    className='menu-button'
-                    onClick={() => {
-                        onHide(entity);
-                        onClose;
-                    }}
-                >
-                    <span className='left-text'>Hide</span>
-                </button>
+                {onHide && (
+                    <button
+                        id='hide-button'
+                        className='menu-button'
+                        onClick={() => {
+                            onHide(entity);
+                            onClose();
+                        }}
+                    >
+                        <span className='left-text'>Hide</span>
+                    </button>
+                )}
+                {onDelete && (
+                    <button
+                        id='delete-button'
+                        className='menu-button'
+                        onClick={() => {
+                            onDelete(entity);
+                            onClose();
+                        }}
+                    >
+                        <span className='left-text'>Delete </span>
+                        <span className='right-text'>{entity}</span>
+                    </button>
+                )}
                 <button
                     id='cancel-button'
                     className='menu-button'

@@ -1,9 +1,15 @@
-name: Deploy to GitHub Pages
+name: Deploy Frontend
 
 on:
   push:
     branches:
       - main
+    paths:
+      - "src/**"
+      - "public/**"
+      - "package.json"
+      - "package-lock.json"
+      - "vite.config.*"
 
 permissions:
   contents: write
