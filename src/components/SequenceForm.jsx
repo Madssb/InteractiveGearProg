@@ -12,7 +12,7 @@ async function getItems(
     const payload = flat.filter(item => !keySet.has(item));;
     const clientCacheHits = flat.filter(item => keySet.has(item)).length;
     const clientCacheMisses = flat.length - clientCacheHits;
-    console.log(`client hits: ${clientCacheHits}, client misses: ${clientCacheMisses}`);
+    // console.log(`client hits: ${clientCacheHits}, client misses: ${clientCacheMisses}`);
 
     try {
         const response = await fetch(url, {
@@ -26,12 +26,11 @@ async function getItems(
             throw new Error(`Response status: ${response.status}`);
         }
         const text = await response.text();
-        console.log(text);
 
         // If you still want it as JSON afterwards:
         const result = JSON.parse(text);
         const items = result["items"];
-        console.log(`cache hits: ${result["cacheHits"]}, cache misses: ${result["cacheMisses"]}`)
+        // console.log(`cache hits: ${result["cacheHits"]}, cache misses: ${result["cacheMisses"]}`)
         setOutputItemsState(prev => ({ ...prev, ...items }));
     } catch (error) {
     console.error(error.message);
@@ -55,9 +54,7 @@ export default function SequenceForm({
         }
         let sequenceArray;
         try {
-            console.log(raw);
             sequenceArray = JSON.parse(raw);
-            console.log(sequenceArray);
         } catch {
             console.log("Invalid JSON")
             return;
