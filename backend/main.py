@@ -66,7 +66,12 @@ async def create_sequence(payload: Request):
     out: Dict[str, ItemInfo] = {}
     seq = payload.sequence
     cache_hits, cache_misses = LRU_cache(seq, CACHE)
-    results = search_many(cache_misses)
+    try:
+        results = search_many(cache_misses)
+    except Exception:
+        # safest fallback: do not return partial API data from the wiki
+        # instead return empty results for the misses
+        results = {}
     for name, info in results.items():
         CACHE.put(name, info)
         out[name] = info
