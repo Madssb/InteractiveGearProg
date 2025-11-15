@@ -5,10 +5,14 @@ async function getItems(
     outputItemsState,
     setOutputItemsState
 ){
-    const url = "https://api.ladlorchart.com/sequence/";
+    const url = "https://api.ladlorchart.com/sequence/"; // Remote
+    // const url = "http://127.0.0.1:8000/sequence/" // Localhost testing
     const flat = sequenceArray.flat();
     const keySet = new Set(Object.keys(outputItemsState));
     const payload = flat.filter(item => !keySet.has(item));;
+    const clientCacheHits = flat.filter(item => keySet.has(item)).length;
+    const clientCacheMisses = flat.length - clientCacheHits;
+    console.log(`client hits: ${clientCacheHits}, client misses: ${clientCacheMisses}`);
 
     try {
         const response = await fetch(url, {
@@ -21,8 +25,13 @@ async function getItems(
         if (!response.ok){
             throw new Error(`Response status: ${response.status}`);
         }
-        const result = await response.json();
+        const text = await response.text();
+        console.log(text);
+
+        // If you still want it as JSON afterwards:
+        const result = JSON.parse(text);
         const items = result["items"];
+        console.log(`cache hits: ${result["cacheHits"]}, cache misses: ${result["cacheMisses"]}`)
         setOutputItemsState(prev => ({ ...prev, ...items }));
     } catch (error) {
     console.error(error.message);
