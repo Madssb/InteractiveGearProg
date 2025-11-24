@@ -118,3 +118,8 @@ async def load_share_endpoint(token: str) -> Share:
         raise HTTPException(status_code=404, detail="Not found")
     sequence, items = result
     return Share(sequence=sequence, items=items)
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
