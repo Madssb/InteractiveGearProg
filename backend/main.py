@@ -1,15 +1,18 @@
 # fastapi dev backend/main.py --port 8000
-
+import secrets
 from collections import OrderedDict
 from typing import Annotated, Dict, List, Tuple
 
-from fastapi import FastAPI
+from db import load_share, save_share
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from osrswiki_images import search_many
 from pydantic import BaseModel, conlist
 
-SequenceType = Annotated[list[str], conlist(str, min_length=1, max_length=50)]
-# Autodocs is considered risky.
+FlatSequenceType = Annotated[list[str], conlist(str, min_length=1, max_length=500)]
+NestedSequenceType = list[list[str]]
+
+
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 
 app.add_middleware(
@@ -24,8 +27,8 @@ app.add_middleware(
 )
 
 
-class Request(BaseModel):
-    sequence: SequenceType
+class ItemsRequest(BaseModel):
+    sequence: FlatSequenceType
 
 
 class ItemInfo(BaseModel):
@@ -34,10 +37,15 @@ class ItemInfo(BaseModel):
     type: str
 
 
-class Response(BaseModel):
+class ItemsResponse(BaseModel):
     items: dict[str, ItemInfo]
     cacheHits: int
     cacheMisses: int
+
+
+class Share(BaseModel):
+    items: dict[str, ItemInfo]
+    sequence: NestedSequenceType
 
 
 class LRU(OrderedDict):
@@ -62,7 +70,7 @@ def read_root():
 
 
 @app.post("/sequence/")
-async def create_sequence(payload: Request):
+async def create_sequence(payload: ItemsRequest) -> ItemsResponse:
     out: Dict[str, ItemInfo] = {}
     seq = payload.sequence
     cache_hits, cache_misses = LRU_cache(seq, CACHE)
@@ -77,7 +85,9 @@ async def create_sequence(payload: Request):
         out[name] = info
     for cache_hit in cache_hits:
         out[cache_hit] = CACHE[cache_hit]
-    return Response(items=out, cacheHits=len(cache_hits), cacheMisses=len(cache_misses))
+    return ItemsResponse(
+        items=out, cacheHits=len(cache_hits), cacheMisses=len(cache_misses)
+    )
 
 
 def LRU_cache(
@@ -93,7 +103,18 @@ def LRU_cache(
     return cache_hits, cache_misses
 
 
-# curl -X POST \
-#   -H "Content-Type: application/json" \
-#   -d '{"sequence": [["a", "b"], ["c"]]}' \
-#   http://127.0.0.1:8000/sequence/
+@app.post("/share/")
+async def create_share(payload: Share) -> str:
+    token = secrets.token_urlsafe(8)
+    plain_items = {k: v.dict() for k, v in payload.items.items()}
+    await save_share(token, payload.sequence, plain_items)
+    return token
+
+
+@app.get("/share/")
+async def load_share_endpoint(token: str) -> Share:
+    result = await load_share(token)
+    if result is None:
+        raise HTTPException(status_code=404, detail="Not found")
+    sequence, items = result
+    return Share(sequence=sequence, items=items)
