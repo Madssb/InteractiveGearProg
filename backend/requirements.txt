@@ -3,3 +3,4 @@ uvicorn
 pydantic
 osrswiki_images
 dotenv
+asyncpg
