@@ -3,9 +3,39 @@ import ContextMenu from '@/components/ContextMenu.jsx';
 import SequenceForm from '@/components/SequenceForm';
 import Footer from '@/components/static/Footer.jsx';
 import { useLocalStorageSet, useLocalStorageState } from '@/utils/useLocalStorageState';
-import LZString from "lz-string";
 import React, { useState } from 'react';
 import { useLocation } from "react-router";
+
+async function postShare(inputSequenceState, outputItemsState) {
+    if (!inputSequenceState || !outputItemsState) return;
+
+    const url = "https://api.ladlorchart.com/share/";
+        // const url = "http://127.0.0.1:8000/share/" // Localhost testing
+    const base = window.location.origin + window.location.pathname;
+
+    const payload = {
+        sequence: inputSequenceState,   // nested list
+        items: outputItemsState         // dict of ItemInfo
+    };
+
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error(`Response status: ${response.status}`);
+
+        const token = await response.json();   // or .text() if backend returns plain string
+
+        const shareUrl = `${base}#/customize?token=${token}`;
+        navigator.clipboard.writeText(shareUrl);
+
+    } catch (err) {
+        console.error(err);
+    }
+}
 
 
 export default function CustomizePage(){    
@@ -16,32 +46,27 @@ export default function CustomizePage(){
     // initialize from Share-URL
     const location = useLocation();
 
+
     React.useEffect(() => {
-        const param = new URLSearchParams(location.search).get("data");
-        if (!param) return;
-
-        const json = LZString.decompressFromEncodedURIComponent(param);
-        if (!json) return;
-
-        const parsed = JSON.parse(json);
-
-        if (parsed.seq) setInputSequenceState(parsed.seq);
-        if (parsed.items) setOutputItemsState(parsed.items);
+        const params = new URLSearchParams(location.search);
+        const token = params.get("token");
+        if (token) fetchShare(token);
     }, [location.search]);
 
-    function makeShareLink() {
-        if (!inputSequenceState || !outputItemsState) return;
+    async function fetchShare(token) {
+        try {
+            const response = await fetch(`https://api.ladlorchart.com/share/?token=${token}`);
+            // const response = await fetch(`http://127.0.0.1:8000/share/?token=${token}`);
+            if (!response.ok) throw new Error(`status ${response.status}`);
 
-        const payload = {
-            seq: inputSequenceState,
-            items: outputItemsState
-        };
+            const share = await response.json();
 
-        const json = JSON.stringify(payload);
-        const encoded = LZString.compressToEncodedURIComponent(json);
-        const base = window.location.origin + window.location.pathname;
-        const shareUrl = `${base}#/customize?data=${encoded}`;
-        navigator.clipboard.writeText(shareUrl);
+            // share = { sequence: [...], items: {...} }
+            setInputSequenceState(share.sequence);
+            setOutputItemsState(share.items);
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     function extractSequence() {
@@ -124,7 +149,10 @@ export default function CustomizePage(){
 
     const actions = [
         { handler: handleInputClick, label: "Show input" },
-        { handler: makeShareLink,    label: "Share" },
+        { 
+        handler: () => postShare(inputSequenceState, outputItemsState), 
+        label: "Share" 
+        },
         { handler: extractSequence,  label: "Extract" }
     ];    
     return (
