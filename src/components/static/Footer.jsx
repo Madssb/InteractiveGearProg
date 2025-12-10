@@ -11,7 +11,8 @@ export default function Footer(){
                 <Link to="changelog">View Changelog</Link> |{" "}
                 <Link to="privacy">Privacy Policy</Link> |{" "}
                 <a href="https://github.com/Madssb/InteractiveGearProg">Source Code</a> |{" "}
-                Monthly page visits: <span id="page-count"><PageCount /></span>
+                Monthly page visits: <span id="page-count"><PageCount /></span> |{" "}
+                <Link to="customize">Chartbuilder</Link> |{" "}
                 </p>
                 <p>All images used in this tool are sourced from the{" "}
                     <a href="https://oldschool.runescape.wiki/" target="_blank">Old School RuneScape Wiki</a>,
