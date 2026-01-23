@@ -1,0 +1,138 @@
+:root {
+  /* Structure */
+  --node-size: 40px;
+  --gap-sm: 5px;
+  --gap-md: 10px;
+  --border-width: 2px;
+
+  /* State tokens */
+  --state-incomplete-bg: transparent;
+  --state-complete-bg: #0e8f2b;
+  --state-skipped-bg: var(--state-complete-bg);
+  --state-skipped-triangle: yellow;
+
+  /* Neutral border */
+  --node-border: hsl(0, 0%, 67%);
+}
+
+/* Container holding all groups */
+.chart {
+  display: flex;
+  flex-flow: row wrap;
+  column-gap: var(--gap-md);
+  row-gap: 50px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+/* Group of nodes laid out left→right, 2 rows tall */
+.node-group {
+  display: grid;
+  grid-template-rows: var(--node-size) var(--node-size);
+  grid-auto-columns: var(--node-size);
+  grid-auto-flow: column dense;
+  grid-gap: var(--gap-sm);
+  margin: 2px;
+
+  /* interaction hygiene */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Single-item special case: center the lone node */
+.node-group:has(> .node:only-child) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Node box and image sizing */
+.node-group > .node {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--node-size);
+  height: var(--node-size);
+  border: var(--border-width) solid var(--node-border);
+}
+
+.node-group > .node > img {
+  width: var(--node-size);
+  height: var(--node-size);
+  object-fit: scale-down;
+}
+
+/* Skill sub-box */
+.node-group > .node > .skill {
+  width: var(--node-size);
+  height: var(--node-size);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.node-group > .node > .skill > img {
+  width: 20px;
+  height: 20px;
+  object-fit: scale-down;
+}
+.node-group > .node > .skill > span {
+  font-size: 0.8rem;
+}
+
+/* States: only semantics; colors via variables */
+.incomplete {
+  background-color: var(--state-incomplete-bg);
+}
+.complete {
+  background-color: var(--state-complete-bg);
+}
+/* Arrow cell (→ between groups) */
+.chart > .arrow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--node-size);
+  height: var(--node-size);
+  font-size: 30px;
+}
+
+/* Mobile: stack groups vertically; show down arrow between them */
+@media (max-width: 600px) {
+  .chart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 14px; /* between groups */
+  }
+  .node-group:not(:has(.node:nth-child(9))) {
+    display: grid;
+    position: relative;
+    grid-template-rows: var(--node-size);
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+  }
+
+  .node-group > .node {
+    flex: 0 0 var(--node-size);
+    height: var(--node-size);
+  }
+
+  .chart > .arrow {
+    margin: 6px 0;
+    text-align: center;
+    transform: rotate(90deg);
+  }
+}
+
+#show-button {
+  display: block; /* makes margin auto work */
+  margin: 1em auto; /* top/bottom spacing optional */
+  background-color: gray;
+}

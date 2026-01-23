@@ -1,0 +1,82 @@
+{
+  "1.5.0": [
+    "Implemented hide feature: can now hide nodes from the chart, and re-render on 'show hidden'.",
+    "removed redundant feature made redundant by the hide feature.",
+    "Added the retirement home category for those that want to hunt BIS that is otherwise too niche for the main chart",
+    "added option to filter construction milestones, level milestones, and slayer reward unlocks.",
+    "dragon hunter lance re-appears on the chart if hiding scythe"
+  ],
+  "1.4.4": [
+    "Removed dragon hunter lance, made obsolete by scythe for purposes of the chart."
+  ],
+  "1.4.3": [
+    "Moved dragon hunter lance to post-scythe. With the previous verion's correction of Scythe of vitur sequencing accounted for, the dragon hunter lance is now obsolete for chambers of xeric, and its aquisition is sped up by scythe access."
+  ],
+  "1.4.2": [
+    "Scythe of Vitur has been moved to same sequencing group as Avernic defender, and Dizana's quiver has been seperated into its own sequence group just prior to the aforementioned tob items.",
+    "Rite of vile transference (dc2) and Avernic Treads have been merged to signify their lack of cross-dependency, i.e. not mattering which one is first."
+  ],
+  "1.4.1": [
+    "Replaced 98 agility step with hallowed crystal shard step, still encoding sep access in progression. Still implicitly assumes doing the minigame for the rewards",
+    "Added link to BRUHSailer in acknowledgements"
+  ],
+  "1.4.0": [
+    "Added Mokhiatl uniques.",
+    "Added Arkan blade.",
+    "Trident of the seas and trident of the swamp removed, outclassed by Eye of ayak.",
+    "Agility step re-sequenced to match BRUHSailer.",
+    "MTA items and ice barrage moved pre 69 slayer.",
+    "Osmumten's fang postponed until pre-lance.",
+    "Skip functionality added per contributions by \"leonprz\" on github."
+  ],
+  "1.3.3": [
+    "For avoiding scope-creep on the chart that is primarily pvm and slayer, diary items with little relevance for either are removed. These include: Varrock armour, Kandarin headgear, Fremennik seaboots, Ardougne cape, and diary cape.",
+    "Removed log basket and plank sack for lacking pvm/slayer impact.",
+    "Mixology rewards postponed until after slayer helm."
+  ],
+  "1.3.2": [
+    "Tormented bracelet, Ring of suffering, and synapse weapons all moved into the major 80-90slayer block. They are postponed to account for ancient shard scarcity.",
+    "Bandos hilt is identified as a pointless inclusion and as a result is dropped.",
+    "Soulreaper axe is removed. Too niche, and left to player discretion.",
+    "tweaked title and added subtitle to more accurately reflect authorship"
+  ],
+  "1.3.1": [
+    "Ring of suffering moved to immediately pre-zulrah.",
+    "Bandos chestplate and tassets removed. Tassets not impactful enough anymore",
+    "Spelbook swap moved to pre-ZMI.",
+    "Deadeye and mystic"
+  ],
+  "1.3.0": [
+    "Oathplate armor added.",
+    "Rite of vile transference.",
+    "Neitiznot faceguard removed."
+  ],
+  "1.2.2": ["Mobile QOL, courtesy of RedSparr0w"],
+  "1.2.1": [
+    "Changed style of url to make it less harsh on the eyes, per request."
+  ],
+  "1.2.0": [
+    "Black demon task extension has been correctly substituted with greater demon task extension.",
+    "Removed Seers ring (i) as it no longer is required for maxhits.",
+    "Mixed hide and chinning moved one step earlier to match the sequencing in BruhSailer.",
+    "Right click option for going to wiki has been added.",
+    "The codebase for the website has been reworked for simpler maintenance and in preparation for a future project.",
+    "Removed light mode for now. It may make a return in the next update if a sizeable portion of users prefer it.",
+    "Bare bones and original version now synchronize with respect to item selection."
+  ],
+  "1.1.1": [
+    "Moved mastering mixology rewards ahead of varrock armour.",
+    "Added attribution for images sourced from the Old School RuneScape Wiki to ensure compliance with the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.",
+    "Added privacy policy, and non-invasive and GDPR compliant page visit counter."
+  ],
+  "1.1.0": [
+    "Added bare-bones alternative",
+    "Item states are invariant of sequencing",
+    "Dark mode is now the default option",
+    "Added mixology rewards",
+    "Added FAQ",
+    "Added changelog",
+    "Introduced versioning"
+  ],
+  "1.0.0": ["Araxxor and Tormented Demon items added", "Dark mode added"]
+}

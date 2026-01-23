@@ -1,0 +1,8 @@
+#options-button {
+  background-color: gray;
+  transition: background-color 0.1s;
+}
+#options-button.active,
+#options-button:active {
+  background-color: #555; /* darker shade */
+}

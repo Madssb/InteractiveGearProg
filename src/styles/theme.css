@@ -1,0 +1,52 @@
+:root {
+  --node-border: #aaaaaa;
+
+  /* brand colors */
+  --state-complete-bg: #0e8f2b;
+  --state-skipped-bg: var(--state-complete-bg);
+
+  /* optional dark/light */
+  --bg: #2c2c2c;
+  --fg: #e0e0e0;
+}
+
+/* Page theming */
+body {
+  background: var(--bg);
+  color: var(--fg);
+}
+
+/* Typography and links */
+h1,
+h2,
+p,
+ul,
+li {
+  text-align: center;
+}
+a {
+  color: #66aaff;
+  text-decoration: underline;
+}
+a:visited {
+  color: #aa88ff;
+}
+
+/* Extras */
+.subtitle {
+  font-size: 0.85em;
+  font-style: italic;
+  color: #aaa;
+  text-align: center;
+  display: block;
+  margin-top: -10px;
+  margin-bottom: 30px;
+}
+/* Restore normal list behavior */
+ul,
+li {
+  text-align: left;
+} /* stop centering list text */
+li {
+  display: list-item;
+} /* ensure bullets render */
