@@ -1,0 +1,27 @@
+.changelog h1,
+.changelog h2 {
+  text-align: left;
+}
+
+.changelog-entry {
+  list-style-type: disc outside;
+  padding-left: 1.25rem;
+  margin: 0.5rem auto 1.25rem;
+  max-width: 70ch;
+}
+
+.change {
+  text-align: left;
+}
+/* Changelog lists: classic indent, centered as a block */
+body.changelog > ul {
+  list-style: disc outside; /* bullets outside, visible */
+  padding-left: 1.25rem; /* indent */
+  margin: 0.5rem auto 1.25rem; /* center the whole UL */
+  max-width: 70ch; /* keep it near the middle */
+}
+
+/* Nested lists get a bit more indent */
+body.changelog ul ul {
+  margin-left: 1.25rem;
+}

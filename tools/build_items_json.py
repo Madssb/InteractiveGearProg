@@ -5,7 +5,6 @@ from typing import Dict, Iterable, List, Set
 
 from osrswiki_images import search_many
 
-ROOT_DIR = Path(__file__).parents[1]
 pat = re.compile(r"\d+ (\w+)")
 
 WIKI_W = "https://oldschool.runescape.wiki/w/"
@@ -43,7 +42,7 @@ def is_valid_record(rec: Dict[str, str]) -> bool:
     return True
 
 
-def load_json(path: Path) -> Dict:
+def load_json(path: Path) -> List:
     if not path.exists():
         return {}
     with path.open("r", encoding="utf-8") as f:
@@ -51,11 +50,46 @@ def load_json(path: Path) -> Dict:
 
 
 def fetch_sequence_vals() -> List[str]:
-    contents = load_json(ROOT_DIR / Path("data/sequence.json"))
-    items = flatten(contents)
-    for idx, item in enumerate(items):
-        items[idx] = handle_levels(item)
-    return items
+    items_dir = Path("data/logic")
+    item_srcs = list(items_dir.glob("*.json"))
+    items_nested = []
+    for path in item_srcs:
+        items_nested.extend(load_json(path))
+    # sequence-bare-bones is a subset of sequence and can be omitted.
+    items_flat = flatten(items_nested)
+    items_stripped = [s.lstrip("*") for s in items_flat]
+    items_processed = []
+    for item in items_stripped:
+        items_processed.append(handle_levels(item))
+    return items_processed
+
+
+def remove_filtered(sequence, filter_list):
+    result = []
+    for item in sequence:
+        if isinstance(item, list):
+            # Recurse into sublists
+            cleaned = remove_filtered(item, filter_list)
+            if cleaned:  # only keep non-empty sublists
+                result.append(cleaned)
+        elif isinstance(item, str):
+            # Only keep strings not in filter_list
+            if item not in filter_list:
+                result.append(item)
+        else:
+            # Preserve unexpected non-list, non-str items as-is
+            result.append(item)
+    return result
+
+
+def update_bare_bones():
+    sequence = load_json(Path("data/logic/sequence.json"))
+    filter = load_json(Path("data/filter.json"))
+    sequence_bare_bones = remove_filtered(sequence, filter)
+    out = Path("data/generated/sequence-bare-bones.json")
+    out.parent.mkdir(parents=True, exist_ok=True)
+    with out.open("w", encoding="utf-8") as f:
+        json.dump(sequence_bare_bones, f, indent=2, ensure_ascii=False)
 
 
 def build_worklist(
@@ -75,32 +109,18 @@ def update_items_cache():
     make. Also parse for invalid records. make api requests, update items with results.
     """
     sequence = fetch_sequence_vals()
-    items = load_json(ROOT_DIR / Path("data/generated/items.json"))
+    items = load_json(Path("data/generated/items.json"))
     worklist = build_worklist(sequence, items)
     payload = search_many(worklist, skip_missing=False)
     for k, v in payload.items():
         if v is not None:  # only merge successful resolves
             items[k] = v
-    out = ROOT_DIR / Path("data/generated/items.json")
+    out = Path("data/generated/items.json")
     out.parent.mkdir(parents=True, exist_ok=True)
     with out.open("w", encoding="utf-8") as f:
         json.dump(items, f, indent=2, ensure_ascii=False)
 
 
-def update_version_count():
-    """Updates version.json which lets render-items.js recognize if cached chart is out of date, and force a re-render."""
-    path = ROOT_DIR / Path("data/generated/version.json")
-    path.parent.mkdir(parents=True, exist_ok=True)
-    try:
-        with path.open("r", encoding="utf-8") as f:
-            data = json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        data = {"cacheVersion": 0}
-    data["cacheVersion"] = int(data.get("cacheVersion", 0)) + 1
-    with path.open("w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
-
-
 if __name__ == "__main__":
     update_items_cache()
-    update_version_count()
+    update_bare_bones()

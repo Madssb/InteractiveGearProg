@@ -31,7 +31,7 @@ resp = requests.get(
 resp.raise_for_status()
 data = resp.json()
 monthly_viewcount = data.get("total")
-payload = {"viewcountMonth": monthly_viewcount}
+payload = {"viewCountMonth": monthly_viewcount}
 
 with open(
     ROOT_DIR / Path("data/generated/count.json"),
