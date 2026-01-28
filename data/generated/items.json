@@ -843,5 +843,10 @@
     "wikiUrl": "https://oldschool.runescape.wiki/w/Ursine_chainmace",
     "imgUrl": "https://oldschool.runescape.wiki/images/Ursine_chainmace.png",
     "type": "item"
+  },
+  "Pegasian boots": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Pegasian_boots",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Pegasian_boots.png",
+    "type": "item"
   }
 }
