@@ -2,15 +2,18 @@ name: Deploy Frontend
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
       - "src/**"
       - "public/**"
-      - "data/logic/**"
+      - "data/generated/**"
       - "package.json"
       - "package-lock.json"
       - "vite.config.*"
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
 
 permissions:
   contents: write
