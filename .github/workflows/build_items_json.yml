@@ -2,7 +2,7 @@ name: build items json
 
 on:
   push:
-    paths: ["data/sequence.json"]
+    paths: ["data/logic/*"]
 
 permissions:
   contents: write
