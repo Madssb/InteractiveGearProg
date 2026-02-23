@@ -4,13 +4,15 @@ on:
   push:
     branches: [main]
     paths:
-      - "src/**"
-      - "public/**"
+      - "frontend/src/**"
+      - "frontend/public/**"
+      - "frontend/index.html"
       - "data/generated/**"
+      - "data/contents/**"
       - "data/logic/**"
-      - "package.json"
-      - "package-lock.json"
-      - "vite.config.*"
+      - "frontend/package.json"
+      - "frontend/package-lock.json"
+      - "frontend/vite.config.*"
 
 concurrency:
   group: deploy
@@ -33,18 +35,20 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
+        working-directory: frontend
         run: npm ci
 
       - name: Build project
+        working-directory: frontend
         run: npm run build
 
       - name: Add CNAME
-        run: echo 'ladlorchart.com' > dist/CNAME
+        run: echo 'ladlorchart.com' > frontend/dist/CNAME
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          publish_dir: ./frontend/dist
           publish_branch: gh-pages
           force_orphan: true

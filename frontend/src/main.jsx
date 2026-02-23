@@ -9,9 +9,8 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { HashRouter, Route, Routes } from 'react-router';
 
-
-function App() {
-  return (
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
     <HashRouter>
       <Routes>
         <Route path="/" element={<ChartPage />} />
@@ -22,11 +21,5 @@ function App() {
         <Route path="/customize" element={<CustomizePage />} />
       </Routes>
     </HashRouter>
-  );
-}
-
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
   </StrictMode>
 );

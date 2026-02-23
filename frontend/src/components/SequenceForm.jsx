@@ -10,9 +10,6 @@ async function getItems(
     const flat = sequenceArray.flat();
     const keySet = new Set(Object.keys(outputItemsState));
     const payload = flat.filter(item => !keySet.has(item));;
-    const clientCacheHits = flat.filter(item => keySet.has(item)).length;
-    const clientCacheMisses = flat.length - clientCacheHits;
-    // console.log(`client hits: ${clientCacheHits}, client misses: ${clientCacheMisses}`);
 
     try {
         const response = await fetch(url, {
@@ -64,12 +61,12 @@ export default function SequenceForm({
         return;
         }
         // API expects list[list[str]], and user will be heldhand.
-        sequenceArray.forEach((nodeGroup, index, array) => {
+        sequenceArray.forEach((nodeGroup, index) => {
             if (!(nodeGroup instanceof Array)){
                 console.log(`Input must be list[list[str]], got: ${nodeGroup} (index${index})`)
                 return;
             }
-            nodeGroup.forEach((node, index2, array2) => {
+            nodeGroup.forEach((node) => {
                 if (!(typeof node === "string")){
                     console.log(`Input must be list[list[str]], got: ${node} (in ${nodeGroup})`)
                     return;

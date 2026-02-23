@@ -3,7 +3,7 @@ import ContextMenu from '@/components/ContextMenu.jsx';
 import SequenceForm from '@/components/SequenceForm';
 import Footer from '@/components/static/Footer.jsx';
 import { useLocalStorageSet, useLocalStorageState } from '@/utils/useLocalStorageState';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useLocation } from "react-router";
 
 async function postShare(inputSequenceState, outputItemsState) {
@@ -47,13 +47,7 @@ export default function CustomizePage(){
     const location = useLocation();
 
 
-    React.useEffect(() => {
-        const params = new URLSearchParams(location.search);
-        const token = params.get("token");
-        if (token) fetchShare(token);
-    }, [location.search]);
-
-    async function fetchShare(token) {
+    const fetchShare = useCallback(async (token) => {
         try {
             const response = await fetch(`https://api.ladlorchart.com/share/?token=${token}`);
             // const response = await fetch(`http://127.0.0.1:8000/share/?token=${token}`);
@@ -67,7 +61,13 @@ export default function CustomizePage(){
         } catch (err) {
             console.error(err);
         }
-    }
+    }, [setInputSequenceState, setOutputItemsState]);
+
+    React.useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const token = params.get("token");
+        if (token) fetchShare(token);
+    }, [location.search, fetchShare]);
 
     function extractSequence() {
         if (!inputSequenceState) return;
@@ -143,9 +143,7 @@ export default function CustomizePage(){
         document.addEventListener("click", handleClickOutside);
         return () => document.removeEventListener("click", handleClickOutside);
     }, []);
-    const panelStyle = {"justifyContent": "center", "display":"flex", "alignItems": "center"}
     const buttonStyle = {"backgroundColor": "gray"}
-    const topStyle = {"justifyContent": "space-between", "display":"flex", "alignItems": "center"}
 
     const actions = [
         { handler: handleInputClick, label: "Show input" },
