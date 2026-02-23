@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- Python 3.11+
+- Python 3.14.x
 - PostgreSQL database (Neon or local)
 
 ## Environment
@@ -29,12 +29,14 @@ This creates `public.shares` used by `/share/` endpoints.
 
 ## Run Locally
 
-From repo root:
+From `backend/`:
 
 ```bash
-python3 -m pip install -r backend/requirements.txt
-uvicorn backend.main:app --host 127.0.0.1 --port 8000
+uv sync
+uv run uvicorn main:app --host 127.0.0.1 --port 8000
 ```
+
+For laptop self-hosting behind Cloudflare Tunnel, keep API bound to `127.0.0.1` and route external traffic through `cloudflared`.
 
 ## Health Check
 
@@ -48,3 +50,27 @@ curl http://127.0.0.1:8000/health
 - `POST /share/`
 - `GET /share/?token=...`
 - `GET /health`
+
+## Rate Limiting
+
+The backend enforces per-client limits on:
+
+- `POST /sequence/`
+- `POST /share/`
+
+Policy:
+
+- max 3 requests per second
+- max 20 requests per minute
+
+Client identity is read from `CF-Connecting-IP` (fallback: `X-Forwarded-For`, then socket IP).
+When exceeded, API returns `429 Too Many Requests` with a `Retry-After` response header.
+
+## Guardrails
+
+- Trusted host check allows only:
+  - `api.ladlorchart.com`
+  - `localhost`
+  - `127.0.0.1`
+- Request size limit: max 256 KiB body (`413` on exceed).
+- Request logging records method/path/status/latency/client/host.

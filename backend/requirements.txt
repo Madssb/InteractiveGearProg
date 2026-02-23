@@ -1,6 +1,0 @@
-fastapi
-uvicorn
-pydantic
-osrswiki_images
-python-dotenv
-asyncpg
