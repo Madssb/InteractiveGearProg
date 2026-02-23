@@ -1,21 +1,13 @@
 [project]
-name = "backend"
+name = "interactive-gear-tools"
 version = "0.1.0"
-description = "Add your description here"
+description = "Repo maintenance scripts for data generation"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
-    "asyncpg>=0.31.0",
-    "fastapi>=0.132.0",
     "osrswiki-images>=0.1.4",
-    "pydantic>=2.12.5",
     "python-dotenv>=1.2.1",
-    "uvicorn>=0.41.0",
-]
-
-[dependency-groups]
-dev = [
-    "pytest>=9.0.2",
+    "requests>=2.32.5",
 ]
 
 [tool.uv.sources]

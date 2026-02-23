@@ -1,0 +1,38 @@
+unlock_name,filename,point_cost,notes,toggle
+Gargoyle Smasher,Gargoyle_icon.png,120,Gargoyles are automatically dealt the finishing blow if the player has a rock hammer in their inventory.,Yes|Permanent
+Slug Salter,Rockslug_icon.png,80,Rock slugs are automatically dealt the finishing blow if the player has a bag of salt in their inventory.,Yes|Permanent
+Reptile Freezer,Desert_Lizard_icon.png,90,Desert lizards are automatically dealt the finishing blow if the player has an ice cooler in their inventory.,Yes|Permanent
+'Shroom Sprayer,Mutated_zygomite_icon.png,110,Mutated zygomites are automatically dealt the finishing blow if the player has fungicide spray and fungicide in their inventory.,Yes|Permanent
+Broader Fletching,Broad_arrowheads_5.png,300,"Learn to fletch broad arrows (level 52 Fletching), broad bolts (level 55 Fletching), and amethyst broad bolts (level 76 Fletching).",Yes|Permanent
+Malevolent Masquerade,Slayer_helmet.png,400,"Learn to assemble a Slayer helmet, which requires level 55 Crafting.",Yes|Permanent
+Ring Bling,Slayer_ring.png,300,"Learn to craft a Slayer ring, which requires level 75 Crafting.",Yes|Permanent
+I Hope You Mith Me,Mithril_dragon_icon.png,80,"Konar, Duradel, and Nieve will be able to assign you mithril dragons as your task.",No
+Watch the Birdie,Aviansie_icon.png,80,"Konar, Duradel, Nieve, Chaeldar, and Krystilia will be able to assign you Aviansie as your task. Requires level 60 Agility or 60 Strength to unlock.",No
+Reptile Got Ripped,Lizardmen_icon.png,75,"Konar, Duradel, Nieve, and Chaeldar will be able to assign Lizardmen as your task.",No
+Bigger and Badder,Bigger_and_Badder.png,150,Certain Slayer monsters will have the chance of spawning a Superior slayer monster|superior version whilst on a Slayer task.,Yes
+Stop the Wyvern,Wyvern_bones.png,500,"Stops you getting Fossil Island Wyvern tasks, without counting towards your blocked task limit. This does not cancel a current fossil wyvern task.",Yes
+ Double Trouble,Midnight.png,500,Slaying Dusk and Dawn now counts for two kills towards your task rather than one.,No
+Actual Vampyre Slayer,Vampyre_icon.png,80,"Konar, Duradel, Nieve, and Chaeldar will be able to assign Vampyres as your task.",No
+I Wildy More Slayer,Larran's_key_4.png,0," Krystilia will be able to assign Jellies, Dust Devils, Nechryaels and Abyssal Demons as your task.",Yes
+Warped Reality,Warped_Terrorbird_icon.png,60,"Konar, Duradel, Nieve, and Chaeldar will be able to assign Slayer task/Warped creature|Warped creatures as your task.<ref name=""warped task"" group=""n"">After completion of The Path of Glouphrie.</ref>",No
+Suq-a-nother One,Suqah_leather.png,100, Number of suqahs assigned is increased to 186-250.,No
+Pedal to the Metals,Steel_dragon_(Construction)_icon.png,100,"Number of bronze dragon|bronze, Iron dragon|iron, and steel dragons assigned is increased to 30-50, 61-100, and 40-60, respectively.",No
+I really Mith You,Mithril_dragon_icon.png,120,Number of mithril dragons assigned is increased to 25-35.,No
+Ada'mind Some More,Adamant_dragon_icon.png,100,Number of adamant dragons assigned is increased to 20-30.,No
+RUUUUUNE,Rune_dragon_icon.png,100,Number of rune dragons assigned is increased to 30-60.,No
+Spiritual Fervour,Spiritual_mage_icon.png,100,Number of spiritual creatures assigned is increased to 181-250.,No
+Birds of a Feather,Aviansie_icon.png,100,Number of aviansie assigned is increased to 200-250.,No
+Greater Challenge,Greater_demon_icon.png,100,Number of greater demons assigned is increased to 200-250.,No
+It's Dark in Here,Black_demon_icon.png,100,Number of black demons assigned is increased to 200-250.,No
+Horrorific ,Cave_horror_icon.png,100,Number of cave horrors assigned is increased to 200-250. ,No
+To Dust You Shall Return ,Dust_devil_icon.png,100,Number of dust devils assigned is increased to 200-250.,No
+Wyver-nother One,Skeletal_Wyvern_icon.png,100,Number of Skeletal Wyverns assigned is increased to 50-75.,No
+Get Smashed,Gargoyle_icon.png,100,Number of gargoyles assigned is increased to 200-250.,No
+Nechs Please,Nechryael_icon.png,100,Number of nechryael assigned is increased to 200-250.,No
+Augment my Abbies,Abyssal_demon_icon.png,100,Number of abyssal demons assigned is increased to 200-250.,No
+Krack On ,Cave_kraken_icon.png,100, Number of cave kraken assigned is increased to 150-200.,No
+Get Scabaright on It,Locust_rider_icon.png,50,Number of scabarites assigned is increased to 130-170.,No
+Wyver-nother Two,Fossil_Island_wyverns_icon.png,100,Number of Fossil Island Wyverns assigned is increased to 55-75.,No
+Basilonger ,Basilisk_icon.png,100,Number of basilisks assigned is increased to 200-250.,No
+More eyes than sense,Araxyte_icon.png,150,Number of araxytes assigned is increased to 200-250.,No
+Un-restraining Order,Mature_custodian_stalker_icon.png,100,Number of custodian stalkers assigned is increased to 200-250.,No

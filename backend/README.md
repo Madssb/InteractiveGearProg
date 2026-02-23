@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- Python 3.14.x
+- Python 3.12.x
 - PostgreSQL database (Neon or local)
 
 ## Environment
@@ -50,6 +50,15 @@ curl http://127.0.0.1:8000/health
 - `POST /share/`
 - `GET /share/?token=...`
 - `GET /health`
+
+## Testing
+
+From `backend/`:
+
+```bash
+uv sync
+uv run pytest
+```
 
 ## Rate Limiting
 

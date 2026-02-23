@@ -20,18 +20,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
 
-      - name: Install deps
-        run: |
-          python -m pip install --upgrade pip
-          pip install "osrswiki-images>=0.1"
+      - name: Sync tools env
+        run: uv sync --project tools
 
       - name: Build items.json
-        run: python tools/build_items_json.py
+        run: uv run --project tools python tools/build_items_json.py
 
       - name: Push updated items.json (only if changed)
         env:

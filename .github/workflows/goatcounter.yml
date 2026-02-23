@@ -21,20 +21,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
 
-      - name: Install deps
-        run: |
-          python -m pip install --upgrade pip
-          pip install "requests==2.31.0"
+      - name: Sync tools env
+        run: uv sync --project tools
 
       - name: Generate count.json
         env:
           GOATCOUNTER_API_KEY: ${{ secrets.GOATCOUNTER_API_KEY }}
-        run: python tools/goatcounter.py
+        run: uv run --project tools python tools/goatcounter.py
 
       - name: inspect output
         run: ls -l data/generated
