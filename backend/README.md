@@ -96,6 +96,37 @@ If config is not in the default location:
 cloudflared --config /path/to/config.yml tunnel run ladlorchart-api
 ```
 
+## Systemd Operations
+
+Service templates are versioned in:
+
+- `backend/backend.service`
+- `backend/tunnel.service`
+
+Install as user services:
+
+```bash
+mkdir -p ~/.config/systemd/user
+cp backend/backend.service ~/.config/systemd/user/
+cp backend/tunnel.service ~/.config/systemd/user/
+systemctl --user daemon-reload
+```
+
+Enable and start:
+
+```bash
+systemctl --user enable --now backend.service
+systemctl --user enable --now tunnel.service
+```
+
+Routine operations:
+
+```bash
+systemctl --user status backend.service tunnel.service
+systemctl --user restart backend.service tunnel.service
+journalctl --user -u backend.service -u tunnel.service -f
+```
+
 ## API Endpoints
 
 - `POST /sequence/`
@@ -139,6 +170,28 @@ Examples:
 
 - `uv run pytest -q` -> broad/default run (you may see some `skipped`).
 - `uv run pytest -m live -q` -> live-only run (non-live tests show as `deselected`).
+
+Current test coverage and remaining optional gaps are tracked in:
+
+- `backend/TEST_PRIORITIES.md`
+
+## Rollback
+
+Current deployment path is self-hosted backend + Cloudflare Tunnel.
+
+Fast rollback steps:
+
+1. Revert backend code/config to last known-good state.
+2. Restart services:
+```bash
+systemctl --user restart backend.service tunnel.service
+```
+3. Verify health:
+```bash
+curl -si https://api.ladlorchart.com/health | sed -n '1,20p'
+```
+
+If a future alternate origin exists, DNS rollback can also be used by repointing `api.ladlorchart.com` to that fallback target.
 
 ## Rate Limiting
 

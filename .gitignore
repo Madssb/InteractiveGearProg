@@ -22,3 +22,8 @@ logs
 .DS_Store
 *.sw?
 .vite/*
+
+# Python artefacts
+.venv/
+__pycache__/
+.pytest_cache/
