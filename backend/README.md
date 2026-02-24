@@ -8,11 +8,13 @@
 ## Environment
 
 Set `DATABASE_URL` before starting the API.
+Optional: set `SHARES_TABLE` (defaults to `shares`).
 
 Example:
 
 ```bash
 export DATABASE_URL="postgresql://user:password@host:5432/dbname?sslmode=require"
+export SHARES_TABLE="shares"
 ```
 
 `backend/db.py` reads this value at startup.
@@ -59,6 +61,34 @@ From `backend/`:
 uv sync
 uv run pytest
 ```
+
+DB connectivity smoke check (requires real `DATABASE_URL`):
+
+```bash
+uv run pytest -m db
+```
+
+Live API checks (requires running backend server):
+
+```bash
+RUN_LIVE_TESTS=1 LIVE_API_BASE_URL=http://127.0.0.1:8000 uv run pytest -m live
+```
+
+Live mutating share test safely against test table:
+
+```bash
+RUN_LIVE_TESTS=1 SHARES_TABLE=shares_test LIVE_API_BASE_URL=http://127.0.0.1:8000 uv run pytest -m live
+```
+
+### Interpreting pytest output
+
+- `skipped`: test was selected, but runtime conditions were not met (for example missing env flag/DB URL).
+- `deselected`: test was excluded by your selection filter (for example `-m live` only runs live-marked tests).
+
+Examples:
+
+- `uv run pytest -q` -> broad/default run (you may see some `skipped`).
+- `uv run pytest -m live -q` -> live-only run (non-live tests show as `deselected`).
 
 ## Rate Limiting
 

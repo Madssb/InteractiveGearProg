@@ -20,3 +20,9 @@ dev = [
 
 [tool.uv.sources]
 osrswiki-images = { path = "../osrswiki_images", editable = true }
+
+[tool.pytest.ini_options]
+markers = [
+    "db: requires a live DATABASE_URL and performs database connectivity checks",
+    "live: requires a running backend server and performs live HTTP checks",
+]

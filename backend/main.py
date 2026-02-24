@@ -183,11 +183,6 @@ async def request_logging_middleware(request: Request, call_next):
     return response
 
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
 @app.post("/sequence/")
 async def create_sequence(request: Request, payload: ItemsRequest) -> ItemsResponse:
     enforce_rate_limit(request, "/sequence/")
@@ -227,7 +222,7 @@ def LRU_cache(
 async def create_share(request: Request, payload: Share) -> str:
     enforce_rate_limit(request, "/share/")
     token = secrets.token_urlsafe(8)
-    plain_items = {k: v.dict() for k, v in payload.items.items()}
+    plain_items = {k: v.model_dump() for k, v in payload.items.items()}
     await save_share(token, payload.sequence, plain_items)
     return token
 

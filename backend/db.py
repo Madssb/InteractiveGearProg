@@ -1,5 +1,6 @@
 import json
 import os
+import re
 
 import asyncpg
 from dotenv import load_dotenv
@@ -8,6 +9,12 @@ load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     raise SystemExit("DATABASE_URL is not set")
+SHARES_TABLE = os.getenv("SHARES_TABLE", "shares")
+TABLE_NAME_RE = re.compile(r"^[a-z_][a-z0-9_]*$")
+if not TABLE_NAME_RE.match(SHARES_TABLE):
+    raise SystemExit(
+        "SHARES_TABLE must match ^[a-z_][a-z0-9_]*$ (example: shares or shares_test)"
+    )
 
 
 async def get_pool():
@@ -24,8 +31,8 @@ async def save_share(
 ) -> None:
     pool = await get_pool()
     await pool.execute(
-        """
-        INSERT INTO shares (token, sequence, items)
+        f"""
+        INSERT INTO {SHARES_TABLE} (token, sequence, items)
         VALUES ($1, $2, $3)
         """,
         token,
@@ -37,7 +44,7 @@ async def save_share(
 async def load_share(token: str):
     pool = await get_pool()
     row = await pool.fetchrow(
-        "SELECT sequence, items FROM shares WHERE token = $1", token
+        f"SELECT sequence, items FROM {SHARES_TABLE} WHERE token = $1", token
     )
     if row is None:
         return None

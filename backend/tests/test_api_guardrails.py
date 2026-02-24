@@ -23,12 +23,14 @@ async def _ok_call_next(_request):
 
 
 def test_get_client_id_prefers_cloudflare_header(app_module):
+    """Client identity should prioritize Cloudflare header over forwarded-for fallback."""
     req = _request(headers={"cf-connecting-ip": "203.0.113.7", "x-forwarded-for": "198.51.100.4"})
     assert app_module.get_client_id(req) == "203.0.113.7"
 
 
 @pytest.mark.anyio
 async def test_trusted_host_rejects_invalid_header(app_module):
+    """Requests with non-allowlisted Host headers should be rejected early (400)."""
     req = _request(headers={"host": "evil.example"})
     resp = await app_module.trusted_host_middleware(req, _ok_call_next)
     assert resp.status_code == 400
@@ -37,6 +39,7 @@ async def test_trusted_host_rejects_invalid_header(app_module):
 
 @pytest.mark.anyio
 async def test_request_size_rejects_oversized_content_length(app_module):
+    """Oversized payloads should be blocked before route handling (413)."""
     req = _request(headers={"content-length": str(app_module.MAX_REQUEST_BODY_BYTES + 1)})
     resp = await app_module.request_size_limit_middleware(req, _ok_call_next)
     assert resp.status_code == 413
@@ -45,6 +48,7 @@ async def test_request_size_rejects_oversized_content_length(app_module):
 
 @pytest.mark.anyio
 async def test_request_size_rejects_invalid_content_length(app_module):
+    """Malformed Content-Length headers should fail fast with a client error (400)."""
     req = _request(headers={"content-length": "not-an-int"})
     resp = await app_module.request_size_limit_middleware(req, _ok_call_next)
     assert resp.status_code == 400
@@ -52,6 +56,7 @@ async def test_request_size_rejects_invalid_content_length(app_module):
 
 
 def test_rate_limit_raises_429_with_retry_after(app_module, monkeypatch):
+    """A second rapid request from same client/route should trigger 429 with Retry-After."""
     req = _request(path="/sequence/", headers={"cf-connecting-ip": "203.0.113.7"})
     monkeypatch.setattr(app_module, "RATE_LIMIT_PER_SECOND", 1)
     monkeypatch.setattr(app_module, "RATE_LIMIT_PER_MINUTE", 100)
