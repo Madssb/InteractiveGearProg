@@ -1,59 +1,63 @@
 {
+  "1.6.0": [
+    "Migrated backend hosting to self-hosted.",
+    "Added Pegasian boots to the retirement home."
+  ],
   "1.5.0": [
     "Implemented hide feature: can now hide nodes from the chart, and re-render on 'show hidden'.",
-    "removed redundant feature made redundant by the hide feature.",
-    "Added the retirement home category for those that want to hunt BIS that is otherwise too niche for the main chart",
-    "added option to filter construction milestones, level milestones, and slayer reward unlocks.",
-    "dragon hunter lance re-appears on the chart if hiding scythe"
+    "Removed redundant functionality made obsolete by the hide feature.",
+    "Added the retirement home category for those who want to hunt BiS that is otherwise too niche for the main chart.",
+    "Added option to filter construction milestones, level milestones, and slayer reward unlocks.",
+    "Dragon hunter lance reappears on the chart if hiding scythe."
   ],
   "1.4.4": [
     "Removed dragon hunter lance, made obsolete by scythe for purposes of the chart."
   ],
   "1.4.3": [
-    "Moved dragon hunter lance to post-scythe. With the previous verion's correction of Scythe of vitur sequencing accounted for, the dragon hunter lance is now obsolete for chambers of xeric, and its aquisition is sped up by scythe access."
+    "Moved dragon hunter lance to post-scythe. With the previous version's correction of Scythe of Vitur sequencing accounted for, the dragon hunter lance is now obsolete for Chambers of Xeric, and its acquisition is sped up by scythe access."
   ],
   "1.4.2": [
-    "Scythe of Vitur has been moved to same sequencing group as Avernic defender, and Dizana's quiver has been seperated into its own sequence group just prior to the aforementioned tob items.",
+    "Scythe of Vitur has been moved to the same sequencing group as Avernic defender, and Dizana's quiver has been separated into its own sequence group just prior to the aforementioned ToB items.",
     "Rite of vile transference (dc2) and Avernic Treads have been merged to signify their lack of cross-dependency, i.e. not mattering which one is first."
   ],
   "1.4.1": [
-    "Replaced 98 agility step with hallowed crystal shard step, still encoding sep access in progression. Still implicitly assumes doing the minigame for the rewards",
-    "Added link to BRUHSailer in acknowledgements"
+    "Replaced 98 Agility step with hallowed crystal shard step, still encoding Sep access in progression. Still implicitly assumes doing the minigame for the rewards.",
+    "Added link to BRUHSailer in acknowledgements."
   ],
   "1.4.0": [
     "Added Mokhiatl uniques.",
     "Added Arkan blade.",
-    "Trident of the seas and trident of the swamp removed, outclassed by Eye of ayak.",
+    "Trident of the seas and trident of the swamp removed, outclassed by Eye of Ayak.",
     "Agility step re-sequenced to match BRUHSailer.",
     "MTA items and ice barrage moved pre 69 slayer.",
     "Osmumten's fang postponed until pre-lance.",
-    "Skip functionality added per contributions by \"leonprz\" on github."
+    "Skip functionality added per contributions by \"leonprz\" on GitHub."
   ],
   "1.3.3": [
-    "For avoiding scope-creep on the chart that is primarily pvm and slayer, diary items with little relevance for either are removed. These include: Varrock armour, Kandarin headgear, Fremennik seaboots, Ardougne cape, and diary cape.",
-    "Removed log basket and plank sack for lacking pvm/slayer impact.",
+    "For avoiding scope-creep on the chart that is primarily PvM and Slayer, diary items with little relevance for either are removed. These include: Varrock armour, Kandarin headgear, Fremennik seaboots, Ardougne cape, and diary cape.",
+    "Removed log basket and plank sack for lacking PvM/Slayer impact.",
     "Mixology rewards postponed until after slayer helm."
   ],
   "1.3.2": [
-    "Tormented bracelet, Ring of suffering, and synapse weapons all moved into the major 80-90slayer block. They are postponed to account for ancient shard scarcity.",
+    "Tormented bracelet, Ring of suffering, and synapse weapons all moved into the major 80-90 Slayer block. They are postponed to account for ancient shard scarcity.",
     "Bandos hilt is identified as a pointless inclusion and as a result is dropped.",
     "Soulreaper axe is removed. Too niche, and left to player discretion.",
-    "tweaked title and added subtitle to more accurately reflect authorship"
+    "Tweaked title and added subtitle to more accurately reflect authorship."
   ],
   "1.3.1": [
     "Ring of suffering moved to immediately pre-zulrah.",
-    "Bandos chestplate and tassets removed. Tassets not impactful enough anymore",
-    "Spelbook swap moved to pre-ZMI.",
-    "Deadeye and mystic"
+    "Bandos chestplate and tassets removed. Tassets not impactful enough anymore.",
+    "Spellbook swap moved to pre-ZMI.",
+    "Adjusted Deadeye and Mystic progression."
   ],
   "1.3.0": [
     "Oathplate armor added.",
     "Rite of vile transference.",
     "Neitiznot faceguard removed."
   ],
-  "1.2.2": ["Mobile QOL, courtesy of RedSparr0w"],
+  "1.2.2": ["Mobile QoL, courtesy of RedSparr0w."],
   "1.2.1": [
-    "Changed style of url to make it less harsh on the eyes, per request."
+    "Changed style of URL to make it less harsh on the eyes, per request."
   ],
   "1.2.0": [
     "Black demon task extension has been correctly substituted with greater demon task extension.",
@@ -70,13 +74,13 @@
     "Added privacy policy, and non-invasive and GDPR compliant page visit counter."
   ],
   "1.1.0": [
-    "Added bare-bones alternative",
-    "Item states are invariant of sequencing",
-    "Dark mode is now the default option",
-    "Added mixology rewards",
-    "Added FAQ",
-    "Added changelog",
-    "Introduced versioning"
+    "Added bare-bones alternative.",
+    "Item states are invariant of sequencing.",
+    "Dark mode is now the default option.",
+    "Added mixology rewards.",
+    "Added FAQ.",
+    "Added changelog.",
+    "Introduced versioning."
   ],
-  "1.0.0": ["Araxxor and Tormented Demon items added", "Dark mode added"]
+  "1.0.0": ["Araxxor and Tormented Demon items added.", "Dark mode added."]
 }
