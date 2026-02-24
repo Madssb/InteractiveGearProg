@@ -65,7 +65,7 @@ Named tunnel (stable path):
 ```bash
 cloudflared tunnel login
 cloudflared tunnel create ladlorchart-api
-cloudflared tunnel route dns ladlorchart-api api-staging.ladlorchart.com
+cloudflared tunnel route dns ladlorchart-api api.ladlorchart.com
 ```
 
 Default config file location:
@@ -79,7 +79,7 @@ tunnel: <TUNNEL_ID>
 credentials-file: /home/mads/.cloudflared/<TUNNEL_ID>.json
 
 ingress:
-  - hostname: api-staging.ladlorchart.com
+  - hostname: api.ladlorchart.com
     service: http://127.0.0.1:8000
   - service: http_status:404
 ```
@@ -159,7 +159,6 @@ When exceeded, API returns `429 Too Many Requests` with a `Retry-After` response
 
 - Trusted host check allows only:
   - `api.ladlorchart.com`
-  - `api-staging.ladlorchart.com`
   - `localhost`
   - `127.0.0.1`
 - Request size limit: max 256 KiB body (`413` on exceed).
