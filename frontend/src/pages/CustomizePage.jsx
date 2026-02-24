@@ -9,7 +9,7 @@ import { useLocation } from "react-router";
 async function postShare(inputSequenceState, outputItemsState) {
     if (!inputSequenceState || !outputItemsState) return;
 
-    const url = "https://api.ladlorchart.com/share/";
+    const url = "https://api-staging.ladlorchart.com/share/";
         // const url = "http://127.0.0.1:8000/share/" // Localhost testing
     const base = window.location.origin + window.location.pathname;
 
@@ -49,7 +49,7 @@ export default function CustomizePage(){
 
     const fetchShare = useCallback(async (token) => {
         try {
-            const response = await fetch(`https://api.ladlorchart.com/share/?token=${token}`);
+            const response = await fetch(`https://api-staging.ladlorchart.com/share/?token=${token}`);
             // const response = await fetch(`http://127.0.0.1:8000/share/?token=${token}`);
             if (!response.ok) throw new Error(`status ${response.status}`);
 

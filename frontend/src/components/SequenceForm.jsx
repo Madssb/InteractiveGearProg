@@ -5,7 +5,7 @@ async function getItems(
     outputItemsState,
     setOutputItemsState
 ){
-    const url = "https://api.ladlorchart.com/sequence/"; // Remote
+    const url = "https://api-staging.ladlorchart.com/sequence/"; // Remote
     // const url = "http://127.0.0.1:8000/sequence/" // Localhost testing
     const flat = sequenceArray.flat();
     const keySet = new Set(Object.keys(outputItemsState));
