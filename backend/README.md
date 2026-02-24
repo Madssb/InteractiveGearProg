@@ -46,6 +46,56 @@ For laptop self-hosting behind Cloudflare Tunnel, keep API bound to `127.0.0.1` 
 curl http://127.0.0.1:8000/health
 ```
 
+## Cloudflare Tunnel
+
+Recommended run order:
+
+1. Start backend locally.
+2. Start `cloudflared` tunnel.
+3. Verify `/health` through the public hostname.
+
+Quick temporary tunnel (testing only):
+
+```bash
+cloudflared tunnel --url http://127.0.0.1:8000
+```
+
+Named tunnel (stable path):
+
+```bash
+cloudflared tunnel login
+cloudflared tunnel create ladlorchart-api
+cloudflared tunnel route dns ladlorchart-api api-staging.ladlorchart.com
+```
+
+Default config file location:
+
+- `/home/mads/.cloudflared/config.yml`
+
+Example `~/.cloudflared/config.yml`:
+
+```yaml
+tunnel: <TUNNEL_ID>
+credentials-file: /home/mads/.cloudflared/<TUNNEL_ID>.json
+
+ingress:
+  - hostname: api-staging.ladlorchart.com
+    service: http://127.0.0.1:8000
+  - service: http_status:404
+```
+
+Run named tunnel:
+
+```bash
+cloudflared tunnel run ladlorchart-api
+```
+
+If config is not in the default location:
+
+```bash
+cloudflared --config /path/to/config.yml tunnel run ladlorchart-api
+```
+
 ## API Endpoints
 
 - `POST /sequence/`
@@ -109,6 +159,7 @@ When exceeded, API returns `429 Too Many Requests` with a `Retry-After` response
 
 - Trusted host check allows only:
   - `api.ladlorchart.com`
+  - `api-staging.ladlorchart.com`
   - `localhost`
   - `127.0.0.1`
 - Request size limit: max 256 KiB body (`413` on exceed).
