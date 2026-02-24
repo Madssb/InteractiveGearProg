@@ -1,18 +1,7 @@
 name: Deploy Frontend
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "frontend/src/**"
-      - "frontend/public/**"
-      - "frontend/index.html"
-      - "data/generated/**"
-      - "data/contents/**"
-      - "data/logic/**"
-      - "frontend/package.json"
-      - "frontend/package-lock.json"
-      - "frontend/vite.config.*"
+  workflow_dispatch: {}
 
 concurrency:
   group: deploy
