@@ -1,4 +1,5 @@
 import { handleLevels, sanitizeId } from '@/utils/textSanitizers';
+import { questNameInitials } from '@/utils/questNameInitials';
 import React from 'react';
 
 /**
@@ -50,6 +51,32 @@ function Node({
                         draggable="false"
                     />
                     <span>{lvlNum}</span>
+                </div>
+            </div>
+            </>
+        )
+    }
+    if (type == "quest"){
+        const questInitials = questNameInitials(entity);
+        return (
+            <>
+            <div
+                className={`node ${nodeCompleteState && "complete"} ${nodeHiddenState && "hidden" } ${type}`}
+                title={entity}
+                id={id}
+                data-wiki-url={wikiUrl}
+                onContextMenu={(e) => onContextMenu(e, entity)}
+                onTouchStart={(e) => onTouchStart(e, entity)}
+                onTouchEnd={onTouchEnd}
+                onClick={() => onClick(entity)}
+            >
+                <div className='skill'>
+                    <img 
+                        src={imgUrl}
+                        alt={entity}
+                        draggable="false"
+                    />
+                    <span>{questInitials}</span>
                 </div>
             </div>
             </>

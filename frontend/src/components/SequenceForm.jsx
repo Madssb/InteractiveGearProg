@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { resolveCommonAlias } from "@/utils/normalizeAliases";
 import { handleLevels } from "@/utils/textSanitizers";
 import { useLocalStorageState } from "@/utils/useLocalStorageState";
 
@@ -147,7 +148,7 @@ function normalizeParsedSequence(sequence) {
         if (typeof group === "string") {
             const value = group.trim();
             if (!value) throw new Error(`Empty item at position ${index + 1}.`);
-            return [value];
+            return [resolveCommonAlias(value)];
         }
         if (!(group instanceof Array)) {
             throw new Error(`Entry ${index + 1} must be a string or list of strings.`);
@@ -161,7 +162,7 @@ function normalizeParsedSequence(sequence) {
             if (!value) {
                 throw new Error(`Group ${index + 1}, item ${itemIndex + 1} cannot be empty.`);
             }
-            return value;
+            return resolveCommonAlias(value);
         });
 
         if (normalizedGroup.length === 0) throw new Error(`Group ${index + 1} cannot be empty.`);
@@ -237,7 +238,7 @@ function parseFlexibleSequenceInput(raw) {
     });
 
     return {
-        sequence,
+        sequence: normalizeParsedSequence(sequence),
         style: "relaxed"
     };
 }
