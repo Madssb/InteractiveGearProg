@@ -192,6 +192,7 @@ export default function ChartBuilderPage(){
                 outputItemsState={outputItemsState}
                 setInputSequenceState={setInputSequenceState}
                 setOutputItemsState={setOutputItemsState}
+                initialSequence={inputSequenceState}
             />
         )}
         {inputSequenceState && outputItemsState && (
