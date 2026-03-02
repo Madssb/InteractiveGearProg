@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { handleLevels } from "@/utils/textSanitizers";
 import { useLocalStorageState } from "@/utils/useLocalStorageState";
 
 /**
@@ -12,9 +13,9 @@ async function getItems(
 ){
     const url = "https://api.ladlorchart.com/sequence/"; // Remote
     // const url = "http://127.0.0.1:8000/sequence/" // Localhost testing
-    const flat = sequenceArray.flat();
+    const flat = sequenceArray.flat().map(handleLevels);
     const keySet = new Set(Object.keys(outputItemsState));
-    const payload = flat.filter(item => !keySet.has(item));;
+    const payload = [...new Set(flat.filter(item => !keySet.has(item)))];
 
     try {
         const response = await fetch(url, {

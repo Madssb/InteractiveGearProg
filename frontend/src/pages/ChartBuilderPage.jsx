@@ -2,7 +2,10 @@ import Chart from "@/components/Chart.jsx";
 import ContextMenu from '@/components/ContextMenu.jsx';
 import SequenceForm from '@/components/SequenceForm';
 import Footer from '@/components/static/Footer.jsx';
+import { handleLevels } from '@/utils/textSanitizers';
+import removeStarredItems from '@/utils/removeStarredItems.js';
 import { useLocalStorageSet, useLocalStorageState } from '@/utils/useLocalStorageState';
+import sequence from '@data/logic/sequence.json';
 import React, { useCallback, useState } from 'react';
 import { useLocation } from "react-router";
 
@@ -38,11 +41,35 @@ async function postShare(inputSequenceState, outputItemsState) {
     }
 }
 
+async function fetchMissingItems(sequenceArray, outputItemsState, setOutputItemsState) {
+    const url = "https://api.ladlorchart.com/sequence/"; // Remote
+    // const url = "http://127.0.0.1:8000/sequence/" // Localhost testing
+    const flat = sequenceArray.flat().map(handleLevels);
+    const keySet = new Set(Object.keys(outputItemsState || {}));
+    const payload = [...new Set(flat.filter(item => !keySet.has(item)))];
+    if (payload.length === 0) return;
+
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ sequence: payload })
+    });
+
+    if (!response.ok) throw new Error(`Response status: ${response.status}`);
+    const result = await response.json();
+    const items = result.items || {};
+    setOutputItemsState(prev => ({ ...prev, ...items }));
+}
+
 
 export default function ChartBuilderPage(){    
     const [inputSequenceState, setInputSequenceState] = useLocalStorageState('inputSequenceState', false);
     const [outputItemsState, setOutputItemsState] = useLocalStorageState('outputItemsState', false);
     const [nodesCompleteState, setNodesCompleteState] = useLocalStorageSet('nodesCompleteState', new Set());
+    const [loadingLadlorChart, setLoadingLadlorChart] = useState(false);
+    const [loadError, setLoadError] = useState("");
 
     // initialize from Share-URL
     const location = useLocation();
@@ -80,6 +107,26 @@ export default function ChartBuilderPage(){
     const [showInput, setShowInput] = useState(false);
     function handleInputClick() {
         setShowInput(!showInput)
+    }
+    async function handleLoadLadlorChart() {
+        setLoadError("");
+        const hasExisting = Boolean(inputSequenceState && inputSequenceState.length);
+        if (hasExisting) {
+            const shouldReplace = window.confirm("Replace your current chart with Ladlor's chart?");
+            if (!shouldReplace) return;
+        }
+
+        const ladlorSequence = removeStarredItems(sequence);
+        setInputSequenceState(ladlorSequence);
+        try {
+            setLoadingLadlorChart(true);
+            await fetchMissingItems(ladlorSequence, outputItemsState, setOutputItemsState);
+        } catch (error) {
+            console.error(error);
+            setLoadError("Could not load Ladlor chart item metadata. Please try again.");
+        } finally {
+            setLoadingLadlorChart(false);
+        }
     }
 
     function handleNodeClick(entity) {
@@ -152,7 +199,12 @@ export default function ChartBuilderPage(){
         handler: () => postShare(inputSequenceState, outputItemsState), 
         label: "Share" 
         },
-        { handler: extractSequence,  label: "Extract" }
+        { handler: extractSequence,  label: "Extract" },
+        {
+        handler: handleLoadLadlorChart,
+        label: loadingLadlorChart ? "Loading..." : "Load Ladlor Chart",
+        disabled: loadingLadlorChart
+        }
     ];    
     return (
         <>
@@ -179,6 +231,7 @@ export default function ChartBuilderPage(){
                     <button
                         key={a.label}
                         onClick={a.handler}
+                        disabled={Boolean(a.disabled)}
                         style={buttonStyle}
                     >
                         {a.label}
@@ -217,6 +270,7 @@ export default function ChartBuilderPage(){
             items={outputItemsState}
         />
         )}
+        {loadError && <p style={{ color: "crimson" }}>{loadError}</p>}
         <Footer showImageAttribution={true} />
         </>
     )
