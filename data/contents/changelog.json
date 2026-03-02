@@ -1,7 +1,9 @@
 {
   "1.6.1": [
     "Customize page has been renamed to chartbuilder. Note that previous links will probably keep working indefinitely",
-    "Input formating requirements heavily relaxed."
+    "Input formating requirements heavily relaxed.",
+    "skill milestones fixed in chartbuilder",
+    "Quest milestones now annotated with quest initials."
   ],
   "1.6.0": [
     "Migrated backend hosting to self-hosted.",
