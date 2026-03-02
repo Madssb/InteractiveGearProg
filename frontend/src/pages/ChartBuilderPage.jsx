@@ -2,8 +2,8 @@ import Chart from "@/components/Chart.jsx";
 import ContextMenu from '@/components/ContextMenu.jsx';
 import SequenceForm from '@/components/SequenceForm';
 import Footer from '@/components/static/Footer.jsx';
-import { handleLevels } from '@/utils/textSanitizers';
 import removeStarredItems from '@/utils/removeStarredItems.js';
+import { handleLevels } from '@/utils/textSanitizers';
 import { useLocalStorageSet, useLocalStorageState } from '@/utils/useLocalStorageState';
 import sequence from '@data/logic/sequence.json';
 import React, { useCallback, useState } from 'react';
@@ -13,7 +13,7 @@ async function postShare(inputSequenceState, outputItemsState) {
     if (!inputSequenceState || !outputItemsState) return;
 
     const url = "https://api.ladlorchart.com/share/";
-        // const url = "http://127.0.0.1:8000/share/" // Localhost testing
+    // const url = "http://127.0.0.1:8000/share/" // Localhost testing
     const base = window.location.origin + window.location.pathname;
 
     const payload = {
@@ -64,7 +64,7 @@ async function fetchMissingItems(sequenceArray, outputItemsState, setOutputItems
 }
 
 
-export default function ChartBuilderPage(){    
+export default function ChartBuilderPage() {
     const [inputSequenceState, setInputSequenceState] = useLocalStorageState('inputSequenceState', false);
     const [outputItemsState, setOutputItemsState] = useLocalStorageState('outputItemsState', false);
     const [nodesCompleteState, setNodesCompleteState] = useLocalStorageSet('nodesCompleteState', new Set());
@@ -191,87 +191,87 @@ export default function ChartBuilderPage(){
         document.addEventListener("click", handleClickOutside);
         return () => document.removeEventListener("click", handleClickOutside);
     }, []);
-    const buttonStyle = {"backgroundColor": "gray"}
+    const buttonStyle = { "backgroundColor": "gray" }
 
     const actions = [
         { handler: handleInputClick, label: "Show input" },
-        { 
-        handler: () => postShare(inputSequenceState, outputItemsState), 
-        label: "Share" 
-        },
-        { handler: extractSequence,  label: "Extract" },
         {
-        handler: handleLoadLadlorChart,
-        label: loadingLadlorChart ? "Loading..." : "Load Ladlor Chart",
-        disabled: loadingLadlorChart
+            handler: () => postShare(inputSequenceState, outputItemsState),
+            label: "Share"
+        },
+        { handler: extractSequence, label: "Extract" },
+        {
+            handler: handleLoadLadlorChart,
+            label: loadingLadlorChart ? "Loading..." : "Load Main Chart",
+            disabled: loadingLadlorChart
         }
-    ];    
+    ];
     return (
         <>
-        <div id="titleBar" style={{ position: "relative", height: "80px" }}>
-            <div style={{
-                position: "absolute",
-                left: "50%",
-                top: "50%",
-                transform: "translate(-50%, -50%)",
-                textAlign: "center"
-            }}>
-                <h1>Chart Builder</h1>
-                <span className="subtitle">Made by Ladlor</span>
+            <div id="titleBar" style={{ position: "relative", height: "80px" }}>
+                <div style={{
+                    position: "absolute",
+                    left: "50%",
+                    top: "50%",
+                    transform: "translate(-50%, -50%)",
+                    textAlign: "center"
+                }}>
+                    <h1>Chart Builder</h1>
+                    <span className="subtitle">Made by Ladlor</span>
+                </div>
+                <div style={{
+                    position: "absolute",
+                    right: "0",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    display: "flex",
+                    gap: "8px"
+                }}>
+                    {actions.map(a => (
+                        <button
+                            key={a.label}
+                            onClick={a.handler}
+                            disabled={Boolean(a.disabled)}
+                            style={buttonStyle}
+                        >
+                            {a.label}
+                        </button>
+                    ))}
+                </div>
             </div>
-            <div style={{
-                position: "absolute",
-                right: "0",
-                top: "50%",
-                transform: "translateY(-50%)",
-                display: "flex",
-                gap: "8px"
-            }}>
-                {actions.map(a => (
-                    <button
-                        key={a.label}
-                        onClick={a.handler}
-                        disabled={Boolean(a.disabled)}
-                        style={buttonStyle}
-                    >
-                        {a.label}
-                    </button>
-                ))}
-            </div>
-        </div>
 
-        {showInput && (
-            <SequenceForm
-                outputItemsState={outputItemsState}
-                setInputSequenceState={setInputSequenceState}
-                setOutputItemsState={setOutputItemsState}
-                initialSequence={inputSequenceState}
-            />
-        )}
-        {inputSequenceState && outputItemsState && (
-            <Chart
-                nodeGroups={inputSequenceState}
-                items={outputItemsState}
-                nodesCompleteState={nodesCompleteState}
-                handleNodeContextMenu={handleNodeContextMenu}
-                handleNodeTouchStart={handleNodeTouchStart}
-                handleNodeTouchEnd={handleNodeTouchEnd}
-                handleNodeClick={handleNodeClick}
-                arrows={true}
-            />
-        )}
-        {menu.visible && (
-        <ContextMenu
-            x={menu.x}
-            y={menu.y}
-            entity={menu.entity}
-            onClose={handleCloseMenu}
-            onDelete={handleDelete}
-            items={outputItemsState}
-        />
-        )}
-        {loadError && <p style={{ color: "crimson" }}>{loadError}</p>}
-        <Footer showImageAttribution={true} />
+            {showInput && (
+                <SequenceForm
+                    outputItemsState={outputItemsState}
+                    setInputSequenceState={setInputSequenceState}
+                    setOutputItemsState={setOutputItemsState}
+                    initialSequence={inputSequenceState}
+                />
+            )}
+            {inputSequenceState && outputItemsState && (
+                <Chart
+                    nodeGroups={inputSequenceState}
+                    items={outputItemsState}
+                    nodesCompleteState={nodesCompleteState}
+                    handleNodeContextMenu={handleNodeContextMenu}
+                    handleNodeTouchStart={handleNodeTouchStart}
+                    handleNodeTouchEnd={handleNodeTouchEnd}
+                    handleNodeClick={handleNodeClick}
+                    arrows={true}
+                />
+            )}
+            {menu.visible && (
+                <ContextMenu
+                    x={menu.x}
+                    y={menu.y}
+                    entity={menu.entity}
+                    onClose={handleCloseMenu}
+                    onDelete={handleDelete}
+                    items={outputItemsState}
+                />
+            )}
+            {loadError && <p style={{ color: "crimson" }}>{loadError}</p>}
+            <Footer showImageAttribution={true} />
         </>
     )
 }
