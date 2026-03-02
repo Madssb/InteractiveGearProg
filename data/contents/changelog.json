@@ -1,4 +1,8 @@
 {
+  "1.6.1": [
+    "Customize pge has been renamed to chartbuilder.",
+    "Input formating requirements heavily relaxed."
+  ],
   "1.6.0": [
     "Migrated backend hosting to self-hosted.",
     "Added Pegasian boots to the retirement home."
