@@ -1,6 +1,6 @@
 {
   "1.6.1": [
-    "Customize pge has been renamed to chartbuilder.",
+    "Customize page has been renamed to chartbuilder. Note that previous links will probably keep working indefinitely",
     "Input formating requirements heavily relaxed."
   ],
   "1.6.0": [
