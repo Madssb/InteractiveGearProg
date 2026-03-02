@@ -1,4 +1,4 @@
-import BackHome from "@/components/BackHome"
+import Footer from "@/components/static/Footer"
 
 export default function PrivacyPage(){
     return (
@@ -19,7 +19,7 @@ export default function PrivacyPage(){
 
             <p>No personal information is stored or shared, and this data remains entirely within your browser. Local storage is
                 only used to improve functionality and does not track or share your activity with third parties.</p>
-            <BackHome />
+            <Footer />
         </>
     )
 }

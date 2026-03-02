@@ -29,7 +29,8 @@ async function postShare(inputSequenceState, outputItemsState) {
 
         const token = await response.json();   // or .text() if backend returns plain string
 
-        const shareUrl = `${base}#/customize?token=${token}`;
+        // Use chartbuilder as canonical link; /customize is kept as alias.
+        const shareUrl = `${base}#/chartbuilder?token=${token}`;
         navigator.clipboard.writeText(shareUrl);
 
     } catch (err) {
@@ -38,7 +39,7 @@ async function postShare(inputSequenceState, outputItemsState) {
 }
 
 
-export default function CustomizePage(){    
+export default function ChartBuilderPage(){    
     const [inputSequenceState, setInputSequenceState] = useLocalStorageState('inputSequenceState', false);
     const [outputItemsState, setOutputItemsState] = useLocalStorageState('outputItemsState', false);
     const [nodesCompleteState, setNodesCompleteState] = useLocalStorageSet('nodesCompleteState', new Set());
@@ -163,7 +164,7 @@ export default function CustomizePage(){
                 transform: "translate(-50%, -50%)",
                 textAlign: "center"
             }}>
-                <h1>Custom Chart</h1>
+                <h1>Chart Builder</h1>
                 <span className="subtitle">Made by Ladlor</span>
             </div>
             <div style={{
@@ -215,7 +216,7 @@ export default function CustomizePage(){
             items={outputItemsState}
         />
         )}
-        <Footer />
+        <Footer showImageAttribution={true} />
         </>
     )
 }

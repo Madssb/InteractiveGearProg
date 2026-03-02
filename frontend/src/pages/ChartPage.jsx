@@ -202,7 +202,7 @@ export default function ChartPage(){
             )}
             <Acknowledgements />
             <FAQSection />
-            <Footer />
+            <Footer showImageAttribution={true} />
         </>
     )
 }
