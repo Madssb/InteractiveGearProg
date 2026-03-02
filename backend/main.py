@@ -8,7 +8,7 @@ from collections import OrderedDict
 from collections import defaultdict, deque
 from typing import Annotated, Dict, List, Tuple
 
-from db import load_share, save_share
+from db import increment_endpoint_hit, load_share, save_share
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -80,6 +80,7 @@ RATE_LIMIT_SEC: Dict[str, deque] = defaultdict(deque)
 RATE_LIMIT_MIN: Dict[str, deque] = defaultdict(deque)
 logger = logging.getLogger("backend.rate_limit")
 request_logger = logging.getLogger("backend.request")
+analytics_logger = logging.getLogger("backend.analytics")
 
 
 def get_client_id(request: Request) -> str:
@@ -181,6 +182,14 @@ async def request_logging_middleware(request: Request, call_next):
         client_id,
         host,
     )
+    # Best-effort analytics: never block or fail API responses.
+    try:
+        endpoint_key = f"{request.method} {request.url.path}"
+        await increment_endpoint_hit(endpoint_key)
+    except Exception:
+        analytics_logger.exception(
+            "endpoint_hit_write_failed endpoint=%s", request.url.path
+        )
     return response
 
 
