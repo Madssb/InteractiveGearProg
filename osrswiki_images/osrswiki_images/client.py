@@ -60,7 +60,7 @@ class NonRetryableHTTPError(requests.exceptions.HTTPError): ...
 
 s = requests.Session()
 s.headers.update(
-    {"user-agent": "osrswiki_images/v0.1 (https://github.com/Madssb/osrswiki_images)"}
+    {"user-agent": "Madlor (InteractiveGearProg) (https://github.com/Madssb/InteractiveGearProg)"}
 )
 
 SKILLS = [
