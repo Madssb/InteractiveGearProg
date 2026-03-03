@@ -1,0 +1,12 @@
+[Unit]
+Description=Run heartbeat ping every minute
+
+[Timer]
+Unit=heartbeat.service
+OnBootSec=1min
+OnUnitActiveSec=15m
+AccuracySec=10s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

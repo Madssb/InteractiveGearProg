@@ -102,6 +102,8 @@ Service templates are versioned in:
 
 - `backend/backend.service`
 - `backend/tunnel.service`
+- `backend/heartbeat.service`
+- `backend/heartbeat.timer`
 
 Install as user services:
 
@@ -109,7 +111,21 @@ Install as user services:
 mkdir -p ~/.config/systemd/user
 cp backend/backend.service ~/.config/systemd/user/
 cp backend/tunnel.service ~/.config/systemd/user/
+cp backend/heartbeat.service ~/.config/systemd/user/
+cp backend/heartbeat.timer ~/.config/systemd/user/
 systemctl --user daemon-reload
+```
+
+Create heartbeat env file (replace URL with your provider URL):
+
+```bash
+mkdir -p ~/.config
+cat > ~/.config/heartbeat.env << 'EOF'
+HEARTBEAT_URL=https://example-healthcheck-url
+# Optional:
+# HEARTBEAT_TIMEOUT_SECONDS=10
+EOF
+chmod 600 ~/.config/heartbeat.env
 ```
 
 Enable and start:
@@ -117,14 +133,21 @@ Enable and start:
 ```bash
 systemctl --user enable --now backend.service
 systemctl --user enable --now tunnel.service
+systemctl --user enable --now heartbeat.timer
 ```
 
 Routine operations:
 
 ```bash
-systemctl --user status backend.service tunnel.service
-systemctl --user restart backend.service tunnel.service
-journalctl --user -u backend.service -u tunnel.service -f
+systemctl --user status backend.service tunnel.service heartbeat.timer
+systemctl --user restart backend.service tunnel.service heartbeat.timer
+journalctl --user -u backend.service -u tunnel.service -u heartbeat.service -f
+```
+
+List timer schedule:
+
+```bash
+systemctl --user list-timers heartbeat.timer
 ```
 
 ## API Endpoints

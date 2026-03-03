@@ -1,0 +1,12 @@
+[Unit]
+Description=Heartbeat ping to uptime monitor
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+EnvironmentFile=%h/.config/heartbeat.env
+ExecStart=/home/mads/InteractiveGearProg/backend/heartbeat_ping.sh
+
+[Install]
+WantedBy=default.target
