@@ -8,6 +8,7 @@ export default function Footer({ showImageAttribution = false }){
     const navLinks = [
         { to: '/', label: 'Home' },
         { to: '/chartbuilder', label: 'Chart Builder' },
+        { to: '/bank', label: 'Bank' },
         { to: '/faq', label: 'FAQ' },
         { to: '/changelog', label: 'View Changelog' },
         { to: '/privacy', label: 'Privacy Policy' }

@@ -1,0 +1,129 @@
+.bank-page {
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #27241e, #11100d 65%);
+  padding: 20px 12px;
+}
+
+.bank-page #bank {
+  width: 478px;
+  min-height: 600px;
+  border: 5px solid #121210;
+  background-color: #494034;
+  margin: 0 auto;
+}
+
+.bank-page #bank-title-section {
+  width: 476px;
+  height: 23px;
+  border: 1px solid #535451;
+  text-align: center;
+}
+
+.bank-page #bank-title-section span {
+  color: #ff981f;
+}
+
+.bank-page #margin {
+  width: 478px;
+  height: 4px;
+  background-color: #121210;
+}
+
+.bank-page #bank-main-section {
+  width: 476px;
+  min-height: 560px;
+  border: 1px solid #535451;
+}
+
+.bank-page #bank-tabs-section {
+  width: 476px;
+  height: 40px;
+  background-color: #2e2b23;
+  display: flex;
+  flex-direction: row;
+}
+
+.bank-page .bank-tab-button {
+  width: 37px;
+  height: 36px;
+  border: 1px solid #716451;
+  background-color: #3a3329;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+  margin-right: 1px;
+  padding: 0;
+  cursor: pointer;
+}
+
+.bank-page .bank-tab-button img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.bank-page .bank-tabs-corner {
+  width: 38px;
+  height: 39px;
+  border-bottom: solid 1px #2e2b23;
+  background-color: #494034;
+}
+
+.bank-page .bank-tab-button.active {
+  background-color: #494034;
+  height: 38px;
+  border-bottom: 1px solid #494034;
+}
+
+.bank-page #bank-items-section {
+  width: 370px;
+  min-height: 500px;
+  margin: 8px auto 14px auto;
+  display: grid;
+  grid-template-columns: repeat(9, 32px);
+  grid-auto-rows: 32px;
+  gap: 8px;
+}
+
+.bank-page .bank-item {
+  width: 32px;
+  height: 32px;
+  position: relative;
+  display: inline-flex;
+}
+
+.bank-page .bank-item img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.bank-page .bank-item span {
+  position: absolute;
+  bottom: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #f7d863;
+  font-size: 10px;
+  text-shadow: 1px 1px #000;
+  white-space: nowrap;
+}
+
+.bank-page .bank-status {
+  text-align: center;
+  color: #c8c4bb;
+  font-size: 0.9rem;
+}
+
+.bank-page .bank-error {
+  color: #f38484;
+}
+
+@media (max-width: 560px) {
+  .bank-page #bank {
+    transform: scale(0.86);
+    transform-origin: top center;
+    margin-bottom: -80px;
+  }
+}
