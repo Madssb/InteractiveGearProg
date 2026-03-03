@@ -1,0 +1,35 @@
+{
+  "title": "The Bank of Ladlor",
+  "header": [
+    {
+      "id": "0",
+      "imgUrl": "https://oldschool.runescape.wiki/images/Infinity_symbol.png"
+    },
+    {
+      "id": "1",
+      "imgUrl": "https://oldschool.runescape.wiki/images/Crystal_helm.png"
+    },
+    {
+      "id": "2",
+      "imgUrl": "https://oldschool.runescape.wiki/images/Amulet_of_glory(4).png"
+    }
+  ],
+  "tabs": {
+    "0": [
+      {
+        "name": "Abyssal whip",
+        "quantity": 1,
+        "imgUrl": "https://oldschool.runescape.wiki/images/Abyssal_whip.png",
+        "wikiUrl": "https://oldschool.runescape.wiki/w/Abyssal_whip"
+      },
+      {
+        "name": "Blood rune",
+        "quantity": 45000,
+        "imgUrl": "https://oldschool.runescape.wiki/images/Blood_rune.png",
+        "wikiUrl": "https://oldschool.runescape.wiki/w/Blood_rune"
+      }
+    ],
+    "1": [],
+    "2": []
+  }
+}

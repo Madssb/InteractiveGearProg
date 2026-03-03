@@ -1,11 +1,15 @@
-type ItemInfo = {
-    imgUrl: string,
-    wikiUrl: string,
-    quantity: BigInteger
-}
+export type BankItemData = {
+    name: string;
+    imgUrl: string;
+    wikiUrl?: string;
+    quantity: number;
+};
 
+type BankItemProps = {
+    item: BankItemData;
+};
 
-export default function BankItem({ item }) {
+export default function BankItem({ item }: BankItemProps) {
     return (
         <a
             className="bank-item"
