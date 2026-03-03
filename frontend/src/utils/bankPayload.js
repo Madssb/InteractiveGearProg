@@ -7,8 +7,7 @@ function normalizeLegacyTabMap(tabMap) {
     return Object.entries(tabMap).map(([name, info]) => ({
         name,
         quantity: Number(info.quantity ?? 1),
-        imgUrl: info.imgUrl ?? "",
-        wikiUrl: info.wikiUrl ?? ""
+        imgUrl: info.imgUrl ?? ""
     }));
 }
 

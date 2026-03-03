@@ -19,14 +19,12 @@
       {
         "name": "Abyssal whip",
         "quantity": 1,
-        "imgUrl": "https://oldschool.runescape.wiki/images/Abyssal_whip.png",
-        "wikiUrl": "https://oldschool.runescape.wiki/w/Abyssal_whip"
+        "imgUrl": "https://oldschool.runescape.wiki/images/Abyssal_whip.png"
       },
       {
         "name": "Blood rune",
         "quantity": 45000,
-        "imgUrl": "https://oldschool.runescape.wiki/images/Blood_rune.png",
-        "wikiUrl": "https://oldschool.runescape.wiki/w/Blood_rune"
+        "imgUrl": "https://oldschool.runescape.wiki/images/Blood_rune.png"
       }
     ],
     "1": [],
