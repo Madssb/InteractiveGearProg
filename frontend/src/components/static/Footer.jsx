@@ -1,14 +1,14 @@
-import PageCount from '@/components/PageCount'
-import Version from '@/components/Version'
-import { Link, useLocation } from 'react-router'
+import PageCount from '@/components/PageCount';
+import Version from '@/components/Version';
+import { Link, useLocation } from 'react-router';
 
-export default function Footer({ showImageAttribution = false }){
+export default function Footer({ showImageAttribution = false }) {
     const location = useLocation();
     const normalizedPath = location.pathname === '/index.html' ? '/' : location.pathname;
     const navLinks = [
         { to: '/', label: 'Home' },
         { to: '/chartbuilder', label: 'Chart Builder' },
-        { to: '/bank', label: 'Bank' },
+        // { to: '/bank', label: 'Bank' },
         { to: '/faq', label: 'FAQ' },
         { to: '/changelog', label: 'View Changelog' },
         { to: '/privacy', label: 'Privacy Policy' }
@@ -18,15 +18,15 @@ export default function Footer({ showImageAttribution = false }){
         <>
             <footer>
                 <p>
-                <Version /> |{" "}
-                {navLinks.map((link) => (
-                    <span key={link.to}>
-                        <Link to={link.to}>{link.label}</Link>
-                        {" | "}
-                    </span>
-                ))}
-                <a href="https://github.com/Madssb/InteractiveGearProg">Source Code</a> |{" "}
-                Monthly page visits: <span id="page-count"><PageCount /></span> |{" "}
+                    <Version /> |{" "}
+                    {navLinks.map((link) => (
+                        <span key={link.to}>
+                            <Link to={link.to}>{link.label}</Link>
+                            {" | "}
+                        </span>
+                    ))}
+                    <a href="https://github.com/Madssb/InteractiveGearProg">Source Code</a> |{" "}
+                    Monthly page visits: <span id="page-count"><PageCount /></span> |{" "}
                 </p>
                 {showImageAttribution && (
                     <p>All images used in this tool are sourced from the{" "}
@@ -37,7 +37,7 @@ export default function Footer({ showImageAttribution = false }){
                         © 2013-2024 Jagex Ltd. All rights reserved.
                     </p>
                 )}
-            </footer> 
+            </footer>
         </>
     )
 }
