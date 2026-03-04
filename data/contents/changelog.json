@@ -1,4 +1,8 @@
 {
+  "1.6.2": [
+    "The website has migrated from GitHub Pages to Cloudflare Pages. ladlorchart.com now points to Cloudflare Pages, while the GitHub Pages deployment is used as a redirect target. This avoids TLS verification issues when using Cloudflare proxying. As a side effect, users accessing from the previous origin may lose saved chart state.",
+    "www.ladlorchart.com now redirects to ladlorchart.com to reduce edge-case UX issues and keep one canonical domain. As a side effect, some returning users may lose previously saved chart state."
+  ],
   "1.6.1": [
     "Customize page has been renamed to chartbuilder. Note that previous links will probably keep working indefinitely",
     "Input formating requirements heavily relaxed.",
