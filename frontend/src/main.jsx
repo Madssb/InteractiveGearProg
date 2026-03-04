@@ -1,5 +1,4 @@
 import ChangelogPage from '@/pages/ChangelogPage.jsx';
-import BankPage from '@/pages/BankPage.jsx';
 import ChartBuilderPage from '@/pages/ChartBuilderPage.jsx';
 import ChartPage from '@/pages/ChartPage.jsx';
 import FaqPage from '@/pages/FaqPage.jsx';
@@ -19,7 +18,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/changelog" element={<ChangelogPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/faq" element={<FaqPage />} />
-        <Route path="/bank" element={<BankPage />} />
+        {/* <Route path="/bank" element={<BankPage />} /> */}
         <Route path="/chartbuilder" element={<ChartBuilderPage />} />
         <Route path="/customize" element={<ChartBuilderPage />} />
       </Routes>
