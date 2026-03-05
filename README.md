@@ -1,6 +1,6 @@
-# Ladlor's Interactive Gear Progression Chart
+# Ladlor's Interactive Gear Progression Chart & Chart builder
 
-An interactive chart for Old School RuneScape Ironman progression.  
+An interactive chart for Old School RuneScape Ironman progression, as well as web-UI based tooling for building charts. 
 Developed with the Ironscape Discord community to help players plan gear and skill unlocks in a clear, trackable order.
 
 ## Features
@@ -8,6 +8,8 @@ Developed with the Ironscape Discord community to help players plan gear and ski
 - **Interactive Tracking**: Click items or skills to mark them as acquired.
 - **Progress Saved Locally**: Uses browser localStorage (no accounts, no servers).
 - **Community Sequenced**: Based on collaborative theorycrafting and guides.
+- **Building Charts**: Sequence almost anything exactly how you want.
+- **Share your vision**: Share your custom charts with unique urls.
 
 ## Usage
 
