@@ -1,4 +1,4 @@
 [Unit]
 Description=Ladlor Chart Builder Services
-Requires=ladlor-api.service ladlor-api-tunnel.service ladlor-api-healthcheck.service
+Requires=ladlor-api.service ladlor-api-tunnel.service ladlor-api-healthcheck.service ladlor-dps-api.service
 After=network.target
