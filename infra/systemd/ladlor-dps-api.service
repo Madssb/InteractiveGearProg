@@ -1,0 +1,14 @@
+[Unit]
+Description=OSRS DPS API (Next.js)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/mads/osrs-dps-calc
+Environment=NODE_ENV=development
+ExecStart=/home/mads/.nvm/versions/node/v20.19.0/bin/node /home/mads/osrs-dps-calc/.yarn/releases/yarn-4.9.2.cjs dev -p 3000 -H 127.0.0.1
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=default.target

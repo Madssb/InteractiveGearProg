@@ -1,12 +1,13 @@
 [Unit]
-Description=Heartbeat ping to uptime monitor
+Description=Healthcheck on Ladlor Chart Builder API
 Wants=network-online.target
 After=network-online.target
 
 [Service]
+User=mads
 Type=oneshot
 EnvironmentFile=%h/.config/heartbeat.env
 ExecStart=/home/mads/InteractiveGearProg/backend/heartbeat_ping.sh
 
 [Install]
-WantedBy=default.target
+WantedBy=multi-user.target
