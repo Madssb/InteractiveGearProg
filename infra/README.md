@@ -1,22 +1,15 @@
 # Infrastructure
 
-Explains and specifies infrastructure pertaining to services in the project
-The chartbuilder relies on a backend made up of FastAPI based REST API, made accessible by tunneling from localhost:800 to 
+Explains and specifies infrastructure pertaining to services the project makes use of in production.
+The chartbuilder relies on a backend made up of FastAPI based REST API, made accessible by tunneling from localhost:8000 to api.ladlorchart.com 
 
-## Syncing up project systemd units with system
+## Systemd
 
-0. Sync up unit files available to the OS with project ones with `sudo cp infra/systemd/* /etc/systemd/system`,
-1. Scan unit files with `sudo systemctl daemon-reload`,
-2. Restart services with `systemctl restart ladlor.target`
+systemd units keeps the REST API running locally on my server and tunnels it through cloudflare.
 
+* sync unit templates with system: `sudo cp infra/systemd/* /etc/systemd/system && systemctl daemon-reload`
+* start/stop/restart/status: `sudo systemctl start/stop/restart/status ladlor.target`
 
+## Cloudflared Tunnel
 
-
-
-## ladlor-api.service
-
-Starts the REST API with uv, binding to the local service endpoint 127.0.0.1:8000
-
-## ladlor-api-tunnel.service
-
-Sets up cloudflared to forward traffic from api.ladlorchart.com to the local service endpoint.
+Sets up tunnel from custom domain to local REST API. For implementation details follow guide: [https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/local-management/as-a-service/linux/]
