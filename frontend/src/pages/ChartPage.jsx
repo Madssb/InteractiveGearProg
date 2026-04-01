@@ -1,4 +1,5 @@
 import Chart from "@/components/Chart.jsx";
+import AssistantBot from '@/components/AssistantBot.jsx';
 import ConfigMenu from "@/components/ConfigMenu";
 import ContextMenu from '@/components/ContextMenu.jsx';
 import Acknowledgements from '@/components/static/Acknowledgements.jsx';
@@ -203,6 +204,7 @@ export default function ChartPage(){
             <Acknowledgements />
             <FAQSection />
             <Footer showImageAttribution={true} />
+            <AssistantBot />
         </>
     )
 }
