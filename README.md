@@ -35,17 +35,17 @@ For a **minimal, ready-to-fork template** (without site extras like changelog, F
 | **Path**                                                                                            | **Purpose**                                                                                                      |
 | --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
 | `data/logic/sequence.json`, `data/logic/retirement.json`, `data/generated/sequence-bare-bones.json` | Define sequencing logic for the composition of `Node` and `NodeGroup` components within the `Chart` component.   |
-| `data/filters.json`                                                                                 | Used to generate `data/generated/sequence-bare-bones.json` by pruning `sequence.json` based on content rules.    |
+| `data/filter.json`                                                                                  | Used to generate `data/generated/sequence-bare-bones.json` by pruning `sequence.json` based on content rules.     |
 | `data/invocations.json`                                                                             | Defines data for a paused or experimental feature.                                                               |
 | `data/generated/items.json`                                                                         | Lookup table for required assets used in internal `Chart` component logic.                                       |
 | `data/generated/count.json`                                                                         | Contains “monthly page views” data for the `PageCount` component, generated via the GoatCounter API.             |
 | `data/contents/changelog.json`                                                                      | Text content for the `Changelog` component.                                                                      |
 | `data/contents/faq.json`                                                                            | Text content for the `Faq` component.                                                                            |
 | `tools/goatcounter.py`                                                                              | Calls Goatcounter API, populating `count.json` for use in `PageCount` Component                                  |
-| `tools/build_items.py`                                                                              | Generates or updates `items.json` with image/wiki URLs from osrswiki-images for entities in `data/logic/*.json`. |
+| `tools/build_items_json.py`                                                                         | Generates or updates `items.json` with image/wiki URLs from osrswiki-images for entities in `data/logic/*.json`.  |
 | `frontend/public/favicon.png`                                                                       | Favicon used in ladlorchart.com                                                                                  |
 | `frontend/index.html`                                                                               | Entry HTML for the Vite build; mounting point for `frontend/src/main.jsx`                                        |
-| `CNAME`                                                                                             | Custom domain record for GitHub Pages deployment (ladlorchart.com).                                              |
+| `frontend/dist/CNAME`                                                                               | Custom domain record written during GitHub Pages deployment for `ladlorchart.com`.                                |
 | `frontend/vite.config.js`                                                                           | Config file for Vite, i.e. React compiler                                                                        |
 
 ## Acknowledgments
