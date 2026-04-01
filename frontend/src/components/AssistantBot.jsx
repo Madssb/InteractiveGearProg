@@ -23,7 +23,7 @@ export default function AssistantBot() {
   const [messages, setMessages] = useState([
     {
       author: 'bot',
-      text: 'Hello. I am the assistant bot. My strengths are enthusiasm and unpredictability.'
+      text: 'hi i am botlor, i provide chart support'
     }
   ]);
 
