@@ -2,6 +2,8 @@
 
 This document describes implementation details for the InteractiveGearProg backend.
 
+Note that the implementations each insist on a unique port for avoiding port conflicts.
+
 ## Requirements
 
 - Python 3.12.x
@@ -16,6 +18,7 @@ This section describes using `uv` to run the backend locally.
 Deployment with uv is simple and fast. However, exposing the backend requires separate systemd services (e.g. for tunneling). A notable benefit is rapid iteration during development.
 
 - Requires [uv](https://docs.astral.sh/uv/getting-started/installation/)
+- port 8000 availability on localhost
 
 From `backend/` run the following:
 
@@ -37,6 +40,7 @@ This section describes deploying the InteractiveGearProg backend locally with a 
 Running the backend as a standalone Docker container (without Docker Compose) is primarily useful for debugging and verification. It is more complex than with uv with more steps for implementation, and more difficult bootstrapping.
 
 - Requires [Docker](https://docs.docker.com/engine/install/).
+- port 8001 availability on localhost
 
 From project root run the following:
 
