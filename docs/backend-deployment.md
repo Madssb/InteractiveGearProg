@@ -1,12 +1,13 @@
 # Backend setup
 
-This document describes implementation details for the InteractiveGearProg backend, including bootstrapping and running the service.
+This document describes implementation details for the InteractiveGearProg backend.
 
 ## Requirements
 
 - Python 3.12.x
 - PostgreSQL
 - uv (recommended)
+- env file in `backend/` like that of `.env.example`
 
 ## Locally hosted implementation with uv (quickstart)
 
@@ -15,7 +16,8 @@ This section describes using `uv` to run the backend locally.
 Deployment with uv is simple and fast. However, exposing the backend requires separate systemd services (e.g. for tunneling). A notable benefit is rapid iteration during development.
 
 - Requires [uv](https://docs.astral.sh/uv/getting-started/installation/)
-- From `backend/` run the following:
+
+From `backend/` run the following:
 
 ```bash
 # run with uv
@@ -69,10 +71,10 @@ Requirements:
 - backend is hosted on `127.0.0.1:8000`
 - `cloudflared` is bootstrapped (see `cloudfared-bootstrapping.md`)
 
-Implementation:
+From project root run the following:
 
 ```bash
-cloudflared tunnel --config infra/cloudflared/config.local.yaml run
+cloudflared tunnel --config infra/cloudflared/config.local.yml run
 ```
 
 ## Orchestration with Docker Compose
@@ -82,10 +84,10 @@ This section describes deploying the backend and tunneling it with docker compos
 Requires the following:
 
 - Docker compose
-- `cloudflared` credentials file
+- `cloudflared` is bootstrapped (see `cloudfared-bootstrapping.md`)
 
-in `backend`:
+From `backend` rund the following:
 
 ```bash
-docker compose -f compose.yaml up -d
+  docker compose -f compose.yaml up -d
 ```

@@ -4,16 +4,16 @@ import math
 import secrets
 import threading
 import time
-from collections import OrderedDict
-from collections import defaultdict, deque
+from collections import OrderedDict, defaultdict, deque
 from typing import Annotated, Dict, List, Tuple
 
 from db import increment_endpoint_hit, load_share, save_share
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from osrswiki_images import search_many
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, conlist
+
+from osrswiki_images import search_many
 
 FlatSequenceType = Annotated[list[str], conlist(str, min_length=1, max_length=500)]
 NestedSequenceType = list[list[str]]
@@ -27,7 +27,7 @@ app.add_middleware(
         "http://localhost:5173",
         "http://127.0.0.1:5173",
         "https://ladlorchart.com",
-        "https://ladlorchart.pages.dev"
+        "https://ladlorchart.pages.dev",
     ],
     allow_methods=["*"],
     allow_headers=["*"],
@@ -74,7 +74,12 @@ RATE_LIMIT_PER_MINUTE = 20
 SEC_WINDOW_SECONDS = 1.0
 MIN_WINDOW_SECONDS = 60.0
 MAX_REQUEST_BODY_BYTES = 256 * 1024
-ALLOWED_HOSTS = {"api.ladlorchart.com", "localhost", "127.0.0.1"}
+ALLOWED_HOSTS = {
+    "api.ladlorchart.com",
+    "test.ladlorchart.com",
+    "localhost",
+    "127.0.0.1",
+}
 RATE_LIMIT_LOCK = threading.Lock()
 RATE_LIMIT_SEC: Dict[str, deque] = defaultdict(deque)
 RATE_LIMIT_MIN: Dict[str, deque] = defaultdict(deque)
@@ -150,7 +155,9 @@ async def request_size_limit_middleware(request: Request, call_next):
                     status_code=413, content={"detail": "Request body too large"}
                 )
         except ValueError:
-            return JSONResponse(status_code=400, content={"detail": "Invalid Content-Length"})
+            return JSONResponse(
+                status_code=400, content={"detail": "Invalid Content-Length"}
+            )
 
     return await call_next(request)
 
