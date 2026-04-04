@@ -12,6 +12,7 @@ __pycache__
 .DS_Store
 **/.env
 **/.env.*
+cloudflared/*.json
 frontend/node_modules
 frontend/dist
 frontend/dist-ssr
