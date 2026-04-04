@@ -27,3 +27,7 @@ logs
 .venv/
 __pycache__/
 .pytest_cache/
+
+
+# do not ocmmit the credentials file. very important
+infra/cloudflared/*.json
