@@ -1,23 +1,24 @@
 # Backend Setup
 
+This document describes the setup for backend logic for ladlorchart.com, i.e. the business logic for chartbuilder.
+
 ## Requirements
 
 - Python 3.12.x
 - PostgreSQL database (Neon or local)
+- uv (recommended)
+
+## Quick start
+
+- requires PostgreSQL.
+
+- ensure an `.env` like `.env.example` exists in `InteractiveGearProg/backend`.
+
+- run `uv sync` and `uv run uvicorn main:app --host 127.0.0.1 --port 8000` for local hosting and dev.
 
 ## Environment
 
-Set `DATABASE_URL` before starting the API.
-Optional: set `SHARES_TABLE` (defaults to `shares`).
-
-Example:
-
-```bash
-export DATABASE_URL="postgresql://user:password@host:5432/dbname?sslmode=require"
-export SHARES_TABLE="shares"
-```
-
-`backend/db.py` reads this value at startup.
+ensure an `.env` like `.env.example` exists. `backend/db.py`requires it at startup.
 
 ## Database Schema
 
@@ -29,13 +30,47 @@ psql "$DATABASE_URL" -f backend/schema.sql
 
 This creates `public.shares` used by `/share/` endpoints.
 
-## Run Locally
+## Run (Docker)
 
-From `backend/`:
+The backend is packaged and deployed as a containerized FastAPI application.
+
+From `InteractiveGearProg/`:
+
+```bash
+# build image manually
+docker build -t ladlorapi-backend -f backend/Dockerfile .
+
+# run container manually
+docker run -d \
+  --name ladlor-test \
+  -p 8001:8000 \
+  --env-file backend/.env \
+  ladlorapi-backend
+
+# verify
+docker ps # test container
+curl http://localhost:8001/health # test endpoint availability with healthcheck
+
+# cleanup
+docker stop ladlor-test
+docker rm ladlor-test
+```
+
+## Run (uv)
+
+The backend may also be deployed with uv from `InteractiveGearProg/backend/` as follows:
 
 ```bash
 uv sync
 uv run uvicorn main:app --host 127.0.0.1 --port 8000
+```
+
+## Tunneling
+
+The frontend
+
+```bash
+cloudflared tunnel run ladlorchart-api
 ```
 
 For laptop self-hosting behind Cloudflare Tunnel, keep API bound to `127.0.0.1` and route external traffic through `cloudflared`.
@@ -206,10 +241,13 @@ Fast rollback steps:
 
 1. Revert backend code/config to last known-good state.
 2. Restart services:
+
 ```bash
 systemctl --user restart backend.service tunnel.service
 ```
+
 3. Verify health:
+
 ```bash
 curl -si https://api.ladlorchart.com/health | sed -n '1,20p'
 ```

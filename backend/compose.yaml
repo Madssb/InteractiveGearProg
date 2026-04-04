@@ -24,7 +24,7 @@ services:
   cloudflared:
     image: cloudflare/cloudflared:latest
     container_name: cloudflared
-    command: tunnel run ladlorchart-api
+    command: tunnel --config /etc/cloudflared/config.yml run
     volumes:
       - ../infra/cloudflared:/etc/cloudflared
     depends_on:

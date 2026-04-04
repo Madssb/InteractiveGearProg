@@ -31,3 +31,5 @@ __pycache__/
 
 # do not ocmmit the credentials file. very important
 infra/cloudflared/*.json
+docs/backend-setup.md
+.codex

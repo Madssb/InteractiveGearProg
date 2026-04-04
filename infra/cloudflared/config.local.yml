@@ -1,0 +1,7 @@
+tunnel: 56bbedb1-5426-4f11-a8fc-765fcfe6328d
+credentials-file: infra/cloudflared/prod.json
+
+ingress:
+  - hostname: api.ladlorchart.com
+    service: http://127.0.0.1:8000
+  - service: http_status:404

@@ -1,0 +1,7 @@
+tunnel: 0660ae0a-05a9-4731-9223-ee3d6c5430f6
+credentials-file: /etc/cloudflared/test.json
+
+ingress:
+  - hostname: test.api.ladlorchart.com
+    service: http://backend:8000
+  - service: http_status:404
