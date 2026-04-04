@@ -6,7 +6,7 @@ services:
       dockerfile: backend/Dockerfile
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "8001:8000" # docker debug port 8001.
     env_file:
       - .env
     # healthcheck:

@@ -1,6 +1,6 @@
 # TO-DO list
 
-## declare scope of chart in FAQ.
+## declare scope of chart in FAQ
 
 ## make show hidden items a toggle
 
