@@ -83,15 +83,31 @@ cloudflared tunnel --config infra/cloudflared/config.local.yml run
 
 ## Orchestration with Docker Compose
 
-This section describes deploying the backend and tunneling it with docker compose.
+This section describes deploying the backend and tunneling it with Docker Compose.
 
 Requires the following:
 
 - Docker compose
-- `cloudflared` is bootstrapped (see `cloudfared-bootstrapping.md`)
+- `cloudflared` is bootstrapped (see `cloudflared-bootstrapping.md`)
 
-From `backend` rund the following:
+Two explicit Compose files are provided so prod and test tunnel selection is always intentional.
+
+### Test tunnel
+
+From `backend/` run:
 
 ```bash
-  docker compose -f compose.yaml up -d
+docker compose -f compose.test.yaml up -d --build
 ```
+
+This publishes the backend on `localhost:8003` for direct debugging and routes tunnel traffic through `infra/cloudflared/config.test.yml`.
+
+### Prod tunnel
+
+From `backend/` run:
+
+```bash
+docker compose -f compose.prod.yaml up -d --build
+```
+
+This publishes the backend on `localhost:8002` for direct debugging and routes tunnel traffic through `infra/cloudflared/config.prod.yml`.

@@ -6,7 +6,7 @@ services:
       dockerfile: backend/Dockerfile
     restart: unless-stopped
     ports:
-      - "8002:8000" # docker compose debug port 8002.
+      - "8003:8000"
     env_file:
       - .env
     # healthcheck:
@@ -23,8 +23,7 @@ services:
     #   start_period: 10s
   cloudflared:
     image: cloudflare/cloudflared:latest
-    container_name: cloudflared
-    command: tunnel --config /etc/cloudflared/config.prod.yml run
+    command: tunnel --config /etc/cloudflared/config.test.yml run
     volumes:
       - ../infra/cloudflared:/etc/cloudflared
     depends_on:
