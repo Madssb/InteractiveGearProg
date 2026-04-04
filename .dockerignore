@@ -10,7 +10,8 @@ __pycache__
 *.pyo
 *.pyd
 .DS_Store
-backend/.env
+**/.env
+**/.env.*
 frontend/node_modules
 frontend/dist
 frontend/dist-ssr
