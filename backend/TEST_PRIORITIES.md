@@ -83,12 +83,15 @@ RUN_LIVE_TESTS=1 SHARES_TABLE=shares_test LIVE_API_BASE_URL=http://127.0.0.1:800
 These are not blockers for current self-hosted production, but are good next improvements:
 
 1. Body-size boundary acceptance test
+
 - explicit test for request size exactly at max limit.
 
 2. Fresh-schema DB roundtrip
+
 - disposable DB test that applies `schema.sql`, then runs `save_share` + `load_share`.
 
 3. Logging assertions
+
 - automated check that request and rate-limit logs include expected fields.
 
 ## Practical Release Gate

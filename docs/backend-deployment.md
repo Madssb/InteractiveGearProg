@@ -92,6 +92,10 @@ Requires the following:
 
 Two explicit Compose files are provided so prod and test tunnel selection is always intentional.
 
+`compose.test.yaml` exists primarily to validate the Docker Compose deployment path end-to-end without disrupting the live service. It is a proving ground and fallback path, not a requirement for long-term concurrent operation with prod.
+
+`compose.prod.yaml` is the intended steady-state Compose deployment once that path is trusted.
+
 ### Test tunnel
 
 From `backend/` run:
