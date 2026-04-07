@@ -9,18 +9,18 @@ services:
       - "8002:8000"
     env_file:
       - .env
-    # healthcheck:
-    #   test:
-    #     [
-    #       "CMD",
-    #       "python",
-    #       "-c",
-    #       "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')",
-    #     ]
-    #   interval: 30s
-    #   timeout: 5s
-    #   retries: 3
-    #   start_period: 10s
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
   cloudflared:
     image: cloudflare/cloudflared:latest
     command: tunnel --config /etc/cloudflared/config.prod.yml run
@@ -28,4 +28,35 @@ services:
       - ../infra/cloudflared:/etc/cloudflared
     depends_on:
       - backend
+    restart: unless-stopped
+  healthcheck:
+    image: curlimages/curl:8.16.0
+    env_file:
+      - .env
+    environment:
+      API_HEALTHCHECK_URL: ${API_HEALTHCHECK_URL:-https://api.ladlorchart.com/health}
+      HEALTHCHECK_INTERVAL_SECONDS: ${HEALTHCHECK_INTERVAL_SECONDS:-900}
+      HEALTHCHECK_TIMEOUT_SECONDS: ${HEALTHCHECK_TIMEOUT_SECONDS:-10}
+      HEARTBEAT_TIMEOUT_SECONDS: ${HEARTBEAT_TIMEOUT_SECONDS:-10}
+    command:
+      - sh
+      - -eu
+      - -c
+      - |
+        : "$${HEARTBEAT_URL:?HEARTBEAT_URL is required}"
+        while true; do
+          if curl --fail --silent --show-error \
+            --max-time "$${HEALTHCHECK_TIMEOUT_SECONDS}" \
+            "$${API_HEALTHCHECK_URL}" > /dev/null; then
+            curl --fail --silent --show-error \
+              --max-time "$${HEARTBEAT_TIMEOUT_SECONDS}" \
+              "$${HEARTBEAT_URL}" > /dev/null
+          fi
+          sleep "$${HEALTHCHECK_INTERVAL_SECONDS}"
+        done
+    depends_on:
+      backend:
+        condition: service_healthy
+      cloudflared:
+        condition: service_started
     restart: unless-stopped
