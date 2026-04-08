@@ -115,3 +115,19 @@ docker compose -f compose.prod.yaml up -d --build
 ```
 
 This publishes the backend on `localhost:8002` for direct debugging and routes tunnel traffic through `infra/cloudflared/config.prod.yml`.
+
+## system service implementation
+
+Requires the following:
+
+- Docker compose
+- project in `/opt` with appropriate privilidges (`sudo chown -R $USER:$USER /opt/InteractiveGearProg`)
+
+Bootstrapping:
+
+- `git pull`
+- `sudo cp /opt/InteractiveGearProg/infra/systemd/* /etc/systemd & systemctl daemon-reload`
+
+start: `sudo systemctl start ladlor.target`
+stop: `sudo systemctl start ladlor.target`
+restart: `sudo systemctl restart ladlor.target`
