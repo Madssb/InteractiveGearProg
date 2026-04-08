@@ -54,7 +54,7 @@ def fetch_with_retry(start: date, end: date, attempts: int = 3):
             last_error = error
             if attempt == attempts:
                 raise
-        time.sleep(min(2 ** attempt, 10))
+        time.sleep(min(2**attempt, 10))
 
     # Defensive; loop should have returned or raised.
     if last_error:
@@ -62,8 +62,8 @@ def fetch_with_retry(start: date, end: date, attempts: int = 3):
     raise RuntimeError("Unexpected retry flow in goatcounter fetch")
 
 
-end = date.today()
-start = end - timedelta(days=31)
+end = date.today() - timedelta(days=1)
+start = end - timedelta(days=31) - timedelta(days=1)
 monthly_viewcount = fetch_with_retry(start, end)
 print(f"[goatcounter] monthly total fetched: {monthly_viewcount}")
 payload = {"viewCountMonth": monthly_viewcount}
