@@ -1,163 +1,134 @@
 import { handleLevels, sanitizeId } from '@/utils/textSanitizers';
 import { questNameInitials } from '@/utils/questNameInitials';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 /**
- * Renders a node with entity, behavior dependent on if type is skill or non-skill.
- * 
+ * Renders a node with milestone, behavior dependent on if type is skill or non-skill.
+ *
  */
 function Node({
-        entity,
-        items,
-        onContextMenu,
-        onTouchStart,
-        onTouchEnd,
-        onClick,
-        nodeCompleteState, 
-        nodeHiddenState
-    }){
-    // "86 ranged" is invalid key, "ranged" is valid.
-    let itemData = items[handleLevels(entity)];
-    
-    if (!itemData) {
-        console.warn(`Missing data for item: ${entity}`);
-        return null;
-    }
+  milestone,
+  milestoneMetadata,
+  onContextMenu,
+  onTouchStart,
+  onTouchEnd,
+  onClick,
+  milestoneComplete,
+  milestoneHidden
+}) {
 
-    let imgUrl =  itemData.imgUrl;
-    let wikiUrl = itemData.wikiUrl;
-    let id = sanitizeId(entity)
-    let type = itemData.type;
 
-    if (type == "skill"){
-        let lvlNum = entity.split(" ")[0];
-        return (
-            <>
-            <div
-                className={`node ${nodeCompleteState && "complete"}`}
-                title={entity}
-                id={sanitizeId(entity)}
-                data-wiki-url={wikiUrl}
-                aria-label={entity}
-                onContextMenu={(e) => onContextMenu(e, entity)}
-                onTouchStart={(e) => onTouchStart(e, entity)}
-                onTouchEnd={onTouchEnd}
-                onClick={() => onClick(entity)}
-            >
-                <div className='skill'>
-                    <img 
-                        src={imgUrl}
-                        alt=""
-                        draggable="false"
-                    />
-                    <span>{lvlNum}</span>
-                </div>
-            </div>
-            </>
-        )
-    }
-    if (type == "quest"){
-        const questInitials = questNameInitials(entity);
-        return (
-            <>
-            <div
-                className={`node ${nodeCompleteState && "complete"} ${nodeHiddenState && "hidden" } ${type}`}
-                title={entity}
-                id={id}
-                data-wiki-url={wikiUrl}
-                onContextMenu={(e) => onContextMenu(e, entity)}
-                onTouchStart={(e) => onTouchStart(e, entity)}
-                onTouchEnd={onTouchEnd}
-                onClick={() => onClick(entity)}
-            >
-                <div className='skill'>
-                    <img 
-                        src={imgUrl}
-                        alt={entity}
-                        draggable="false"
-                    />
-                    <span>{questInitials}</span>
-                </div>
-            </div>
-            </>
-        )
-    }
+  let metadata = milestoneMetadata[handleLevels(milestone)];
+  let imgUrl = metadata.imgUrl;
+  let wikiUrl = metadata.wikiUrl;
+  let id = sanitizeId(milestone)
+  let type = metadata.type;
+
+  if (type == "skill") {
+    let lvlNum = milestone.split(" ")[0];
     return (
-        <>
+      <>
         <div
-            className={`node ${nodeCompleteState && "complete"} ${nodeHiddenState && "hidden" } ${type}`}
-            title={entity}
-            id={id}
-            data-wiki-url={wikiUrl}
-            onContextMenu={(e) => onContextMenu(e, entity)}
-            onTouchStart={(e) => onTouchStart(e, entity)}
-            onTouchEnd={onTouchEnd}
-            onClick={() => onClick(entity)}
+          className={`node ${milestoneComplete && "complete"}`}
+          title={milestone}
+          id={id}
+          data-wiki-url={wikiUrl}
+          aria-label={milestone}
+          onContextMenu={(e) => onContextMenu(e, milestone)}
+          onTouchStart={(e) => onTouchStart(e, milestone)}
+          onTouchEnd={onTouchEnd}
+          onClick={() => onClick(milestone)}
         >
-            <img 
-                src={imgUrl}
-                alt={entity}
-                draggable="false"
+          <div className='skill'>
+            <img
+              src={imgUrl}
+              alt=""
+              draggable="false"
             />
+            <span>{lvlNum}</span>
+          </div>
         </div>
-        </>
+      </>
     )
+  }
+  if (type == "quest") {
+    const questInitials = questNameInitials(milestone);
+    return (
+      <>
+        <div
+          className={`node ${milestoneComplete && "complete"} ${milestoneHidden && "hidden"} ${type}`}
+          title={milestone}
+          id={id}
+          data-wiki-url={wikiUrl}
+          onContextMenu={(e) => onContextMenu(e, milestone)}
+          onTouchStart={(e) => onTouchStart(e, milestone)}
+          onTouchEnd={onTouchEnd}
+          onClick={() => onClick(milestone)}
+        >
+          <div className='skill'>
+            <img
+              src={imgUrl}
+              alt={milestone}
+              draggable="false"
+            />
+            <span>{questInitials}</span>
+          </div>
+        </div>
+      </>
+    )
+  }
+  return (
+    <>
+      <div
+        className={`node ${milestoneComplete && "complete"} ${milestoneHidden && "hidden"} ${type}`}
+        title={milestone}
+        id={id}
+        data-wiki-url={wikiUrl}
+        onContextMenu={(e) => onContextMenu(e, milestone)}
+        onTouchStart={(e) => onTouchStart(e, milestone)}
+        onTouchEnd={onTouchEnd}
+        onClick={() => onClick(milestone)}
+      >
+        <img
+          src={imgUrl}
+          alt={milestone}
+          draggable="false"
+        />
+      </div>
+    </>
+  )
 }
 
 /**
  * Renders a group of nodes
- * 
+ *
  */
 function NodeGroup({
-        entities, 
-        items,
-        onContextMenu, 
-        onTouchStart, 
-        onTouchEnd, 
-        onClick, 
-        nodesCompleteState, 
-        nodesHiddenState, 
-        hide
-    }) {
-    // entities in nodesHiddenState omitted from rendering
-    let final;
-    if (hide && nodesHiddenState){
-        const entitiesNotHidden = entities.filter(e => {
-            if (nodesHiddenState.has(e)){
-                return false;
-            } else {
-                return true;
-            }
-        })
-        const entitiesNotHiddenNotFiltered = entitiesNotHidden.filter(e => {
-            const key = handleLevels(e);
-            const itemData = items[key];
-            if (!itemData) {
-                console.warn(`Missing data for entity: ${e}`);
-                return false;
-            }
-            return !hide[itemData.type];
-        });
-        final = entitiesNotHiddenNotFiltered
-    } else {
-        final = entities;
-    }
-    return (
+  milestoneGroup,
+  milestoneMetadata,
+  onContextMenu,
+  onTouchStart,
+  onTouchEnd,
+  onClick,
+  milestonesComplete,
+  milestonesHidden,
+  hide
+}) {
+  return (
     <div className={"node-group"}>
       {
-        final.map(entity => (
-            <Node
-                key={entity}
-                items={items}
-                entity={entity}
-                onContextMenu={onContextMenu}
-                onTouchStart={onTouchStart}
-                onTouchEnd={onTouchEnd}
-                onClick={onClick}
-                nodeCompleteState={nodesCompleteState?.has(entity)}
-                nodeHiddenState={nodesHiddenState?.has(entity)}
-
-            />
+        milestoneGroup.map(milestone => (
+          <Node
+            key={milestone}
+            milestone={milestone}
+            milestoneMetadata={milestoneMetadata}
+            milestoneComplete={milestonesComplete?.has(milestone)}
+            milestoneHidden={milestonesHidden?.has(milestone)}
+            onContextMenu={onContextMenu}
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
+            onClick={onClick}
+          />
         ))
       }
     </div>
@@ -167,60 +138,60 @@ function NodeGroup({
 /**
  * Renders a chart composed of grouped nodes.
  * Handles context menu logic and node state (complete, skipped, etc.).
-*/
-export default function Chart( {
-        nodeGroups,
-        items,
-        hide,
-        nodesHiddenState,
-        nodesCompleteState,
-        handleNodeContextMenu,
-        handleNodeTouchStart,
-        handleNodeTouchEnd,
-        handleNodeClick,
-        arrows
-    } ){
-    let visibleGroups;
-    if (hide){
-        visibleGroups = nodeGroups.filter(group =>
-        group.some(entity => {
-            if (nodesHiddenState.has(entity)) return false;
-            const key = handleLevels(entity);
-            const itemData = items[key];
-            if (!itemData) return false;
-            return !hide[itemData.type];
+ */
+export default function Chart({
+  milestoneSequence,
+  milestoneMetadata,
+  milestonesComplete,
+  milestonesHidden,
+  hide,
+  handleNodeContextMenu,
+  handleNodeTouchStart,
+  handleNodeTouchEnd,
+  handleNodeClick,
+  arrows
+}) {
+  const visibleMilestoneSequence = useMemo(() => {
+    return milestoneSequence
+      .map(group =>
+        group.filter(milestone => {
+          if (milestonesHidden?.has(milestone)) return false;
+
+          const metadata = milestoneMetadata[handleLevels(milestone)]
+          if (!metadata) return false;
+          if (hide && hide[metadata.type]) return false;
+          return true;
         })
-        );
-    } else {
-        visibleGroups = nodeGroups;
-    }
-    return (
-        <div
-        className={"chart"}
-        >
-            {
-                visibleGroups.map(
-                    (nodeGroup, i) => (
-                        <React.Fragment key={i}>
-                            <NodeGroup
-                                key={nodeGroup}
-                                entities={nodeGroup}
-                                items={items}
-                                onContextMenu={handleNodeContextMenu}
-                                onTouchStart={handleNodeTouchStart}
-                                onTouchEnd={handleNodeTouchEnd}
-                                onClick={handleNodeClick}
-                                nodesCompleteState={nodesCompleteState}
-                                nodesHiddenState={nodesHiddenState}
-                                hide={hide}
-                            />
-                            {arrows && i < nodeGroups.length - 1 && (
-                                <div className='arrow'>→</div>
-                            )}
-                        </React.Fragment>
-                    )
-                )
-            }
-        </div>
-    )
+      ).filter(group => group.length > 0);
+  }, [milestoneSequence, milestoneMetadata, milestonesHidden, hide])
+
+  return (
+    <div
+      className={"chart"}
+    >
+      {
+        visibleMilestoneSequence.map(
+          (milestoneGroup, i) => (
+            <React.Fragment key={i}>
+              <NodeGroup
+                key={milestoneGroup}
+                milestoneGroup={milestoneGroup}
+                milestoneMetadata={milestoneMetadata}
+                milestonesComplete={milestonesComplete}
+                milestonesHidden={milestonesHidden}
+                onContextMenu={handleNodeContextMenu}
+                onTouchStart={handleNodeTouchStart}
+                onTouchEnd={handleNodeTouchEnd}
+                onClick={handleNodeClick}
+                hide={hide}
+              />
+              {arrows && i < milestoneSequence.length - 1 && (
+                <div className='arrow'>→</div>
+              )}
+            </React.Fragment>
+          )
+        )
+      }
+    </div>
+  )
 }
