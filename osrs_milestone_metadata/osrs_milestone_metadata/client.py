@@ -22,14 +22,14 @@ Local Data
 
 Return Conventions
 ------------------
-- Public functions return `{'wikiUrl': str, 'imgUrl': str}` or `None`.
+- Public functions return `MilestoneMetadataRecord` or `None`.
 - `_bucket_query` returns a `List[Dict[str, str]]` (raw API records) or raises.
 - Exceptions: `ConnectionError` on HTTP failure; `KeyError` for unknown bucket.
 
 Public API
 ----------
-- search(name): resolve a single name via all resolvers in order.
-- search_many(names, *, skip_missing=True): batch resolve multiple names.
+- query_milestone_metadata_record(milestone): resolve a single milestone metadata record via all resolvers in order.
+- query_milestone_metadata(milestones): batch resolve multiple milestone metadata records.
 
 Internal Helpers (subject to change)
 ------------------------------------
@@ -41,11 +41,12 @@ from __future__ import annotations
 
 import time
 from importlib.resources import files
-from typing import Dict, Iterable, List, Optional
+from typing import Dict, Iterable, List
 
 import backoff
 import pandas as pd
 import requests
+from pydantic import BaseModel, HttpUrl
 
 BASE = "https://oldschool.runescape.wiki/"
 API = "https://oldschool.runescape.wiki/api.php"
@@ -56,6 +57,19 @@ class RetryableHTTPError(requests.exceptions.HTTPError): ...
 
 
 class NonRetryableHTTPError(requests.exceptions.HTTPError): ...
+
+
+class MilestoneMetadataRecord(BaseModel):
+    wikiUrl: HttpUrl
+    imgUrl: HttpUrl
+    type: str
+
+
+MilestoneMetadata = dict[str, MilestoneMetadataRecord]
+
+class MilestoneMetadataQueryResult(BaseModel):
+    milestoneMetadata: MilestoneMetadata
+    unresolvedMilestones: list[str]
 
 
 s = requests.Session()
@@ -91,8 +105,8 @@ SKILLS = [
 
 
 def _pkg_csv_path(name: str) -> str:
-    # packaged CSVs live at osrswiki_images/data/*.csv
-    return str(files("osrswiki_images").joinpath("data", name))
+    # packaged CSVs live at osrs_milestone_metadata/data/*.csv
+    return str(files("osrs_milestone_metadata").joinpath("data", name))
 
 
 def _raise_for_policy(resp: requests.Response) -> None:
@@ -182,7 +196,7 @@ def _sanitize(text: str) -> str:
     )
 
 
-def _item(item_name: str) -> Dict[str, str] | None:
+def _item(item_name: str) -> MilestoneMetadataRecord | None:
     """Resolve an item to its wiki page and image.
 
     Tries 'infobox_item' with default_version=true; falls back to 'infobox_item2'
@@ -192,7 +206,7 @@ def _item(item_name: str) -> Dict[str, str] | None:
         item_name: Item display name (case-insensitive).
 
     Returns:
-        {'wikiUrl': str, 'imgUrl': str} if found, else None.
+        MilestoneMetadataRecord if found, else None.
     """
     bucket = _bucket_query("infobox_item", item_name)
     if not bucket:
@@ -201,21 +215,21 @@ def _item(item_name: str) -> Dict[str, str] | None:
         return None
     page_name = _sanitize(bucket[0]["page_name"])
     image_file = _sanitize(bucket[0]["image"][0])
-    return {
-        "wikiUrl": f"{BASE}w/{page_name}",
-        "imgUrl": f"{BASE}images/{image_file}",
-        "type": "item",
-    }
+    return MilestoneMetadataRecord(
+        wikiUrl=f"{BASE}w/{page_name}",
+        imgUrl=f"{BASE}images/{image_file}",
+        type="item",
+    )
 
 
-def _spell(spell_name: str) -> Dict[str, str] | None:
+def _spell(spell_name: str) -> MilestoneMetadataRecord | None:
     """Resolve a spell to its wiki page and image.
 
     Args:
         spell_name: Spell display name.
 
     Returns:
-        {'wikiUrl': str, 'imgUrl': str} if found, else None.
+        MilestoneMetadataRecord if found, else None.
     """
     spell_name = spell_name.strip()
     bucket = _bucket_query("infobox_spell", spell_name)
@@ -223,14 +237,14 @@ def _spell(spell_name: str) -> Dict[str, str] | None:
         return None
     page_name = _sanitize(bucket[0]["page_name"])
     image_file = _sanitize(bucket[0]["image"])
-    return {
-        "wikiUrl": f"{BASE}w/{page_name}",
-        "imgUrl": f"{BASE}images/{image_file}",
-        "type": "spell",
-    }
+    return MilestoneMetadataRecord(
+        wikiUrl=f"{BASE}w/{page_name}",
+        imgUrl=f"{BASE}images/{image_file}",
+        type="spell",
+    )
 
 
-def _construction(object_name: str) -> Dict[str, str] | None:
+def _construction(object_name: str) -> MilestoneMetadataRecord | None:
     """Resolve a Construction object to its wiki page and icon.
 
     Uses default_version=true; if not found, retries with ' (construction)' suffix.
@@ -239,7 +253,7 @@ def _construction(object_name: str) -> Dict[str, str] | None:
         object_name: Construction object display name.
 
     Returns:
-        {'wikiUrl': str, 'imgUrl': str} if found, else None.
+        MilestoneMetadataRecord if found, else None.
     """
     n = object_name.strip()
     bucket = _bucket_query("infobox_construction", n)
@@ -249,35 +263,35 @@ def _construction(object_name: str) -> Dict[str, str] | None:
         return None
     page_name = _sanitize(bucket[0]["page_name"])
     icon_file = _sanitize(bucket[0]["icon"][0])
-    return {
-        "wikiUrl": f"{BASE}w/{page_name}",
-        "imgUrl": f"{BASE}images/{icon_file}",
-        "type": "construction",
-    }
+    return MilestoneMetadataRecord(
+        wikiUrl=f"{BASE}w/{page_name}",
+        imgUrl=f"{BASE}images/{icon_file}",
+        type="construction",
+    )
 
 
-def _quest(quest_name: str) -> Dict[str, str] | None:
+def _quest(quest_name: str) -> MilestoneMetadataRecord | None:
     """Resolve a quest to its wiki page and a fixed quest point icon.
 
     Args:
         quest_name: Quest display name.
 
     Returns:
-        {'wikiUrl': str, 'imgUrl': str} if found, else None.
+        MilestoneMetadataRecord if found, else None.
     """
     q = quest_name.strip()
     bucket = _bucket_query("quest", q)
     if not bucket:
         return None
     page_name = _sanitize(bucket[0]["page_name"])
-    return {
-        "wikiUrl": f"{BASE}w/{page_name}",
-        "imgUrl": f"{BASE}images/Quest_point_icon.png",
-        "type": "quest",
-    }
+    return MilestoneMetadataRecord(
+        wikiUrl=f"{BASE}w/{page_name}",
+        imgUrl=f"{BASE}images/Quest_point_icon.png",
+        type="quest",
+    )
 
 
-def _skill(skill_name: str) -> Dict[str, str] | None:
+def _skill(skill_name: str) -> MilestoneMetadataRecord | None:
     """Resolve a skill to its wiki page and icon.
 
     Normalizes 'Runecrafting' → 'Runecraft' and validates against known skills.
@@ -286,21 +300,21 @@ def _skill(skill_name: str) -> Dict[str, str] | None:
         skill_name: Skill display name.
 
     Returns:
-        {'wikiUrl': str, 'imgUrl': str} if valid, else None.
+        MilestoneMetadataRecord if valid, else None.
     """
     name = skill_name.capitalize().strip()
     if name == "Runecrafting":
         name = "Runecraft"
     if name not in SKILLS:
         return None
-    return {
-        "wikiUrl": f"{BASE}w/{name}",
-        "imgUrl": f"{BASE}images/{name}_icon.png",
-        "type": "skill",
-    }
+    return MilestoneMetadataRecord(
+        wikiUrl=f"{BASE}w/{name}",
+        imgUrl=f"{BASE}images/{name}_icon.png",
+        type="skill",
+    )
 
 
-def _generalized_search(search: str) -> Dict[str, str] | None:
+def _generalized_search(search: str) -> MilestoneMetadataRecord | None:
     """Fallback resolver using the OSRS Wiki OpenSearch endpoint.
 
     Useful for entities not covered by bucket queries. Does not resolve an image,
@@ -310,7 +324,7 @@ def _generalized_search(search: str) -> Dict[str, str] | None:
         search: Free-text query.
 
     Returns:
-        {'wikiUrl': str, 'imgUrl': '.../Null.png'} if any result, else None.
+        MilestoneMetadataRecord with a fallback image if any result, else None.
     """
     params = {
         "action": "opensearch",
@@ -324,10 +338,14 @@ def _generalized_search(search: str) -> Dict[str, str] | None:
     data = resp.json()
     if not data or not data[3]:
         return None
-    return {"wikiUrl": data[3][0], "imgUrl": f"{BASE}images/Null.png", "type": "fail"}
+    return MilestoneMetadataRecord(
+        wikiUrl=data[3][0],
+        imgUrl=f"{BASE}images/Null.png",
+        type="fail",
+    )
 
 
-def _slayer_rewards(reward_name: str) -> Dict[str, str] | None:
+def _slayer_rewards(reward_name: str) -> MilestoneMetadataRecord | None:
     """Resolve a Slayer reward to its wiki page and image using packaged CSV.
 
     Looks up `unlock_name` → icon filename mapping from `data/slayer_rewards.csv`.
@@ -336,7 +354,7 @@ def _slayer_rewards(reward_name: str) -> Dict[str, str] | None:
         reward_name: Slayer reward display name.
 
     Returns:
-        {'wikiUrl': '.../Slayer_Rewards', 'imgUrl': str} if found, else None.
+        MilestoneMetadataRecord if found, else None.
     """
     df = pd.read_csv(_pkg_csv_path("slayer_rewards.csv"))
     key = reward_name.lower().strip()
@@ -349,14 +367,14 @@ def _slayer_rewards(reward_name: str) -> Dict[str, str] | None:
         )
     except ValueError:
         return None
-    return {
-        "wikiUrl": f"{BASE}w/Slayer_Rewards",
-        "imgUrl": f"{BASE}images/{image_file}",
-        "type": "slayer",
-    }
+    return MilestoneMetadataRecord(
+        wikiUrl=f"{BASE}w/Slayer_Rewards",
+        imgUrl=f"{BASE}images/{image_file}",
+        type="slayer",
+    )
 
 
-def _prayer(prayer_name: str) -> Dict[str, str] | None:
+def _prayer(prayer_name: str) -> MilestoneMetadataRecord | None:
     """Resolve a prayer to its wiki page and image using packaged CSV.
 
     Looks up `name` → icon filename mapping from `data/prayers.csv`.
@@ -365,7 +383,7 @@ def _prayer(prayer_name: str) -> Dict[str, str] | None:
         prayer_name: Prayer display name.
 
     Returns:
-        {'wikiUrl': str, 'imgUrl': str} if found, else None.
+        MilestoneMetadataRecord if found, else None.
     """
     df = pd.read_csv(_pkg_csv_path("prayers.csv"))
     key = prayer_name.lower().strip()
@@ -375,24 +393,24 @@ def _prayer(prayer_name: str) -> Dict[str, str] | None:
         page_name = df.loc[df["name_lowercase"] == key, "name"].item().replace(" ", "_")
     except ValueError:
         return None
-    return {
-        "wikiUrl": f"{BASE}w/{page_name}",
-        "imgUrl": f"{BASE}images/{image_file}",
-        "type": "prayer",
-    }
+    return MilestoneMetadataRecord(
+        wikiUrl=f"{BASE}w/{page_name}",
+        imgUrl=f"{BASE}images/{image_file}",
+        type="prayer",
+    )
 
 
-def search(name: str) -> Dict[str, str] | None:
+def query_milestone_metadata_record(milestone: str) -> MilestoneMetadataRecord | None:
     """Try all resolvers in order and return the first match.
 
     Order:
         item → spell → construction → skill → quest → prayer → slayer_rewards → generalized_search.
 
     Args:
-        input: Display name or free-text query.
+        milestone: Display name or free-text query.
 
     Returns:
-        {'wikiUrl': str, 'imgUrl': str} or None if all resolvers fail.
+        MilestoneMetadataRecord or None if all resolvers fail.
     """
     for fn in (
         _item,
@@ -404,29 +422,35 @@ def search(name: str) -> Dict[str, str] | None:
         _slayer_rewards,
         _generalized_search,
     ):
-        r = fn(name)
+        r = fn(milestone)
         if r:
             return r
     return None
 
 
-def search_many(
-    names: Iterable[str], *, skip_missing: bool = True
-) -> Dict[str, Dict[str, str]]:
-    """Batch resolve names.
+def query_milestone_metadata(
+    milestones: Iterable[str]
+) -> MilestoneMetadataQueryResult:
+    """Batch resolve milestones.
 
     Args:
-        names: strings to resolve
-        skip_missing: if True, omit misses; if False, include with value None
+        milestones: strings to resolve
+
+    Returns:
+        MilestoneMetadataQueryResult: resolved milestone metadata and unresolved milestones
     """
-    out: Dict[str, Dict[str, str]] = {}
-    for n in names:
-        res = search(n)
+    milestone_metadata: dict[str, MilestoneMetadataRecord] = {}
+    unresolved_milestones: list[str] = []
+    for milestone in milestones:
+        res = query_milestone_metadata_record(milestone)
+        if res is None:
+            unresolved_milestones.append(milestone)
         if res is not None:
-            out[n] = res
-        elif not skip_missing:
-            out[n] = None  # type: ignore[assignment]
-    return out
+            milestone_metadata[milestone] = res
+    return MilestoneMetadataQueryResult(
+        milestoneMetadata=milestone_metadata,
+        unresolvedMilestones=unresolved_milestones
+    )
 
 
 def item_rs3(item_name: str) -> Dict[str, str] | None:
@@ -439,7 +463,7 @@ def item_rs3(item_name: str) -> Dict[str, str] | None:
         item_name: Item display name (case-insensitive).
 
     Returns:
-        {'wikiUrl': str, 'imgUrl': str} if found, else None.
+        MilestoneMetadataRecord if found, else None.
     """
     bucket = _bucket_query("infobox_item", item_name)
     if not bucket:

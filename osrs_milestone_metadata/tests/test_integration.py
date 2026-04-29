@@ -2,13 +2,17 @@
 import os
 
 import pytest
+from osrs_milestone_metadata import (
+    MilestoneMetadataQueryResult,
+    query_milestone_metadata,
+    query_milestone_metadata_record,
+)
 
 pytestmark = pytest.mark.integration
 
 if os.getenv("RUN_LIVE_TESTS") != "1":
     pytest.skip("Set RUN_LIVE_TESTS=1 to run live integration tests.", allow_module_level=True)
 
-from osrswiki_images import search, search_many
 
 # (name, wiki_url, image_url)
 CASES = [
@@ -86,40 +90,60 @@ def _ids(data):
 
 def _check(result, wiki_url_truth, image_url_truth):
     assert result is not None, "resolver returned None"
-    assert result["wikiUrl"] == wiki_url_truth
-    assert result["imgUrl"] == image_url_truth
+    assert str(result.wikiUrl).rstrip("/") == wiki_url_truth
+    assert str(result.imgUrl).rstrip("/") == image_url_truth
 
 
 @pytest.mark.parametrize("name,wiki,img", CASES, ids=_ids(CASES))
 def test_search(name, wiki, img):
-    _check(search(name), wiki, img)
+    _check(query_milestone_metadata_record(name), wiki, img)
 
 
 # Negative-path coverage
 def test_unknown_returns_none():
-    assert search("NotASkill") is None
+    assert query_milestone_metadata_record("NotASkill") is None
 
 
-def test_item_list_input():
-    items = ["abyssal whip", "bandos godsword"]
-    expected = {
-        "abyssal whip": {
-            "wikiUrl": "https://oldschool.runescape.wiki/w/Abyssal_whip",
-            "imgUrl": "https://oldschool.runescape.wiki/images/Abyssal_whip.png",
-            "type": "item",
-        },
-        "bandos godsword": {
-            "wikiUrl": "https://oldschool.runescape.wiki/w/Bandos_godsword",
-            "imgUrl": "https://oldschool.runescape.wiki/images/Bandos_godsword.png",
-            "type": "item",
-        },
-    }
-    result = search_many(items)
-    assert result == expected
+def test_milestones_input():
+    missing = "this definitely does not exist 12345"
+    milestones = ["abyssal whip", "bandos godsword", missing]
+
+    result = query_milestone_metadata(milestones)
+    assert isinstance(result, MilestoneMetadataQueryResult)
+    assert result.unresolvedMilestones == [missing]
+    assert set(result.milestoneMetadata) == {"abyssal whip", "bandos godsword"}
+
+    whip = result.milestoneMetadata["abyssal whip"]
+    assert (
+        str(whip.wikiUrl).rstrip("/")
+        == "https://oldschool.runescape.wiki/w/Abyssal_whip"
+    )
+    assert (
+        str(whip.imgUrl).rstrip("/")
+        == "https://oldschool.runescape.wiki/images/Abyssal_whip.png"
+    )
+    assert whip.type == "item"
+
+    bgs = result.milestoneMetadata["bandos godsword"]
+    assert (
+        str(bgs.wikiUrl).rstrip("/")
+        == "https://oldschool.runescape.wiki/w/Bandos_godsword"
+    )
+    assert (
+        str(bgs.imgUrl).rstrip("/")
+        == "https://oldschool.runescape.wiki/images/Bandos_godsword.png"
+    )
+    assert bgs.type == "item"
 
 
 def test_item_list_input_keep_missing():
-    items = ["abyssal whip", "this definitely does not exist 12345"]
-    result = search_many(items, skip_missing=False)
-    assert result["abyssal whip"]["wikiUrl"].endswith("/Abyssal_whip")
-    assert result["this definitely does not exist 12345"] is None
+    missing = "this definitely does not exist 12345"
+    result = query_milestone_metadata(["abyssal whip", missing])
+
+    assert (
+        str(result.milestoneMetadata["abyssal whip"].wikiUrl)
+        .rstrip("/")
+        .endswith("/Abyssal_whip")
+    )
+    assert missing in result.unresolvedMilestones
+    assert missing not in result.milestoneMetadata
