@@ -1,0 +1,56 @@
+name: validate milestone metadata
+
+on:
+  push:
+    paths:
+      - "data/logic/milestone-sequence-main.json"
+      - "data/logic/milestone-sequence-retirement.json"
+      - "data/logic/filter.json"
+      - "data/generated/milestone-metadata.json"
+      - "data/generated/milestone-sequence-barebones.json"
+      - "tools/generate_milestone_metadata.py"
+      - "tools/pyproject.toml"
+      - "tools/uv.lock"
+      - "osrs_milestone_metadata/**"
+      - ".github/workflows/validate_milestone_metadata.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: milestone-metadata-validation
+  cancel-in-progress: false
+
+jobs:
+  metadata-consistency:
+    name: Generated metadata is current
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Sync tools env
+        run: uv sync --project tools
+
+      - name: Regenerate milestone metadata
+        run: uv run --project tools python tools/generate_milestone_metadata.py
+
+      - name: Reject stale generated files
+        run: |
+          set -eo pipefail
+
+          if git diff --quiet -- data/generated/milestone-metadata.json data/generated/milestone-sequence-barebones.json; then
+            echo "Generated milestone files are current."
+            exit 0
+          fi
+
+          echo "Generated milestone files are stale. Run:"
+          echo "  uv run --project tools python tools/generate_milestone_metadata.py"
+          echo
+          git diff --stat -- data/generated/milestone-metadata.json data/generated/milestone-sequence-barebones.json
+          git diff -- data/generated/milestone-metadata.json data/generated/milestone-sequence-barebones.json
+          exit 1
