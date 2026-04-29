@@ -49,7 +49,8 @@ function simpleTransform(id) {
   return words.join(" ");
 }
 
-export default function migrateLegacySharedNodeStates(setNodesCompleteState) {
+export default function migrateLegacySharedNodeStates(setMilestonesComplete) {
+  if (localStorage.getItem("milestonesComplete")) return;
   if (localStorage.getItem("nodesCompleteState")) return;
   const legacy = localStorage.getItem("sharedNodeStates");
   if (!legacy) return;
@@ -62,8 +63,8 @@ export default function migrateLegacySharedNodeStates(setNodesCompleteState) {
       .filter(k => parsed[k] === 1)
       .map(simpleTransform);
 
-    setNodesCompleteState(new Set(migrated));
-    localStorage.setItem("nodesCompleteState", JSON.stringify(migrated));
+    setMilestonesComplete(new Set(migrated));
+    localStorage.setItem("milestonesComplete", JSON.stringify(migrated));
     localStorage.setItem("migrationDone", "true");
     console.log(`Migrated ${migrated.length} nodes`);
   } catch (err) {

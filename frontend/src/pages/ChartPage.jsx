@@ -9,21 +9,22 @@ import migrateLegacySharedNodeStates from '@/utils/migrateState';
 import removeStarredItems from '@/utils/removeStarredItems.js';
 import updateSequenceLanceRule from '@/utils/sequenceRules.js';
 import { useLocalStorageSet, useLocalStorageState } from '@/utils/useLocalStorageState';
-import items from '@data/generated/items.json';
-import sequenceBareBones from '@data/generated/sequence-bare-bones.json';
-import retirement from '@data/logic/retirement.json';
-import sequence from '@data/logic/sequence.json';
+import milestoneMetadata from '@data/generated/milestone-metadata.json';
+import milestoneSequenceBarebonesRaw from '@data/generated/milestone-sequence-barebones.json';
+import milestoneSequenceRetirementRaw from '@data/logic/milestone-sequence-retirement.json';
+import milestoneSequenceMainRaw from '@data/logic/milestone-sequence-main.json';
 import React, { useState } from 'react';
 
 
 export default function ChartPage(){
-    // chart rendering
+
+    
     const [showRetirement, setShowRetirement] = useLocalStorageState('showRetirement', false);
     const [showBareBones, setShowBareBones] = useLocalStorageState('showBareBones', false);
     const [showOptions, setShowOptions] = useState(false);
 
-    const [nodesHiddenState, setNodesHiddenState] = useLocalStorageSet('nodesHiddenState', new Set());
-    const [nodesCompleteState, setNodesCompleteState] = useLocalStorageSet('nodesCompleteState', new Set());
+    const [milestonesHidden, setMilestonesHidden] = useLocalStorageSet('milestonesHidden', new Set(), ['nodesHiddenState']);
+    const [milestonesComplete, setMilestonesComplete] = useLocalStorageSet('milestonesComplete', new Set(), ['nodesCompleteState']);
     const [hide, setHide] = useLocalStorageState('hide', {
         item: false,
         prayer: false,
@@ -32,22 +33,22 @@ export default function ChartPage(){
         spell: false,
         skill: false,
     });
-    function handleHideClick(entity){
-        setNodesHiddenState(prev => {
+    function handleHideClick(milestone){
+        setMilestonesHidden(prev => {
             const next = new Set(prev);
-            if (next.has(entity)) next.delete(entity);
-            else next.add(entity);
+            if (next.has(milestone)) next.delete(milestone);
+            else next.add(milestone);
             return next;
         });
     }
     function handleShowClick(){
-        setNodesHiddenState(new Set());
+        setMilestonesHidden(new Set());
     }
-    function handleNodeClick(entity) {
-        setNodesCompleteState(prev => {
+    function handleNodeClick(milestone) {
+        setMilestonesComplete(prev => {
             const next = new Set(prev);
-            if (next.has(entity)) next.delete(entity);
-            else next.add(entity);
+            if (next.has(milestone)) next.delete(milestone);
+            else next.add(milestone);
             return next;
         });
     }
@@ -56,9 +57,9 @@ export default function ChartPage(){
         visible: false,
         x: 0,
         y: 0,
-        entity: null,
+        milestone: null,
     });
-    function handleNodeContextMenu(e, entity) {
+    function handleNodeContextMenu(e, milestone) {
         e.preventDefault();
         const touch = e.touches?.[0] || e.changedTouches?.[0];
         const x = touch?.pageX ?? e.pageX;
@@ -67,15 +68,15 @@ export default function ChartPage(){
             visible: true,
             x,
             y,
-            entity,
+            milestone,
         });
     }
 
     // long press behaves like right click
-    function handleNodeTouchStart(e, entity) {
+    function handleNodeTouchStart(e, milestone) {
         e.persist?.(); // keep event for later
         const timeoutId = setTimeout(() => {
-            handleNodeContextMenu(e, entity); // trigger context menu
+            handleNodeContextMenu(e, milestone); // trigger context menu
         }, 600); // long-press threshold
         e.target.dataset.longPressTimeout = timeoutId;
     }
@@ -97,21 +98,24 @@ export default function ChartPage(){
         return () => document.removeEventListener("click", handleClickOutside);
     }, []);
 
-    let nodeGroups = Object.values(removeStarredItems(sequence));
-    let nodeGroupsBareBones = Object.values(removeStarredItems(sequenceBareBones));
-    let nodeGroupsRetirement = Object.values(retirement);
-    const style = {"justifyContent": "space-between", "display":"flex", "alignItems": "center"}
+    let milestoneSequenceMain = removeStarredItems(milestoneSequenceMainRaw);
+    let milestoneSequenceBarebones = removeStarredItems(milestoneSequenceBarebonesRaw);
+    let milestoneSequenceRetirement = milestoneSequenceRetirementRaw;
+    
     
     // if scythe is missing, lance is worth getting at the same step where ferocious gloves lives.
-    const [nodeGroupsState, setNodeGroupsState] = useState(nodeGroups);
-    const [nodeGroupsBareBonesState, setNodeGroupsBareBonesState] = useState(nodeGroupsBareBones)
+    const [milestoneSequenceMainFiltered, setMilestoneSequenceMainFiltered] = useState(milestoneSequenceMain);
+    const [milestoneSequenceBarebonesFiltered, setMilestoneSequenceBarebonesFiltered] = useState(milestoneSequenceBarebones)
     React.useEffect(() => {
-        setNodeGroupsState(prev => updateSequenceLanceRule(nodesHiddenState, prev));
-        setNodeGroupsBareBonesState(prev => updateSequenceLanceRule(nodesHiddenState, prev));
-    }, [nodesHiddenState])
-
+        setMilestoneSequenceMainFiltered(prev => updateSequenceLanceRule(milestonesHidden, prev));
+        setMilestoneSequenceBarebonesFiltered(prev => updateSequenceLanceRule(milestonesHidden, prev));
+    }, [milestonesHidden])
     
-    migrateLegacySharedNodeStates(setNodesCompleteState);
+    React.useEffect(() => {
+        migrateLegacySharedNodeStates(setMilestonesComplete);
+    }, [setMilestonesComplete]);
+    
+    const style = {"justifyContent": "space-between", "display":"flex", "alignItems": "center"}
     return (
         <>
             
@@ -142,11 +146,11 @@ export default function ChartPage(){
             )}
             {showBareBones && (
                 <Chart
-                    nodeGroups={nodeGroupsBareBonesState}
-                    items={items}
+                    milestoneSequence={milestoneSequenceBarebonesFiltered}
+                    milestoneMetadata={milestoneMetadata}
+                    milestonesComplete={milestonesComplete}
+                    milestonesHidden={milestonesHidden}
                     hide={hide}
-                    nodesHiddenState={nodesHiddenState}
-                    nodesCompleteState={nodesCompleteState}
                     handleNodeContextMenu={handleNodeContextMenu}
                     handleNodeTouchStart={handleNodeTouchStart}
                     handleNodeTouchEnd={handleNodeTouchEnd}
@@ -156,11 +160,11 @@ export default function ChartPage(){
             )}
             {!showBareBones && (
                 <Chart
-                    nodeGroups={nodeGroupsState}
-                    items={items}
+                    milestoneSequence={milestoneSequenceMainFiltered}
+                    milestoneMetadata={milestoneMetadata}
+                    milestonesComplete={milestonesComplete}
+                    milestonesHidden={milestonesHidden}
                     hide={hide}
-                    nodesHiddenState={nodesHiddenState}
-                    nodesCompleteState={nodesCompleteState}
                     handleNodeContextMenu={handleNodeContextMenu}
                     handleNodeTouchStart={handleNodeTouchStart}
                     handleNodeTouchEnd={handleNodeTouchEnd}
@@ -170,11 +174,11 @@ export default function ChartPage(){
             )}
             {showRetirement && (
                 <Chart
-                    nodeGroups={nodeGroupsRetirement}
-                    items={items}
+                    milestoneSequence={milestoneSequenceRetirement}
+                    milestoneMetadata={milestoneMetadata}
+                    milestonesComplete={milestonesComplete}
+                    milestonesHidden={milestonesHidden}
                     hide={hide}
-                    nodesHiddenState={nodesHiddenState}
-                    nodesCompleteState={nodesCompleteState}
                     handleNodeContextMenu={handleNodeContextMenu}
                     handleNodeTouchStart={handleNodeTouchStart}
                     handleNodeTouchEnd={handleNodeTouchEnd}
@@ -182,7 +186,7 @@ export default function ChartPage(){
                     arrows={false}
                 />
             )}
-            {nodesHiddenState.size > 0 && (
+            {milestonesHidden.size > 0 && (
             <button
                 id="show-button"
                 onClick={handleShowClick}
@@ -192,12 +196,12 @@ export default function ChartPage(){
             )}   
             {menu.visible && (
             <ContextMenu
-                x={menu.x}
-                y={menu.y}
-                entity={menu.entity}
-                onClose={handleCloseMenu}
-                onHide={handleHideClick}
-                items={items}
+            milestone={menu.milestone}
+            milestoneMetadata={milestoneMetadata}
+            onClose={handleCloseMenu}
+            onHide={handleHideClick}
+            x={menu.x}
+            y={menu.y}
             />
             )}
             <Acknowledgements />
