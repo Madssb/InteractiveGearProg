@@ -111,8 +111,7 @@ function NodeGroup({
   onTouchEnd,
   onClick,
   milestonesComplete,
-  milestonesHidden,
-  hide
+  milestonesHidden
 }) {
   return (
     <div className={"node-group"}>

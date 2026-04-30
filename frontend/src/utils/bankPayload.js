@@ -1,4 +1,6 @@
-export const BANK_API_URL = "https://api.ladlorchart.com/bank/"; // Remote
+import { apiUrl } from "@/utils/apiConfig";
+
+export const BANK_API_URL = apiUrl("/bank/");
 export const POLL_INTERVAL_MS = 5 * 60 * 1000;
 export const ACTIVE_TAB_KEY = "active-bank-tab-id";
 

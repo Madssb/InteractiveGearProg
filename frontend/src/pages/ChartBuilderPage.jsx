@@ -2,35 +2,35 @@ import Chart from "@/components/Chart.jsx";
 import ContextMenu from '@/components/ContextMenu.jsx';
 import SequenceForm from '@/components/SequenceForm';
 import Footer from '@/components/static/Footer.jsx';
+import { apiUrl } from '@/utils/apiConfig';
 import removeStarredItems from '@/utils/removeStarredItems.js';
 import { handleLevels } from '@/utils/textSanitizers';
 import { useLocalStorageSet, useLocalStorageState } from '@/utils/useLocalStorageState';
-import sequence from '@data/logic/sequence.json';
-import React, { useCallback, useState } from 'react';
+import milestoneSequenceMainRaw from '@data/logic/milestone-sequence-main.json';
+import React, { useState } from 'react';
 import { useLocation } from "react-router";
 
-async function postShare(inputSequenceState, outputItemsState) {
-    if (!inputSequenceState || !outputItemsState) return;
+/*
+Instantiate chartbuilder-share record.
+*/
+// stores milestoneSequence in chartbuilder-share record
+async function postShare(milestoneSequence) {
+    
+    if (!milestoneSequence) return;
 
-    const url = "https://api.ladlorchart.com/share/";
-    // const url = "http://127.0.0.1:8000/share/" // Localhost testing
+    const url = apiUrl("/share/");
     const base = window.location.origin + window.location.pathname;
-
-    const payload = {
-        sequence: inputSequenceState,   // nested list
-        items: outputItemsState         // dict of ItemInfo
-    };
 
     try {
         const response = await fetch(url, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(milestoneSequence)
         });
 
         if (!response.ok) throw new Error(`Response status: ${response.status}`);
 
-        const token = await response.json();   // or .text() if backend returns plain string
+        const token = await response.json();
 
         // Use chartbuilder as canonical link; /customize is kept as alias.
         const shareUrl = `${base}#/chartbuilder?token=${token}`;
@@ -41,32 +41,59 @@ async function postShare(inputSequenceState, outputItemsState) {
     }
 }
 
-async function fetchMissingItems(sequenceArray, outputItemsState, setOutputItemsState) {
-    const url = "https://api.ladlorchart.com/sequence/"; // Remote
-    // const url = "http://127.0.0.1:8000/sequence/" // Localhost testing
-    const flat = sequenceArray.flat().map(handleLevels);
-    const keySet = new Set(Object.keys(outputItemsState || {}));
-    const payload = [...new Set(flat.filter(item => !keySet.has(item)))];
-    if (payload.length === 0) return;
+// fetches milestoneSequence, updates milestoneMetadata as needed  
+async function getShare(token, setMilestoneSequence, milestoneMetadata, setMilestoneMetadata) {
+    if (!token) return;
+    const url = apiUrl(`/share/?token=${token}`);
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Response status: ${response.status}`);
+        const milestoneSequence = await response.json();
+        setMilestoneSequence(milestoneSequence);
+        await fetchMissingMilestoneMetadata(milestoneSequence, milestoneMetadata, setMilestoneMetadata);
+    } catch (err) {
+            console.error(err);
+    }
+}
+
+async function fetchMissingMilestoneMetadata(milestoneSequence, milestoneMetadata, setMilestoneMetadata) {
+    const url = apiUrl("/fetch-milestone-metadata/");
+    const milestoneSequenceProcessed = (milestoneSequence || [])
+        .flat(Infinity)
+        .filter(milestone => typeof milestone === "string")
+        .map(handleLevels);
+    const milestonesInMetadata = new Set(Object.keys(milestoneMetadata || {}));
+    const milestonesToFetch = [...new Set(milestoneSequenceProcessed.filter(milestone => !milestonesInMetadata.has(milestone)))];
+    
+    if (milestonesToFetch.length === 0) return;
 
     const response = await fetch(url, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ sequence: payload })
+        body: JSON.stringify(milestonesToFetch)
     });
-
     if (!response.ok) throw new Error(`Response status: ${response.status}`);
     const result = await response.json();
-    const items = result.items || {};
-    setOutputItemsState(prev => ({ ...prev, ...items }));
+    const milestoneMetadataFetched = result.milestoneMetadata || {};
+    setMilestoneMetadata(prev => ({ ...prev, ...milestoneMetadataFetched }));
 }
 
+function extractSequence(milestoneSequence) {
+    if (!milestoneSequence) return;
+    const json = JSON.stringify(milestoneSequence);
+    navigator.clipboard.writeText(json);
+}
 
 export default function ChartBuilderPage() {
-    const [inputSequenceState, setInputSequenceState] = useLocalStorageState('inputSequenceState', false);
-    const [outputItemsState, setOutputItemsState] = useLocalStorageState('outputItemsState', false);
+    const [milestoneSequenceChartBuilder, setMilestoneSequenceChartBuilder] = useLocalStorageState(
+        'milestoneSequenceChartBuilder',
+        false,
+        ['inputSequenceState']
+    );
+    const [milestoneMetadata, setMilestoneMetadata] = useLocalStorageState('milestoneMetadata', false);
     const [nodesCompleteState, setNodesCompleteState] = useLocalStorageSet('nodesCompleteState', new Set());
     const [loadingLadlorChart, setLoadingLadlorChart] = useState(false);
     const [loadError, setLoadError] = useState("");
@@ -74,66 +101,46 @@ export default function ChartBuilderPage() {
     // initialize from Share-URL
     const location = useLocation();
 
-
-    const fetchShare = useCallback(async (token) => {
-        try {
-            const response = await fetch(`https://api.ladlorchart.com/share/?token=${token}`);
-            // const response = await fetch(`http://127.0.0.1:8000/share/?token=${token}`);
-            if (!response.ok) throw new Error(`status ${response.status}`);
-
-            const share = await response.json();
-
-            // share = { sequence: [...], items: {...} }
-            setInputSequenceState(share.sequence);
-            setOutputItemsState(share.items);
-        } catch (err) {
-            console.error(err);
-        }
-    }, [setInputSequenceState, setOutputItemsState]);
-
     React.useEffect(() => {
         const params = new URLSearchParams(location.search);
         const token = params.get("token");
-        if (token) fetchShare(token);
-    }, [location.search, fetchShare]);
-
-    function extractSequence() {
-        if (!inputSequenceState) return;
-        const json = JSON.stringify(inputSequenceState);
-        navigator.clipboard.writeText(json);
-    }
+        if (token) {
+            getShare(token, setMilestoneSequenceChartBuilder, milestoneMetadata, setMilestoneMetadata);
+        }
+    }, [location.search, milestoneMetadata, setMilestoneSequenceChartBuilder, setMilestoneMetadata]);
 
 
     const [showInput, setShowInput] = useState(false);
     function handleInputClick() {
         setShowInput(!showInput)
     }
+
     async function handleLoadLadlorChart() {
         setLoadError("");
-        const hasExisting = Boolean(inputSequenceState && inputSequenceState.length);
+        const hasExisting = Boolean(milestoneSequenceChartBuilder && milestoneSequenceChartBuilder.length);
         if (hasExisting) {
             const shouldReplace = window.confirm("Replace your current chart with Ladlor's chart?");
             if (!shouldReplace) return;
         }
 
-        const ladlorSequence = removeStarredItems(sequence);
-        setInputSequenceState(ladlorSequence);
+        const ladlorMilestoneSequence = removeStarredItems(milestoneSequenceMainRaw);
+        setMilestoneSequenceChartBuilder(ladlorMilestoneSequence);
         try {
             setLoadingLadlorChart(true);
-            await fetchMissingItems(ladlorSequence, outputItemsState, setOutputItemsState);
+            await fetchMissingMilestoneMetadata(ladlorMilestoneSequence, milestoneMetadata, setMilestoneMetadata);
         } catch (error) {
             console.error(error);
-            setLoadError("Could not load Ladlor chart item metadata. Please try again.");
+            setLoadError("Could not load Ladlor chart milestone metadata. Please try again.");
         } finally {
             setLoadingLadlorChart(false);
         }
     }
 
-    function handleNodeClick(entity) {
+    function handleNodeClick(milestone) {
         setNodesCompleteState(prev => {
             const next = new Set(prev);
-            if (next.has(entity)) next.delete(entity);
-            else next.add(entity);
+            if (next.has(milestone)) next.delete(milestone);
+            else next.add(milestone);
             return next;
         });
     }
@@ -143,9 +150,9 @@ export default function ChartBuilderPage() {
         visible: false,
         x: 0,
         y: 0,
-        entity: null,
+        milestone: null,
     });
-    function handleNodeContextMenu(e, entity) {
+    function handleNodeContextMenu(e, milestone) {
         e.preventDefault();
         const touch = e.touches?.[0] || e.changedTouches?.[0];
         const x = touch?.pageX ?? e.pageX;
@@ -154,15 +161,15 @@ export default function ChartBuilderPage() {
             visible: true,
             x,
             y,
-            entity,
+            milestone,
         });
     }
 
     // long press behaves like right click
-    function handleNodeTouchStart(e, entity) {
+    function handleNodeTouchStart(e, milestone) {
         e.persist?.(); // keep event for later
         const timeoutId = setTimeout(() => {
-            handleNodeContextMenu(e, entity); // trigger context menu
+            handleNodeContextMenu(e, milestone); // trigger context menu
         }, 600); // long-press threshold
         e.target.dataset.longPressTimeout = timeoutId;
     }
@@ -176,11 +183,11 @@ export default function ChartBuilderPage() {
         setMenu({ ...menu, visible: false });
     }
 
-    function handleDelete(entity) {
-        setInputSequenceState(seq =>
+    function handleDelete(milestoneToDelete) {
+        setMilestoneSequenceChartBuilder(seq =>
             seq
-                .map(group => group.filter(item => item !== entity))
-                .filter(group => group.length > 0)
+                .map(milestoneGroup => milestoneGroup.filter(milestone => milestone !== milestoneToDelete))
+                .filter(milestoneGroup => milestoneGroup.length > 0)
         );
     }
 
@@ -196,10 +203,10 @@ export default function ChartBuilderPage() {
     const actions = [
         { handler: handleInputClick, label: "Show input" },
         {
-            handler: () => postShare(inputSequenceState, outputItemsState),
+            handler: () => postShare(milestoneSequenceChartBuilder, milestoneMetadata),
             label: "Share"
         },
-        { handler: extractSequence, label: "Extract" },
+        { handler: () => extractSequence(milestoneSequenceChartBuilder), label: "Extract" },
         {
             handler: handleLoadLadlorChart,
             label: loadingLadlorChart ? "Loading..." : "Load Main Chart",
@@ -242,17 +249,17 @@ export default function ChartBuilderPage() {
 
             {showInput && (
                 <SequenceForm
-                    outputItemsState={outputItemsState}
-                    setInputSequenceState={setInputSequenceState}
-                    setOutputItemsState={setOutputItemsState}
-                    initialSequence={inputSequenceState}
+                    outputItemsState={milestoneMetadata}
+                    setMilestoneSequence={setMilestoneSequenceChartBuilder}
+                    setOutputItemsState={setMilestoneMetadata}
+                    initialSequence={milestoneSequenceChartBuilder}
                 />
             )}
-            {inputSequenceState && outputItemsState && (
+            {milestoneSequenceChartBuilder && milestoneMetadata && (
                 <Chart
-                    nodeGroups={inputSequenceState}
-                    items={outputItemsState}
-                    nodesCompleteState={nodesCompleteState}
+                    milestoneSequence={milestoneSequenceChartBuilder}
+                    milestoneMetadata={milestoneMetadata}
+                    milestonesComplete={nodesCompleteState}
                     handleNodeContextMenu={handleNodeContextMenu}
                     handleNodeTouchStart={handleNodeTouchStart}
                     handleNodeTouchEnd={handleNodeTouchEnd}
@@ -262,12 +269,12 @@ export default function ChartBuilderPage() {
             )}
             {menu.visible && (
                 <ContextMenu
-                    x={menu.x}
-                    y={menu.y}
-                    entity={menu.entity}
+                    milestone={menu.milestone}
+                    milestoneMetadata={milestoneMetadata}
                     onClose={handleCloseMenu}
                     onDelete={handleDelete}
-                    items={outputItemsState}
+                    x={menu.x}
+                    y={menu.y}
                 />
             )}
             {loadError && <p style={{ color: "crimson" }}>{loadError}</p>}
