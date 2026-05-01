@@ -18,6 +18,11 @@ from osrs_milestone_metadata import query_milestone_metadata, MilestoneMetadataQ
 
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 
+ALLOWED_ORIGIN_REGEX = (
+    r"^(http://(localhost|127\.0\.0\.1):\d+"
+    r"|https://[a-z0-9-]+\.ladlorchart\.pages\.dev)$"
+)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -26,7 +31,7 @@ app.add_middleware(
         "https://ladlorchart.com",
         "https://ladlorchart.pages.dev",
     ],
-    allow_origin_regex=r"^http://(localhost|127\.0\.0\.1):\d+$",
+    allow_origin_regex=ALLOWED_ORIGIN_REGEX,
     allow_methods=["*"],
     allow_headers=["*"],
 )

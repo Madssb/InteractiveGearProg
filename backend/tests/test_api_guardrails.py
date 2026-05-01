@@ -1,6 +1,7 @@
 from fastapi import HTTPException
 from fastapi.responses import JSONResponse
 import pytest
+import re
 from starlette.requests import Request
 
 
@@ -26,6 +27,19 @@ def test_get_client_id_prefers_cloudflare_header(app_module):
     """Client identity should prioritize Cloudflare header over forwarded-for fallback."""
     req = _request(headers={"cf-connecting-ip": "203.0.113.7", "x-forwarded-for": "198.51.100.4"})
     assert app_module.get_client_id(req) == "203.0.113.7"
+
+
+def test_cors_origin_regex_allows_cloudflare_pages_previews(app_module):
+    """Cloudflare Pages preview deployments should be valid browser origins."""
+    assert re.fullmatch(
+        app_module.ALLOWED_ORIGIN_REGEX,
+        "https://9f50a61d.ladlorchart.pages.dev",
+    )
+    assert re.fullmatch(app_module.ALLOWED_ORIGIN_REGEX, "http://localhost:4173")
+    assert not re.fullmatch(
+        app_module.ALLOWED_ORIGIN_REGEX,
+        "https://evil-project.pages.dev",
+    )
 
 
 @pytest.mark.anyio
