@@ -2,4 +2,4 @@ CREATE TABLE endpoint_hits(
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     endpoint TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-)
+);

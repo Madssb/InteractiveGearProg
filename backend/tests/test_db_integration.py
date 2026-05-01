@@ -29,7 +29,6 @@ def test_schema_matches_expected_shares_contract():
     database_url = os.getenv("DATABASE_URL")
     if not database_url or database_url == _DUMMY_TEST_DB_URL:
         pytest.skip("Set a real DATABASE_URL to run db-marked integration checks.")
-    shares_table = os.getenv("SHARES_TABLE", "shares")
 
     async def _check_schema():
         conn = await asyncpg.connect(database_url, timeout=5)
@@ -42,7 +41,7 @@ def test_schema_matches_expected_shares_contract():
                   WHERE table_schema = 'public' AND table_name = $1
                 )
                 """,
-                shares_table,
+                "shares",
             )
             if not table_exists:
                 return {"table_exists": False}
@@ -54,7 +53,7 @@ def test_schema_matches_expected_shares_contract():
                 WHERE table_schema = 'public' AND table_name = $1
                 ORDER BY ordinal_position
                 """,
-                shares_table,
+                "shares",
             )
             pk_cols = await conn.fetch(
                 """
@@ -68,7 +67,7 @@ def test_schema_matches_expected_shares_contract():
                   AND tc.constraint_type = 'PRIMARY KEY'
                 ORDER BY kcu.ordinal_position
                 """,
-                shares_table,
+                "shares",
             )
             return {
                 "table_exists": True,
@@ -79,10 +78,9 @@ def test_schema_matches_expected_shares_contract():
             await conn.close()
 
     result = asyncio.run(asyncio.wait_for(_check_schema(), timeout=20))
-    assert result["table_exists"] is True, f"Expected public.{shares_table} table to exist."
+    assert result["table_exists"] is True, "Expected public.shares table to exist."
     assert result["columns"] == {
         "token": "text",
-        "sequence": "jsonb",
-        "items": "jsonb",
+        "milestone_sequence": "jsonb",
     }
     assert result["pk_cols"] == ["token"]

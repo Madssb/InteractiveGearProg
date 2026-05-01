@@ -18,7 +18,7 @@ What is verified:
 - request size rejection (`413`) and invalid `Content-Length` rejection (`400`)
 - rate-limit core behavior (`429` + `Retry-After`)
 - health endpoint contract (`{"status":"ok"}`)
-- sequence route response shape (mocked resolver)
+- metadata route response shape (mocked resolver)
 - share create/load behavior (mocked DB layer)
 
 Run:
@@ -37,8 +37,8 @@ Covered by:
 What is verified:
 
 - database connectivity (`SELECT 1`)
-- schema contract for configured shares table:
-  - required columns (`token`, `sequence`, `items`)
+- schema contract for `public.shares`:
+  - required columns (`token`, `milestone_sequence`)
   - primary key on `token`
 
 Run:
@@ -58,8 +58,8 @@ What is verified:
 
 - `GET /share` unknown token -> `404`
 - `GET /share` known token -> `200`
-- `POST /sequence` smoke response shape
-- `POST /share` roundtrip + cleanup (requires `SHARES_TABLE=shares_test`)
+- `POST /fetch-milestone-metadata` smoke response shape
+- `POST /share` roundtrip + cleanup
 - rate-limit route behavior returns `429` + `Retry-After`
 - invalid `Host` header rejection (`400`)
 - oversized body rejection (`413`)
@@ -75,8 +75,11 @@ For mutating share live test:
 
 ```bash
 cd backend
-RUN_LIVE_TESTS=1 SHARES_TABLE=shares_test LIVE_API_BASE_URL=http://127.0.0.1:8000 uv run pytest -m live -q
+RUN_LIVE_TESTS=1 LIVE_API_BASE_URL=http://127.0.0.1:8000 uv run pytest -m live -q
 ```
+
+Run mutating live tests only against a backend started with `DATABASE_URL`
+pointing at a dedicated test database.
 
 ## Remaining Optional Gaps
 
