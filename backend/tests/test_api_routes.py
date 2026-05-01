@@ -21,6 +21,34 @@ def test_health_route_returns_ok(app_module):
 
 
 @pytest.mark.anyio
+async def test_milestone_metadata_route_accepts_metadata_record_values(app_module, monkeypatch):
+    """Metadata route should accept resolver metadata record values."""
+    monkeypatch.setattr(app_module, "enforce_rate_limit", lambda request, route: None)
+
+    record = app_module.MilestoneMetadataRecord(
+        wikiUrl="https://oldschool.runescape.wiki/w/Dragon_scimitar",
+        imgUrl="https://oldschool.runescape.wiki/images/Dragon_scimitar.png",
+        type="item",
+    )
+
+    def fake_query_milestone_metadata(names):
+        assert names == ["dragon scimitar"]
+        return app_module.MilestoneMetadataQueryResult(
+            milestoneMetadata={"dragon scimitar": record},
+            unresolvedMilestones=[],
+        )
+
+    monkeypatch.setattr(app_module, "query_milestone_metadata", fake_query_milestone_metadata)
+
+    req = _request("/fetch-milestone-metadata/", headers={"host": "localhost"})
+    response = await app_module.populate_milestone_metadata(req, ["dragon scimitar"])
+
+    assert str(response.milestoneMetadata["dragon scimitar"].wikiUrl) == (
+        "https://oldschool.runescape.wiki/w/Dragon_scimitar"
+    )
+
+
+@pytest.mark.anyio
 async def test_milestone_metadata_route_returns_expected_shape_with_mocked_resolver(app_module, monkeypatch):
     """Metadata route should return typed item payload shape when resolver succeeds."""
     monkeypatch.setattr(app_module, "enforce_rate_limit", lambda request, route: None)
@@ -28,7 +56,7 @@ async def test_milestone_metadata_route_returns_expected_shape_with_mocked_resol
     def fake_query_milestone_metadata(names):
         return SimpleNamespace(
             milestoneMetadata={
-                n: app_module.ItemInfo(
+                n: app_module.MilestoneMetadataRecord(
                     wikiUrl=f"https://oldschool.runescape.wiki/w/{n.replace(' ', '_')}",
                     imgUrl=f"https://oldschool.runescape.wiki/images/{n.replace(' ', '_')}.png",
                     type="item",
@@ -55,7 +83,7 @@ async def test_milestone_metadata_route_returns_cache_hits(app_module, monkeypat
     monkeypatch.setattr(app_module, "enforce_rate_limit", lambda request, route: None)
     app_module.CACHE.put(
         "Amulet of strength",
-        app_module.ItemInfo(
+        app_module.MilestoneMetadataRecord(
             wikiUrl="https://oldschool.runescape.wiki/w/Amulet_of_strength",
             imgUrl="https://oldschool.runescape.wiki/images/Amulet_of_strength.png",
             type="item",
@@ -131,14 +159,14 @@ async def test_submit_progress_snapshot_enforces_rate_limit_and_persists(app_mod
         calls["path"] = request.url.path
         calls["route"] = route
 
-    async def fake_update_user_progress_snapshots(milestones_completed):
+    async def fake_milestones_completed_snapshots(milestones_completed):
         calls["milestones_completed"] = milestones_completed
 
     monkeypatch.setattr(app_module, "enforce_rate_limit", fake_enforce_rate_limit)
     monkeypatch.setattr(
         app_module,
-        "update_user_progress_snapshots",
-        fake_update_user_progress_snapshots,
+        "milestones_completed_snapshots",
+        fake_milestones_completed_snapshots,
     )
 
     req = _request("/submit-progress-snapshot", headers={"host": "localhost"})
@@ -157,14 +185,14 @@ async def test_submit_progress_snapshot_ignores_empty_payload(app_module, monkey
     def fake_enforce_rate_limit(_request, _route):
         calls["rate_limit"] += 1
 
-    async def fake_update_user_progress_snapshots(_milestones_completed):
+    async def fake_milestones_completed_snapshots(_milestones_completed):
         calls["persist"] += 1
 
     monkeypatch.setattr(app_module, "enforce_rate_limit", fake_enforce_rate_limit)
     monkeypatch.setattr(
         app_module,
-        "update_user_progress_snapshots",
-        fake_update_user_progress_snapshots,
+        "milestones_completed_snapshots",
+        fake_milestones_completed_snapshots,
     )
 
     req = _request("/submit-progress-snapshot", headers={"host": "localhost"})

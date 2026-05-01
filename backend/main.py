@@ -13,7 +13,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, conlist
 
-from osrs_milestone_metadata import query_milestone_metadata, MilestoneMetadataQueryResult
+from osrs_milestone_metadata import (
+    MilestoneMetadataQueryResult,
+    MilestoneMetadataRecord,
+    query_milestone_metadata,
+)
 
 
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
@@ -43,14 +47,8 @@ MilestoneSequence = list[list[str]]
 Milestones = list[str]
 
 
-class ItemInfo(BaseModel):
-    wikiUrl: str
-    imgUrl: str
-    type: str
-
-
 class MilestoneMetadataResponse(BaseModel):
-    milestoneMetadata: dict[str, ItemInfo]
+    milestoneMetadata: dict[str, MilestoneMetadataRecord]
     cacheHits: int
     cacheMisses: int
 
@@ -77,7 +75,7 @@ class LRU(OrderedDict):
             self.popitem(last=False)
 
 
-CACHE: Dict[str, ItemInfo] = LRU(maxsize=5000)
+CACHE: Dict[str, MilestoneMetadataRecord] = LRU(maxsize=5000)
 RATE_LIMIT_PER_SECOND = 3
 RATE_LIMIT_PER_MINUTE = 20
 SEC_WINDOW_SECONDS = 1.0
@@ -210,7 +208,7 @@ async def request_logging_middleware(request: Request, call_next):
 
 
 def LRU_cache(
-    payload: List[str], cache: Dict[str, ItemInfo]
+    payload: List[str], cache: Dict[str, MilestoneMetadataRecord]
 ) -> Tuple[List[str], List[str]]:
     cache_hits: List[str] = []
     cache_misses: List[str] = []

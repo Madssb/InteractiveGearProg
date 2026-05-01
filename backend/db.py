@@ -9,14 +9,14 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     raise SystemExit("DATABASE_URL is not set")
 
+_pool: asyncpg.Pool | None = None
+
 
 async def get_pool():
     global _pool
-    try:
-        return _pool
-    except NameError:
+    if _pool is None:
         _pool = await asyncpg.create_pool(DATABASE_URL)
-        return _pool
+    return _pool
 
 
 async def save_share(
@@ -65,7 +65,7 @@ async def update_endpoint_hits(endpoint: str) -> None:
 
 
 async def milestones_completed_snapshots(milestones_completed: list[str]):
-    """Add completed-milestones record to user_progress_snapshots table
+    """Add completed-milestones record to milestones_completed_snapshots table.
     """
     pool = await get_pool()
     await pool.execute(
