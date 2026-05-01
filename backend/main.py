@@ -7,7 +7,13 @@ import time
 from collections import OrderedDict, defaultdict, deque
 from typing import Annotated, Dict, List, Tuple
 
-from db import load_share, save_share, update_endpoint_hits, milestones_completed_snapshots
+from db import (
+    load_share,
+    milestones_completed_snapshots,
+    milestones_hidden_snapshots,
+    save_share,
+    update_endpoint_hits,
+)
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -225,7 +231,7 @@ async def populate_milestone_metadata(request: Request, milestones: Milestones) 
     """
     """
     enforce_rate_limit(request, "/sequence/")
-    out: Dict[str, ItemInfo] = {}
+    out: Dict[str, MilestoneMetadataRecord] = {}
     cache_hits, cache_misses = LRU_cache(milestones, CACHE)
     try:
         results = query_milestone_metadata(cache_misses)
@@ -274,6 +280,15 @@ async def submit_progress_snapshot(request: Request, milestones_completed: Miles
         return 
     enforce_rate_limit(request, "/submit-progress-snapshot")
     await milestones_completed_snapshots(milestones_completed)
+
+
+@app.post("/submit-hidden-milestones-snapshot")
+async def submit_hidden_milestones_snapshot(request: Request, milestones_hidden: Milestones):
+    """Retrieve hidden milestones from ChartPage on load."""
+    if not milestones_hidden:
+        return
+    enforce_rate_limit(request, "/submit-hidden-milestones-snapshot")
+    await milestones_hidden_snapshots(milestones_hidden)
 
 
 @app.get("/health")

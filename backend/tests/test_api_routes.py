@@ -199,3 +199,54 @@ async def test_submit_progress_snapshot_ignores_empty_payload(app_module, monkey
     assert await app_module.submit_progress_snapshot(req, []) is None
 
     assert calls == {"rate_limit": 0, "persist": 0}
+
+
+@pytest.mark.anyio
+async def test_submit_hidden_milestones_snapshot_enforces_rate_limit_and_persists(app_module, monkeypatch):
+    """Hidden milestone snapshots should be rate-limited and persisted."""
+    calls = {}
+
+    def fake_enforce_rate_limit(request, route):
+        calls["path"] = request.url.path
+        calls["route"] = route
+
+    async def fake_milestones_hidden_snapshots(milestones_hidden):
+        calls["milestones_hidden"] = milestones_hidden
+
+    monkeypatch.setattr(app_module, "enforce_rate_limit", fake_enforce_rate_limit)
+    monkeypatch.setattr(
+        app_module,
+        "milestones_hidden_snapshots",
+        fake_milestones_hidden_snapshots,
+    )
+
+    req = _request("/submit-hidden-milestones-snapshot", headers={"host": "localhost"})
+    await app_module.submit_hidden_milestones_snapshot(req, ["Dragon scimitar"])
+
+    assert calls["path"] == "/submit-hidden-milestones-snapshot"
+    assert calls["route"] == "/submit-hidden-milestones-snapshot"
+    assert calls["milestones_hidden"] == ["Dragon scimitar"]
+
+
+@pytest.mark.anyio
+async def test_submit_hidden_milestones_snapshot_ignores_empty_payload(app_module, monkeypatch):
+    """Empty hidden milestone snapshots should not create analytics rows."""
+    calls = {"rate_limit": 0, "persist": 0}
+
+    def fake_enforce_rate_limit(_request, _route):
+        calls["rate_limit"] += 1
+
+    async def fake_milestones_hidden_snapshots(_milestones_hidden):
+        calls["persist"] += 1
+
+    monkeypatch.setattr(app_module, "enforce_rate_limit", fake_enforce_rate_limit)
+    monkeypatch.setattr(
+        app_module,
+        "milestones_hidden_snapshots",
+        fake_milestones_hidden_snapshots,
+    )
+
+    req = _request("/submit-hidden-milestones-snapshot", headers={"host": "localhost"})
+    assert await app_module.submit_hidden_milestones_snapshot(req, []) is None
+
+    assert calls == {"rate_limit": 0, "persist": 0}

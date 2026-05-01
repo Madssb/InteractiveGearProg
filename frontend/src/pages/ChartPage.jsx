@@ -17,6 +17,7 @@ import milestoneSequenceMainRaw from '@data/logic/milestone-sequence-main.json';
 import React, { useState } from 'react';
 
 const PROGRESS_SNAPSHOT_DATE_KEY = "progressSnapshotSubmittedDate";
+const HIDDEN_MILESTONES_SNAPSHOT_DATE_KEY = "hiddenMilestonesSnapshotSubmittedDate";
 
 function localDateKey(date = new Date()) {
     const year = date.getFullYear();
@@ -44,6 +45,30 @@ async function submitProgressSnapshot(milestonesComplete) {
             localStorage.removeItem(PROGRESS_SNAPSHOT_DATE_KEY);
         }
         console.error("Failed to submit progress snapshot", err);
+    }
+}
+
+async function submitHiddenMilestonesSnapshot(milestonesHidden) {
+    if (!milestonesHidden.size) return;
+
+    const today = localDateKey();
+    if (localStorage.getItem(HIDDEN_MILESTONES_SNAPSHOT_DATE_KEY) === today) return;
+
+    localStorage.setItem(HIDDEN_MILESTONES_SNAPSHOT_DATE_KEY, today);
+
+    try {
+        const response = await fetch(apiUrl("/submit-hidden-milestones-snapshot"), {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify([...milestonesHidden]),
+        });
+
+        if (!response.ok) throw new Error(`Response status: ${response.status}`);
+    } catch (err) {
+        if (localStorage.getItem(HIDDEN_MILESTONES_SNAPSHOT_DATE_KEY) === today) {
+            localStorage.removeItem(HIDDEN_MILESTONES_SNAPSHOT_DATE_KEY);
+        }
+        console.error("Failed to submit hidden milestones snapshot", err);
     }
 }
 
@@ -156,6 +181,11 @@ export default function ChartPage(){
         progressSnapshotAttempted.current = true;
         submitProgressSnapshot(milestonesComplete);
     }, [progressSnapshotReady, milestonesComplete]);
+
+    React.useEffect(() => {
+        if (!progressSnapshotReady) return;
+        submitHiddenMilestonesSnapshot(milestonesHidden);
+    }, [progressSnapshotReady, milestonesHidden]);
     
     const style = {"justifyContent": "space-between", "display":"flex", "alignItems": "center"}
     return (

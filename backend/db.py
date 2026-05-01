@@ -75,3 +75,15 @@ async def milestones_completed_snapshots(milestones_completed: list[str]):
         """,
         json.dumps(milestones_completed)
     )
+
+
+async def milestones_hidden_snapshots(milestones_hidden: list[str]):
+    """Add hidden-milestones record to milestones_hidden_snapshots table."""
+    pool = await get_pool()
+    await pool.execute(
+        """
+        INSERT INTO milestones_hidden_snapshots (milestones_hidden)
+        VALUES ($1)
+        """,
+        json.dumps(milestones_hidden)
+    )

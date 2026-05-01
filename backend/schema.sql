@@ -14,3 +14,9 @@ CREATE TABLE IF NOT EXISTS public.milestones_completed_snapshots (
   milestones_completed jsonb NOT NULL,
   created_at timestamptz NOT NULL DEFAULT now()
 );
+
+CREATE TABLE IF NOT EXISTS public.milestones_hidden_snapshots (
+  id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  milestones_hidden jsonb NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
