@@ -26,6 +26,7 @@ app.add_middleware(
         "https://ladlorchart.com",
         "https://ladlorchart.pages.dev",
     ],
+    allow_origin_regex=r"^http://(localhost|127\.0\.0\.1):\d+$",
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -263,9 +264,12 @@ async def load_share_endpoint(token: str) -> MilestoneSequence:
 
 
 @app.post("/submit-progress-snapshot")
-async def submit_progress_snapshot(milestones_completed: Milestones):
+async def submit_progress_snapshot(request: Request, milestones_completed: Milestones):
     """Retrieve completed milestones from ChartPage on load.
     """
+    if not milestones_completed:
+        return 
+    enforce_rate_limit(request, "/submit-progress-snapshot")
     await update_user_progress_snapshots(milestones_completed)
 
 

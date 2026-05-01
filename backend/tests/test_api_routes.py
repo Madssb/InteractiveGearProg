@@ -120,3 +120,54 @@ async def test_share_load_route_success_and_not_found(app_module, monkeypatch):
     with pytest.raises(HTTPException) as exc:
         await app_module.load_share_endpoint("missing")
     assert exc.value.status_code == 404
+
+
+@pytest.mark.anyio
+async def test_submit_progress_snapshot_enforces_rate_limit_and_persists(app_module, monkeypatch):
+    """Progress snapshots should be rate-limited and persisted as completed milestones."""
+    calls = {}
+
+    def fake_enforce_rate_limit(request, route):
+        calls["path"] = request.url.path
+        calls["route"] = route
+
+    async def fake_update_user_progress_snapshots(milestones_completed):
+        calls["milestones_completed"] = milestones_completed
+
+    monkeypatch.setattr(app_module, "enforce_rate_limit", fake_enforce_rate_limit)
+    monkeypatch.setattr(
+        app_module,
+        "update_user_progress_snapshots",
+        fake_update_user_progress_snapshots,
+    )
+
+    req = _request("/submit-progress-snapshot", headers={"host": "localhost"})
+    await app_module.submit_progress_snapshot(req, ["Amulet of strength"])
+
+    assert calls["path"] == "/submit-progress-snapshot"
+    assert calls["route"] == "/submit-progress-snapshot"
+    assert calls["milestones_completed"] == ["Amulet of strength"]
+
+
+@pytest.mark.anyio
+async def test_submit_progress_snapshot_ignores_empty_payload(app_module, monkeypatch):
+    """Empty progress snapshots should not create analytics rows."""
+    calls = {"rate_limit": 0, "persist": 0}
+
+    def fake_enforce_rate_limit(_request, _route):
+        calls["rate_limit"] += 1
+
+    async def fake_update_user_progress_snapshots(_milestones_completed):
+        calls["persist"] += 1
+
+    monkeypatch.setattr(app_module, "enforce_rate_limit", fake_enforce_rate_limit)
+    monkeypatch.setattr(
+        app_module,
+        "update_user_progress_snapshots",
+        fake_update_user_progress_snapshots,
+    )
+
+    req = _request("/submit-progress-snapshot", headers={"host": "localhost"})
+    assert await app_module.submit_progress_snapshot(req, []) is None
+
+    assert calls == {"rate_limit": 0, "persist": 0}

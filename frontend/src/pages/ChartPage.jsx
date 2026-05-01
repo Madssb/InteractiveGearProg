@@ -5,6 +5,7 @@ import Acknowledgements from '@/components/static/Acknowledgements.jsx';
 import FAQSection from '@/components/static/FAQSection.jsx';
 import Footer from '@/components/static/Footer.jsx';
 import '@/styles/ChartPage.css';
+import { apiUrl } from '@/utils/apiConfig';
 import migrateLegacySharedNodeStates from '@/utils/migrateState';
 import removeStarredItems from '@/utils/removeStarredItems.js';
 import updateSequenceLanceRule from '@/utils/sequenceRules.js';
@@ -15,6 +16,37 @@ import milestoneSequenceRetirementRaw from '@data/logic/milestone-sequence-retir
 import milestoneSequenceMainRaw from '@data/logic/milestone-sequence-main.json';
 import React, { useState } from 'react';
 
+const PROGRESS_SNAPSHOT_DATE_KEY = "progressSnapshotSubmittedDate";
+
+function localDateKey(date = new Date()) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+}
+
+async function submitProgressSnapshot(milestonesComplete) {
+    const today = localDateKey();
+    if (localStorage.getItem(PROGRESS_SNAPSHOT_DATE_KEY) === today) return;
+
+    localStorage.setItem(PROGRESS_SNAPSHOT_DATE_KEY, today);
+
+    try {
+        const response = await fetch(apiUrl("/submit-progress-snapshot"), {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify([...milestonesComplete]),
+        });
+
+        if (!response.ok) throw new Error(`Response status: ${response.status}`);
+    } catch (err) {
+        if (localStorage.getItem(PROGRESS_SNAPSHOT_DATE_KEY) === today) {
+            localStorage.removeItem(PROGRESS_SNAPSHOT_DATE_KEY);
+        }
+        console.error("Failed to submit progress snapshot", err);
+    }
+}
+
 
 export default function ChartPage(){
 
@@ -22,6 +54,8 @@ export default function ChartPage(){
     const [showRetirement, setShowRetirement] = useLocalStorageState('showRetirement', false);
     const [showBareBones, setShowBareBones] = useLocalStorageState('showBareBones', false);
     const [showOptions, setShowOptions] = useState(false);
+    const [progressSnapshotReady, setProgressSnapshotReady] = useState(false);
+    const progressSnapshotAttempted = React.useRef(false);
 
     const [milestonesHidden, setMilestonesHidden] = useLocalStorageSet('milestonesHidden', new Set(), ['nodesHiddenState']);
     const [milestonesComplete, setMilestonesComplete] = useLocalStorageSet('milestonesComplete', new Set(), ['nodesCompleteState']);
@@ -113,7 +147,15 @@ export default function ChartPage(){
     
     React.useEffect(() => {
         migrateLegacySharedNodeStates(setMilestonesComplete);
+        setProgressSnapshotReady(true);
     }, [setMilestonesComplete]);
+
+    React.useEffect(() => {
+        if (!progressSnapshotReady) return;
+        if (progressSnapshotAttempted.current) return;
+        progressSnapshotAttempted.current = true;
+        submitProgressSnapshot(milestonesComplete);
+    }, [progressSnapshotReady, milestonesComplete]);
     
     const style = {"justifyContent": "space-between", "display":"flex", "alignItems": "center"}
     return (

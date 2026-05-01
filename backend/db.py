@@ -73,5 +73,5 @@ async def update_user_progress_snapshots(milestones_completed: list[str]):
         INSERT INTO user_progress_snapshots (milestones_completed)
         VALUES ($1)
         """,
-        milestones_completed
+        json.dumps(milestones_completed)
     )
