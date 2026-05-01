@@ -7,7 +7,7 @@ import time
 from collections import OrderedDict, defaultdict, deque
 from typing import Annotated, Dict, List, Tuple
 
-from db import load_share, save_share, update_endpoint_hits, update_user_progress_snapshots
+from db import load_share, save_share, update_endpoint_hits, milestones_completed_snapshots
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -275,7 +275,7 @@ async def submit_progress_snapshot(request: Request, milestones_completed: Miles
     if not milestones_completed:
         return 
     enforce_rate_limit(request, "/submit-progress-snapshot")
-    await update_user_progress_snapshots(milestones_completed)
+    await milestones_completed_snapshots(milestones_completed)
 
 
 @app.get("/health")

@@ -64,13 +64,13 @@ async def update_endpoint_hits(endpoint: str) -> None:
     )
 
 
-async def update_user_progress_snapshots(milestones_completed: list[str]):
+async def milestones_completed_snapshots(milestones_completed: list[str]):
     """Add completed-milestones record to user_progress_snapshots table
     """
     pool = await get_pool()
     await pool.execute(
         """
-        INSERT INTO user_progress_snapshots (milestones_completed)
+        INSERT INTO milestones_completed_snapshots (milestones_completed)
         VALUES ($1)
         """,
         json.dumps(milestones_completed)
