@@ -1,7 +1,7 @@
 # Ladlor's Interactive Gear Progression Chart & Chart builder
 
 An interactive chart for Old School RuneScape Ironman progression, as well as web-UI based tooling for building charts.
-Developed with the Ironscape Discord community to help players plan gear and skill unlocks in a clear, trackable order.
+Developed with the Ironscape Discord community to help players plan milestones such as gear and skill unlocks in a clear, trackable order.
 
 ## Features
 
@@ -14,7 +14,7 @@ Developed with the Ironscape Discord community to help players plan gear and ski
 ## Usage
 
 - **Live site**: [ladlorchart.com](https://ladlorchart.com)
-- Click any item/skill to toggle completion.
+- Click any milestone to toggle completion.
 - Hover (or long-press on mobile) for item names and Wiki links.
 - To reset your progress: clear this site’s local storage in your browser.
 
@@ -25,14 +25,12 @@ If you want to fork or adapt this project:
 - Start in `frontend/` for the React/Vite app.
 - Start in `backend/` for the FastAPI API and backend-specific docs.
 - Frontend Node version is pinned in `frontend/.nvmrc` (`nvm use` inside `frontend/`).
-- Core chart sequencing lives in `data/logic/sequence.json`.
-- Item metadata is generated into `data/generated/items.json` by `tools/build_items_json.py`.
+- Core chart sequencing lives in `data/logic/milestone-sequence-main.json`.
+- Item metadata is generated into `data/generated/milestone-metadata.json` by `tools/generate_milestone_metadata.py`.
 
 For a **minimal, ready-to-fork template** (without site extras like changelog, FAQ, pagecount), see the [`minimal-template` branch](https://github.com/Madssb/InteractiveGearProg/tree/minimal-template).
 
 ## Repository structure
-
-This section is intentionally high-level. It maps the main directories at the project root so it is easier to re-orient yourself quickly without trying to catalog every important file.
 
 | **Path** | **Purpose** |
 | --- | --- |
@@ -40,7 +38,7 @@ This section is intentionally high-level. It maps the main directories at the pr
 | `backend/` | FastAPI backend, local development entrypoint, and backend tests. |
 | `data/` | Chart sequencing data, generated metadata, and static content consumed by the app. |
 | `tools/` | Utility scripts for generating or refreshing project data. |
-| `osrswiki_images/` | Supporting package for resolving item image and wiki metadata. |
+| `osrs_milestone_metadata/` | Supporting package for resolving item image and wiki metadata. |
 | `docs/` | Project documentation, deployment notes, and reference material. |
 | `infra/` | Infrastructure-related files such as systemd units and cloudflared configs. |
 | `discord_bot/` | Discord bot code related to the wider project ecosystem. |
