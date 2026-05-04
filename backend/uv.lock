@@ -61,7 +61,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "asyncpg" },
     { name = "fastapi" },
-    { name = "osrswiki-images" },
+    { name = "osrs-milestone-metadata" },
     { name = "pydantic" },
     { name = "python-dotenv" },
     { name = "uvicorn" },
@@ -76,7 +76,7 @@ dev = [
 requires-dist = [
     { name = "asyncpg", specifier = ">=0.31.0" },
     { name = "fastapi", specifier = ">=0.132.0" },
-    { name = "osrswiki-images", editable = "../osrswiki_images" },
+    { name = "osrs-milestone-metadata", editable = "../osrs_milestone_metadata" },
     { name = "pydantic", specifier = ">=2.12.5" },
     { name = "python-dotenv", specifier = ">=1.2.1" },
     { name = "uvicorn", specifier = ">=0.41.0" },
@@ -212,12 +212,13 @@ wheels = [
 ]
 
 [[package]]
-name = "osrswiki-images"
+name = "osrs-milestone-metadata"
 version = "0.1.4"
-source = { editable = "../osrswiki_images" }
+source = { editable = "../osrs_milestone_metadata" }
 dependencies = [
     { name = "backoff" },
     { name = "pandas" },
+    { name = "pydantic" },
     { name = "requests" },
 ]
 
@@ -225,8 +226,12 @@ dependencies = [
 requires-dist = [
     { name = "backoff", specifier = ">=2.2.1" },
     { name = "pandas", specifier = ">=3.0.1" },
+    { name = "pydantic", specifier = ">=2.12.5" },
     { name = "requests", specifier = ">=2.32.5" },
 ]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pytest", specifier = ">=9.0.3" }]
 
 [[package]]
 name = "packaging"

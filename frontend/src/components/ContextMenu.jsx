@@ -3,9 +3,9 @@ import '@/styles/context-menu.css';
 import { handleLevels } from '@/utils/textSanitizers';
 import { useLayoutEffect, useRef, useState } from 'react';
 
-export default function ContextMenu({ entity, onClose, onHide, onDelete, items, x, y}){
+export default function ContextMenu({ milestone, onClose, onHide, onDelete, milestoneMetadata, x, y}){
     
-    let wikiUrl = items[handleLevels(entity)]["wikiUrl"];
+    let wikiUrl = milestoneMetadata[handleLevels(milestone)]["wikiUrl"];
     // avoid menu screen clipping
     const ref = useRef(null);
     const [pos, setPos] = useState({ top: y, left: x });
@@ -38,7 +38,7 @@ export default function ContextMenu({ entity, onClose, onHide, onDelete, items, 
                 display: "block"
             }}
         >
-            <div id='menu-title'>{entity}</div>
+            <div id='menu-title'>{milestone}</div>
             <div id='button-container'>
                     {wikiUrl &&                 <button
                     id='wiki-button' 
@@ -56,7 +56,7 @@ export default function ContextMenu({ entity, onClose, onHide, onDelete, items, 
                         id='hide-button'
                         className='menu-button'
                         onClick={() => {
-                            onHide(entity);
+                            onHide(milestone);
                             onClose();
                         }}
                     >
@@ -68,12 +68,12 @@ export default function ContextMenu({ entity, onClose, onHide, onDelete, items, 
                         id='delete-button'
                         className='menu-button'
                         onClick={() => {
-                            onDelete(entity);
+                            onDelete(milestone);
                             onClose();
                         }}
                     >
                         <span className='left-text'>Delete </span>
-                        <span className='right-text'>{entity}</span>
+                        <span className='right-text'>{milestone}</span>
                     </button>
                 )}
                 <button

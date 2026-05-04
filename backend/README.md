@@ -57,10 +57,11 @@ Live API checks (requires running backend server):
 RUN_LIVE_TESTS=1 LIVE_API_BASE_URL=http://127.0.0.1:8000 uv run pytest -m live
 ```
 
-Live mutating share test safely against test table:
+For live tests that create shares, start the backend with `DATABASE_URL` pointed at a
+dedicated test database.
 
 ```bash
-RUN_LIVE_TESTS=1 SHARES_TABLE=shares_test LIVE_API_BASE_URL=http://127.0.0.1:8000 uv run pytest -m live
+RUN_LIVE_TESTS=1 LIVE_API_BASE_URL=http://127.0.0.1:8000 uv run pytest -m live
 ```
 
 Current test coverage and remaining optional gaps are tracked in:

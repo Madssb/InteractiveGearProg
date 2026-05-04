@@ -11,7 +11,7 @@ ENV UV_NO_DEV=1
 
 WORKDIR /app
 COPY backend/pyproject.toml backend/uv.lock /app/backend/
-COPY osrswiki_images /app/osrswiki_images
+COPY osrs_milestone_metadata /app/osrs_milestone_metadata
 WORKDIR /app/backend
 
 RUN --mount=type=cache,target=/root/.cache/uv \

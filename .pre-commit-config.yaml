@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: generate-milestone-metadata
+        name: Generate milestone metadata
+        entry: uv run --project tools python tools/generate_milestone_metadata.py
+        language: system
+        files: ^data/logic/(milestone-sequence-main|milestone-sequence-retirement|filter)\.json$
+        pass_filenames: false

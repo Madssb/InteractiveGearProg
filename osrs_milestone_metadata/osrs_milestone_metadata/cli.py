@@ -3,9 +3,9 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from typing import Any, Dict, Iterable, List, Set
+from typing import Any, Iterable, List, Set
 
-from .client import search, search_many
+from .client import query_milestone_metadata
 
 
 def _flatten(xs: Any) -> Iterable[str]:
@@ -34,7 +34,7 @@ def _read_input(path: str) -> Any:
 
 def main() -> None:
     p = argparse.ArgumentParser(
-        prog="osrswiki-images",
+        prog="osrs-milestone-metadata",
         description="Resolve OSRS names to {name: {wikiUrl, imgUrl}}.",
     )
     p.add_argument(
@@ -69,7 +69,7 @@ def main() -> None:
     p.add_argument(
         "names",
         nargs="*",
-        help='Optional positional names, e.g. `osrswiki-images "abyssal whip" "ice barrage"`',
+        help='Optional positional names, e.g. `osrs-milestone-metadata "abyssal whip" "ice barrage"`',
     )
     args = p.parse_args()
 
@@ -95,13 +95,22 @@ def main() -> None:
                 seen.add(n)
                 names_list.append(n)
 
-    # Resolve
-    mapping: Dict[str, Dict[str, str]] = search_many(
-        names_list, skip_missing=not args.include_missing
-    )
+    result = query_milestone_metadata(names_list)
+    serializable_mapping = {
+        name: record.model_dump(mode="json") if record is not None else None
+        for name, record in result.milestoneMetadata.items()
+    }
+    if args.include_missing:
+        serializable_mapping.update(
+            {name: None for name in result.unresolvedMilestones}
+        )
 
     # Write result
-    text = json.dumps(mapping, ensure_ascii=False, indent=(args.indent or None))
+    text = json.dumps(
+        serializable_mapping,
+        ensure_ascii=False,
+        indent=(args.indent or None),
+    )
     if args.output == "-":
         sys.stdout.write(text)
     else:

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { apiUrl } from "@/utils/apiConfig";
 import { resolveCommonAlias } from "@/utils/normalizeAliases";
 import { handleLevels } from "@/utils/textSanitizers";
 import { useLocalStorageState } from "@/utils/useLocalStorageState";
@@ -12,8 +13,7 @@ async function getItems(
     outputItemsState,
     setOutputItemsState
 ){
-    const url = "https://api.ladlorchart.com/sequence/"; // Remote
-    // const url = "http://127.0.0.1:8000/sequence/" // Localhost testing
+    const url = apiUrl("/fetch-milestone-metadata/");
     const flat = sequenceArray.flat().map(handleLevels);
     const keySet = new Set(Object.keys(outputItemsState));
     const payload = [...new Set(flat.filter(item => !keySet.has(item)))];
@@ -24,7 +24,7 @@ async function getItems(
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ sequence: payload })
+            body: JSON.stringify(payload)
         });
         if (!response.ok){
             throw new Error(`Response status: ${response.status}`);
@@ -33,7 +33,7 @@ async function getItems(
 
         // If you still want it as JSON afterwards:
         const result = JSON.parse(text);
-        const items = result["items"];
+        const items = result.milestoneMetadata || {};
         // console.log(`cache hits: ${result["cacheHits"]}, cache misses: ${result["cacheMisses"]}`)
         setOutputItemsState(prev => ({ ...prev, ...items }));
     } catch (error) {
@@ -296,7 +296,7 @@ function inferInputLayout(raw) {
 
 
 export default function SequenceForm({
-    setInputSequenceState,
+    setMilestoneSequence,
     setOutputItemsState,
     outputItemsState,
     initialSequence
@@ -351,7 +351,7 @@ export default function SequenceForm({
         const sequenceArray = parsedInput.sequence;
         setSequenceInputStyle(parsedInput.style);
         setSequenceInputLayout(inferInputLayout(raw));
-        setInputSequenceState(sequenceArray);
+        setMilestoneSequence(sequenceArray);
         try {
             setLoading(true);
             await getItems(sequenceArray, outputItemsState, setOutputItemsState);

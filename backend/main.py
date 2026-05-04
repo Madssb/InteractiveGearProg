@@ -7,19 +7,31 @@ import time
 from collections import OrderedDict, defaultdict, deque
 from typing import Annotated, Dict, List, Tuple
 
-from db import increment_endpoint_hit, load_share, save_share
+from db import (
+    load_share,
+    milestones_completed_snapshots,
+    milestones_hidden_snapshots,
+    save_share,
+    update_endpoint_hits,
+)
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, conlist
 
-from osrswiki_images import search_many
-
-FlatSequenceType = Annotated[list[str], conlist(str, min_length=1, max_length=500)]
-NestedSequenceType = list[list[str]]
+from osrs_milestone_metadata import (
+    MilestoneMetadataQueryResult,
+    MilestoneMetadataRecord,
+    query_milestone_metadata,
+)
 
 
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
+
+ALLOWED_ORIGIN_REGEX = (
+    r"^(http://(localhost|127\.0\.0\.1):\d+"
+    r"|https://[a-z0-9-]+\.ladlorchart\.pages\.dev)$"
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -29,29 +41,30 @@ app.add_middleware(
         "https://ladlorchart.com",
         "https://ladlorchart.pages.dev",
     ],
+    allow_origin_regex=ALLOWED_ORIGIN_REGEX,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+FlatSequenceType = Annotated[list[str], conlist(str, min_length=1, max_length=500)]
+NestedSequenceType = list[list[str]]
 
-class ItemsRequest(BaseModel):
-    sequence: FlatSequenceType
-
-
-class ItemInfo(BaseModel):
-    wikiUrl: str
-    imgUrl: str
-    type: str
+MilestoneSequence = list[list[str]]
+Milestones = list[str]
 
 
-class ItemsResponse(BaseModel):
-    items: dict[str, ItemInfo]
+class MilestoneMetadataResponse(BaseModel):
+    milestoneMetadata: dict[str, MilestoneMetadataRecord]
     cacheHits: int
     cacheMisses: int
 
 
-class Share(BaseModel):
-    items: dict[str, ItemInfo]
+class ShareCreate(BaseModel):
+    milestoneSequence: NestedSequenceType | None = None
+    sequence: NestedSequenceType | None = None
+
+
+class ShareResponse(BaseModel):
     sequence: NestedSequenceType
 
 
@@ -68,7 +81,7 @@ class LRU(OrderedDict):
             self.popitem(last=False)
 
 
-CACHE: Dict[str, ItemInfo] = LRU(maxsize=5000)
+CACHE: Dict[str, MilestoneMetadataRecord] = LRU(maxsize=5000)
 RATE_LIMIT_PER_SECOND = 3
 RATE_LIMIT_PER_MINUTE = 20
 SEC_WINDOW_SECONDS = 1.0
@@ -192,7 +205,7 @@ async def request_logging_middleware(request: Request, call_next):
     # Best-effort analytics: never block or fail API responses.
     try:
         endpoint_key = f"{request.method} {request.url.path}"
-        await increment_endpoint_hit(endpoint_key)
+        await update_endpoint_hits(endpoint_key)
     except Exception:
         analytics_logger.exception(
             "endpoint_hit_write_failed endpoint=%s", request.url.path
@@ -200,30 +213,8 @@ async def request_logging_middleware(request: Request, call_next):
     return response
 
 
-@app.post("/sequence/")
-async def create_sequence(request: Request, payload: ItemsRequest) -> ItemsResponse:
-    enforce_rate_limit(request, "/sequence/")
-    out: Dict[str, ItemInfo] = {}
-    seq = payload.sequence
-    cache_hits, cache_misses = LRU_cache(seq, CACHE)
-    try:
-        results = search_many(cache_misses)
-    except Exception:
-        # safest fallback: do not return partial API data from the wiki
-        # instead return empty results for the misses
-        results = {}
-    for name, info in results.items():
-        CACHE.put(name, info)
-        out[name] = info
-    for cache_hit in cache_hits:
-        out[cache_hit] = CACHE[cache_hit]
-    return ItemsResponse(
-        items=out, cacheHits=len(cache_hits), cacheMisses=len(cache_misses)
-    )
-
-
 def LRU_cache(
-    payload: List[str], cache: Dict[str, ItemInfo]
+    payload: List[str], cache: Dict[str, MilestoneMetadataRecord]
 ) -> Tuple[List[str], List[str]]:
     cache_hits: List[str] = []
     cache_misses: List[str] = []
@@ -235,24 +226,73 @@ def LRU_cache(
     return cache_hits, cache_misses
 
 
+@app.post("/fetch-milestone-metadata/")
+async def populate_milestone_metadata(request: Request, milestones: Milestones) -> MilestoneMetadataResponse:
+    """
+    """
+    enforce_rate_limit(request, "/sequence/")
+    out: Dict[str, MilestoneMetadataRecord] = {}
+    cache_hits, cache_misses = LRU_cache(milestones, CACHE)
+    try:
+        results = query_milestone_metadata(cache_misses)
+    except Exception:
+        results = MilestoneMetadataQueryResult(
+            milestoneMetadata={},
+            unresolvedMilestones=[]
+        )
+    for milestone, metadata in results.milestoneMetadata.items():
+        CACHE.put(milestone, metadata)
+        out[milestone] = metadata
+    for cache_hit in cache_hits:
+        out[cache_hit] = CACHE[cache_hit]
+    return MilestoneMetadataResponse(
+        milestoneMetadata=out, cacheHits=len(cache_hits), cacheMisses=len(cache_misses)
+    )
+
+
 @app.post("/share/")
-async def create_share(request: Request, payload: Share) -> str:
+async def create_share(request: Request, milestone_sequence: MilestoneSequence) -> str:
+    """Instantiate chartbuilder-share record
+    """
     enforce_rate_limit(request, "/share/")
+    if milestone_sequence is None:
+        raise HTTPException(status_code=422, detail="Missing milestone sequence")
     token = secrets.token_urlsafe(8)
-    plain_items = {k: v.model_dump() for k, v in payload.items.items()}
-    await save_share(token, payload.sequence, plain_items)
+    await save_share(token, milestone_sequence)
     return token
 
 
 @app.get("/share/")
-async def load_share_endpoint(token: str) -> Share:
-    result = await load_share(token)
-    if result is None:
-        raise HTTPException(status_code=404, detail="Not found")
-    sequence, items = result
-    return Share(sequence=sequence, items=items)
+async def load_share_endpoint(token: str) -> MilestoneSequence:
+    """Retrieve `sequence` from chartbuilder-share record
+    """
+    milestone_sequence = await load_share(token)
+    if milestone_sequence is None:
+        raise HTTPException(status_code=404, detail="Token Not found")
+    return milestone_sequence
+
+
+@app.post("/submit-progress-snapshot")
+async def submit_progress_snapshot(request: Request, milestones_completed: Milestones):
+    """Retrieve completed milestones from ChartPage on load.
+    """
+    if not milestones_completed:
+        return 
+    enforce_rate_limit(request, "/submit-progress-snapshot")
+    await milestones_completed_snapshots(milestones_completed)
+
+
+@app.post("/submit-hidden-milestones-snapshot")
+async def submit_hidden_milestones_snapshot(request: Request, milestones_hidden: Milestones):
+    """Retrieve hidden milestones from ChartPage on load."""
+    if not milestones_hidden:
+        return
+    enforce_rate_limit(request, "/submit-hidden-milestones-snapshot")
+    await milestones_hidden_snapshots(milestones_hidden)
 
 
 @app.get("/health")
 def health():
+    """Healthcheck
+    """
     return {"status": "ok"}

@@ -8,7 +8,9 @@ services:
     ports:
       - "8002:8000"
     env_file:
-      - .env
+      - .env.prod
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     healthcheck:
       test:
         [
@@ -32,7 +34,7 @@ services:
   healthcheck:
     image: curlimages/curl:8.16.0
     env_file:
-      - .env
+      - .env.prod
     environment:
       API_HEALTHCHECK_URL: ${API_HEALTHCHECK_URL:-https://api.ladlorchart.com/health}
       HEALTHCHECK_INTERVAL_SECONDS: ${HEALTHCHECK_INTERVAL_SECONDS:-900}

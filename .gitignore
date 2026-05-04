@@ -2,6 +2,7 @@ visualize.py
 data/external/*
 .vscode/*
 .env
+.env.prod
 tools/scrape_slayer_rewards.py
 *.pyc
 

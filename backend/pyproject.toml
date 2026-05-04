@@ -7,7 +7,7 @@ requires-python = ">=3.12,<3.13"
 dependencies = [
     "asyncpg>=0.31.0",
     "fastapi>=0.132.0",
-    "osrswiki-images>=0.1.4",
+    "osrs-milestone-metadata>=0.1.4",
     "pydantic>=2.12.5",
     "python-dotenv>=1.2.1",
     "uvicorn>=0.41.0",
@@ -19,7 +19,7 @@ dev = [
 ]
 
 [tool.uv.sources]
-osrswiki-images = { path = "../osrswiki_images", editable = true }
+osrs-milestone-metadata = { path = "../osrs_milestone_metadata", editable = true }
 
 [tool.pytest.ini_options]
 markers = [

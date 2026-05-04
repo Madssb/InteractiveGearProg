@@ -2,7 +2,6 @@ import asyncio
 import os
 from json import dumps as json_dumps
 from json import load as json_load
-import re
 import uuid
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
@@ -13,7 +12,6 @@ from dotenv import dotenv_values
 
 DEFAULT_LIVE_API_BASE_URL = "http://127.0.0.1:8000"
 DEFAULT_LIVE_VALID_SHARE_TOKEN = "0PL8AEgmydg"
-TABLE_NAME_RE = re.compile(r"^[a-z_][a-z0-9_]*$")
 
 
 @pytest.mark.live
@@ -45,19 +43,18 @@ def test_get_share_valid_token_returns_200():
         assert response.status == 200
         payload = json_load(response)
 
-    assert "sequence" in payload
-    assert "items" in payload
+    assert isinstance(payload, list)
 
 
 @pytest.mark.live
-def test_post_sequence_smoke_returns_200_and_expected_shape():
-    """Live API smoke check: sequence route returns expected response structure."""
+def test_post_milestone_metadata_smoke_returns_200_and_expected_shape():
+    """Live API smoke check: metadata route returns expected response structure."""
     if os.getenv("RUN_LIVE_TESTS") != "1":
         pytest.skip("Set RUN_LIVE_TESTS=1 to run live HTTP checks.")
 
     base_url = os.getenv("LIVE_API_BASE_URL", DEFAULT_LIVE_API_BASE_URL)
-    url = f"{base_url}/sequence/"
-    body = json_dumps({"sequence": ["bones"]}).encode("utf-8")
+    url = f"{base_url}/fetch-milestone-metadata/"
+    body = json_dumps(["bones"]).encode("utf-8")
     request = Request(
         url,
         data=body,
@@ -69,16 +66,16 @@ def test_post_sequence_smoke_returns_200_and_expected_shape():
         assert response.status == 200
         payload = json_load(response)
 
-    assert "items" in payload
+    assert "milestoneMetadata" in payload
     assert "cacheHits" in payload
     assert "cacheMisses" in payload
-    assert "bones" in payload["items"]
-    assert isinstance(payload["items"]["bones"]["wikiUrl"], str)
-    assert isinstance(payload["items"]["bones"]["imgUrl"], str)
-    assert isinstance(payload["items"]["bones"]["type"], str)
-    assert payload["items"]["bones"]["wikiUrl"]
-    assert payload["items"]["bones"]["imgUrl"]
-    assert payload["items"]["bones"]["type"]
+    assert "bones" in payload["milestoneMetadata"]
+    assert isinstance(payload["milestoneMetadata"]["bones"]["wikiUrl"], str)
+    assert isinstance(payload["milestoneMetadata"]["bones"]["imgUrl"], str)
+    assert isinstance(payload["milestoneMetadata"]["bones"]["type"], str)
+    assert payload["milestoneMetadata"]["bones"]["wikiUrl"]
+    assert payload["milestoneMetadata"]["bones"]["imgUrl"]
+    assert payload["milestoneMetadata"]["bones"]["type"]
 
 
 @pytest.mark.live
@@ -87,32 +84,13 @@ def test_post_share_roundtrip_and_cleanup():
     if os.getenv("RUN_LIVE_TESTS") != "1":
         pytest.skip("Set RUN_LIVE_TESTS=1 to run live HTTP checks.")
 
-    database_url = _resolve_cleanup_database_url()
+    database_url = _resolve_database_url()
     if not database_url:
-        pytest.skip(
-            "Set LIVE_CLEANUP_DATABASE_URL or DATABASE_URL for live share cleanup."
-        )
-
-    shares_table = os.getenv("SHARES_TABLE", "shares")
-    if shares_table != "shares_test":
-        pytest.skip("Set SHARES_TABLE=shares_test to run mutating live share tests safely.")
-    if not TABLE_NAME_RE.match(shares_table):
-        pytest.skip("SHARES_TABLE has invalid format.")
+        pytest.skip("Set DATABASE_URL for live share cleanup.")
 
     base_url = os.getenv("LIVE_API_BASE_URL", DEFAULT_LIVE_API_BASE_URL)
     url = f"{base_url}/share/"
-    body = json_dumps(
-        {
-            "sequence": [["bones"]],
-            "items": {
-                "bones": {
-                    "wikiUrl": "https://oldschool.runescape.wiki/w/Bones",
-                    "imgUrl": "https://oldschool.runescape.wiki/images/Bones.png",
-                    "type": "item",
-                }
-            },
-        }
-    ).encode("utf-8")
+    body = json_dumps([["bones"]]).encode("utf-8")
     request = Request(
         url,
         data=body,
@@ -131,22 +109,21 @@ def test_post_share_roundtrip_and_cleanup():
         with urlopen(f"{base_url}/share/?token={token}", timeout=10) as response:
             assert response.status == 200
             payload = json_load(response)
-        assert payload["sequence"] == [["bones"]]
-        assert "bones" in payload["items"]
+        assert payload == [["bones"]]
     finally:
         if token:
-            asyncio.run(_delete_share_row(database_url, shares_table, token))
+            asyncio.run(_delete_share_row(database_url, token))
 
 
 @pytest.mark.live
-def test_sequence_rate_limit_returns_429_with_retry_after():
+def test_milestone_metadata_rate_limit_returns_429_with_retry_after():
     """Live API guardrail: burst requests should trigger 429 and Retry-After."""
     if os.getenv("RUN_LIVE_TESTS") != "1":
         pytest.skip("Set RUN_LIVE_TESTS=1 to run live HTTP checks.")
 
     base_url = os.getenv("LIVE_API_BASE_URL", DEFAULT_LIVE_API_BASE_URL)
-    url = f"{base_url}/sequence/"
-    body = json_dumps({"sequence": ["bones"]}).encode("utf-8")
+    url = f"{base_url}/fetch-milestone-metadata/"
+    body = json_dumps(["bones"]).encode("utf-8")
     client_ip = f"198.51.100.{(uuid.uuid4().int % 200) + 1}"
     headers = {
         "Content-Type": "application/json",
@@ -191,7 +168,7 @@ def test_oversized_body_returns_413():
         pytest.skip("Set RUN_LIVE_TESTS=1 to run live HTTP checks.")
 
     base_url = os.getenv("LIVE_API_BASE_URL", DEFAULT_LIVE_API_BASE_URL)
-    url = f"{base_url}/sequence/"
+    url = f"{base_url}/fetch-milestone-metadata/"
     body = b"x" * 1024
     headers = {
         "Content-Type": "application/json",
@@ -204,20 +181,16 @@ def test_oversized_body_returns_413():
     assert exc.value.code == 413
 
 
-async def _delete_share_row(database_url: str, shares_table: str, token: str) -> None:
+async def _delete_share_row(database_url: str, token: str) -> None:
     conn = await asyncpg.connect(database_url, timeout=5)
     try:
-        await conn.execute(f"DELETE FROM {shares_table} WHERE token = $1", token)
+        await conn.execute("DELETE FROM shares WHERE token = $1", token)
     finally:
         await conn.close()
 
 
-def _resolve_cleanup_database_url() -> str | None:
+def _resolve_database_url() -> str | None:
     """Resolve DB URL for live-test cleanup without relying on shell state only."""
-    explicit = os.getenv("LIVE_CLEANUP_DATABASE_URL")
-    if explicit:
-        return explicit
-
     env_file_values = dotenv_values(".env")
     file_url = env_file_values.get("DATABASE_URL")
     if isinstance(file_url, str) and file_url:
