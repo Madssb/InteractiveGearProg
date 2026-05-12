@@ -184,7 +184,7 @@ export default function Chart({
                 onClick={handleNodeClick}
                 hide={hide}
               />
-              {arrows && i < milestoneSequence.length - 1 && (
+              {arrows && i < visibleMilestoneSequence.length - 1 && (
                 <div className='arrow'>→</div>
               )}
             </React.Fragment>
