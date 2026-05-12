@@ -26,6 +26,7 @@ export default function Footer({ showImageAttribution = false }) {
                         </span>
                     ))}
                     <a href="https://github.com/Madssb/InteractiveGearProg">Source Code</a> |{" "}
+                    <a href="https://www.paypal.com/ncp/payment/3WEM322C3CG5E" target="_blank" rel="noopener noreferrer">Donate</a> |{" "}
                     Monthly page visits: <span id="page-count"><PageCount /></span> |{" "}
                 </p>
                 {showImageAttribution && (
