@@ -1,4 +1,7 @@
 {
+  "1.7.0": [
+    "Moved Torva armor set from the main chart to the retirement home."
+  ],
   "1.6.3": [
     "Added backend progress snapshots for completed milestones, used to improve future chart updates.",
     "Moved from cloud-based PostgreSQL provider to locally hosted."
