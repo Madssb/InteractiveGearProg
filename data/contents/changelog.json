@@ -1,6 +1,8 @@
 {
   "1.7.0": [
-    "Moved Torva armor set from the main chart to the retirement home."
+    "Re-syncing early chart logic with BRUHSailer. Too many re-sequenced milestones to reasonably relay.",
+    "Moved Torva, venator bow, and ghommal's hilt from the main chart to the retirement home.",
+    "added zuk helm and max cape to the retirement home"
   ],
   "1.6.3": [
     "Added backend progress snapshots for completed milestones, used to improve future chart updates.",

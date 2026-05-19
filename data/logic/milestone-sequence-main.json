@@ -2,65 +2,61 @@
   ["Amulet of strength", "Climbing boots", "Rune pouch"],
   ["Iban's staff (u)", "Protect from Melee", "Ancient staff", "Eagle Eye"],
   ["Fighter torso", "Granite body"],
-  ["Dragon scimitar", "Berserker ring (i)", "Herb sack"],
-  ["Dragon defender", "Barrows gloves"],
-  [
-    "Helm of neitiznot",
-    "Book of the dead",
-    "Ava's accumulator",
-    "Piety",
-    "gem bag"
-  ],
+  ["Dragon scimitar", "Dragon dagger", "Berserker ring (i)"],
+  ["Helm of neitiznot", "Barrows gloves", "gem bag", "Herb sack"],
+  ["Dragon defender", "Book of the dead", "Salve amulet(ei)", "Piety"],
+  ["Mixed hide cape", "Mixed hide boots"],
+  ["Ava's accumulator", "Imbued zamorak cape"],
+  ["Spirit tree (Construction)"],
   ["Hallowed crystal shard"],
+  [    
+    "Infinity boots",
+    "Mage's book"],
   [
     "Dark altar (Construction)",
-    "Spirit tree (Construction)",
     "Rejuvenation pool",
     "Basic jewellery box"
   ],
   ["Arkan blade"],
-  [
-    "Black mask (i)",
-    "Imbued zamorak cape",
-    "Bonecrusher",
-    "Ash sanctifier",
-    "Bigger and Badder",
-    "Ice Barrage",
-    "Infinity boots",
-    "Mage's book"
-  ],
-  ["Mixed hide cape", "Mixed hide boots", "Red chinchompa", "70 ranged"],
-  ["Broader Fletching", "69 slayer"],
+  ["Black mask (i)", "Bonecrusher"],
+  ["Pharaoh's sceptre"],
+  ["Arclight", "Broader Fletching", "Slayer helmet (i)", "Ice Barrage", "Bigger and Badder", "Ash sanctifier"],
+  ["69 slayer", "86 strength"],
+  ["Karamja gloves 3"],
+  ["Amulet of glory"],
   ["Ghommal's hilt 2"],
+  ["void knight top",
+    "void knight robe",
+    "Void ranger helm",
+    "Void knight gloves"
+  ],
+  ["Red chinchompa", "70 ranged"],
   [
     "Elite void top",
     "Elite void robe",
-    "Void ranger helm",
-    "Void knight gloves",
     "Crystal halberd"
   ],
-  ["92 ranged", "86 strength"],
+  ["92 ranged"],
   ["Crystal body", "Crystal legs", "Crystal helm", "Bow of faerdhinen (c)"],
+  ["Bloodbark body", "Bloodbark legs", "Bloodbark helm", "Ava's assembler"],
   ["Spellbook Swap"],
   [
-    "Explorer's ring 4",
-    "Wrath rune",
     "Fire cape",
-    "Karamja gloves 3",
-    "Amulet of glory"
+    "Ancient icon",
+    "Dragon pickaxe",
+    "Wrath rune"
   ],
-  ["Pharaoh's sceptre", "Karamja gloves 4"],
   [
     "Occult altar",
     "Ornate jewellery box",
     "Fairy ring (Construction)",
     "Ornate rejuvenation pool"
   ],
-  ["Bloodbark body", "Bloodbark legs", "Bloodbark helm", "Ava's assembler"],
-  ["Ancient icon"],
   [
-    "Slayer helmet (i)",
-    "Arclight",
+    "Karamja gloves 4",
+    "Explorer's ring 4"
+  ],
+  [
     "Warped sceptre",
     "Reptile Got Ripped",
     "Greater Challenge"
@@ -72,7 +68,7 @@
     "Zamorakian hasta",
     "Bandos godsword"
   ],
-  ["Voidwaker", "Dragon pickaxe"],
+  ["Voidwaker"],
   ["Deadeye", "Mystic Vigour"],
   ["Thread of elidinis", "Lightbearer"],
   ["Ghommal's hilt 4"],
@@ -110,8 +106,7 @@
     "Elder maul"
   ],
   ["Masori body (f)", "Masori chaps (f)", "Masori mask (f)", "Elidinis' ward"],
-  ["Saturated heart", "Venator bow"],
-  ["Ghommal's hilt 5"],
+  ["Saturated heart"],
   [
     "Zaryte crossbow",
     "Zaryte vambraces"

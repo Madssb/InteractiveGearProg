@@ -848,5 +848,35 @@
     "wikiUrl": "https://oldschool.runescape.wiki/w/Pegasian_boots",
     "imgUrl": "https://oldschool.runescape.wiki/images/Pegasian_boots.png",
     "type": "item"
+  },
+  "Max cape": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Max_cape",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Max_cape.png",
+    "type": "item"
+  },
+  "Tzkal slayer helmet": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Tzkal_slayer_helmet",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Tzkal_slayer_helmet.png",
+    "type": "item"
+  },
+  "Dragon dagger": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Dragon_dagger",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Dragon_dagger.png",
+    "type": "item"
+  },
+  "Salve amulet(ei)": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Salve_amulet(ei)",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Salve_amulet(ei).png",
+    "type": "item"
+  },
+  "void knight top": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Void_knight_top",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Void_knight_top.png",
+    "type": "item"
+  },
+  "void knight robe": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Void_knight_robe",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Void_knight_robe.png",
+    "type": "item"
   }
 }

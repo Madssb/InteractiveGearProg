@@ -16,47 +16,68 @@
   ],
   [
     "Dragon scimitar",
+    "Dragon dagger",
     "Berserker ring (i)"
   ],
   [
-    "Dragon defender",
+    "Helm of neitiznot",
     "Barrows gloves"
   ],
   [
-    "Helm of neitiznot",
+    "Dragon defender",
     "Book of the dead",
-    "Ava's accumulator",
+    "Salve amulet(ei)",
     "Piety"
+  ],
+  [
+    "Mixed hide cape",
+    "Mixed hide boots"
+  ],
+  [
+    "Ava's accumulator",
+    "Imbued zamorak cape"
+  ],
+  [
+    "Infinity boots",
+    "Mage's book"
   ],
   [
     "Arkan blade"
   ],
   [
-    "Black mask (i)",
-    "Imbued zamorak cape",
-    "Ice Barrage",
-    "Infinity boots",
-    "Mage's book"
+    "Black mask (i)"
   ],
   [
-    "Mixed hide cape",
-    "Mixed hide boots",
-    "Red chinchompa",
-    "70 ranged"
+    "Pharaoh's sceptre"
+  ],
+  [
+    "Arclight",
+    "Slayer helmet (i)",
+    "Ice Barrage"
+  ],
+  [
+    "86 strength"
   ],
   [
     "Ghommal's hilt 2"
   ],
   [
+    "void knight top",
+    "void knight robe",
+    "Void ranger helm",
+    "Void knight gloves"
+  ],
+  [
+    "Red chinchompa",
+    "70 ranged"
+  ],
+  [
     "Elite void top",
     "Elite void robe",
-    "Void ranger helm",
-    "Void knight gloves",
     "Crystal halberd"
   ],
   [
-    "92 ranged",
-    "86 strength"
+    "92 ranged"
   ],
   [
     "Crystal body",
@@ -65,27 +86,23 @@
     "Bow of faerdhinen (c)"
   ],
   [
-    "Spellbook Swap"
-  ],
-  [
-    "Explorer's ring 4",
-    "Fire cape"
-  ],
-  [
-    "Pharaoh's sceptre"
-  ],
-  [
     "Bloodbark body",
     "Bloodbark legs",
     "Bloodbark helm",
     "Ava's assembler"
   ],
   [
-    "Ancient icon"
+    "Spellbook Swap"
   ],
   [
-    "Slayer helmet (i)",
-    "Arclight",
+    "Fire cape",
+    "Ancient icon",
+    "Dragon pickaxe"
+  ],
+  [
+    "Explorer's ring 4"
+  ],
+  [
     "Warped sceptre"
   ],
   [
@@ -95,8 +112,7 @@
     "Bandos godsword"
   ],
   [
-    "Voidwaker",
-    "Dragon pickaxe"
+    "Voidwaker"
   ],
   [
     "Deadeye",
@@ -189,11 +205,7 @@
     "Elidinis' ward"
   ],
   [
-    "Saturated heart",
-    "Venator bow"
-  ],
-  [
-    "Ghommal's hilt 5"
+    "Saturated heart"
   ],
   [
     "Zaryte crossbow",
