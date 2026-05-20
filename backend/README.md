@@ -16,6 +16,12 @@ uv sync
 uv run uvicorn main:app --host 127.0.0.1 --port 8000
 ```
 
+Run the Discord bot as a separate process from the same backend environment:
+
+```bash
+uv run python discord_bot.py
+```
+
 ## Environment
 
 Ensure an `.env` file exists in `backend/`. The backend reads it at startup for database configuration and related runtime settings.

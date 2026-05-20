@@ -161,7 +161,8 @@ class BotClient(discord.Client):
 
 
 if __name__ == "__main__":
-    load_dotenv()
+    load_dotenv(REPO_ROOT / "backend/.env")
+    load_dotenv(REPO_ROOT / "discord_bot/.env")
     token = os.getenv("BOTLOR_TOKEN")
     if not token:
         raise RuntimeError("BOTLOR_TOKEN environment variable is not set")
