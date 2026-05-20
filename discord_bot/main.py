@@ -14,6 +14,7 @@ MILESTONE_IDS_PATH = REPO_ROOT / "data/logic/milestone-ids.json"
 GUILD_ID = discord.Object(id=1460320916637749321)
 SUBMITTED_ANNOTATIONS_CHANNEL_ID = 1506720845450576083  # testing
 REACTION_LOGS_CHANNEL_ID = 1506745123424174111
+VOTE_EMOJIS = {"👍", "👎"}
 
 
 def load_milestone_metadata() -> dict[str, dict[str, Any]]:
@@ -33,10 +34,70 @@ def load_milestone_ids() -> dict[int, str]:
 class BotClient(discord.Client):
     def __init__(self) -> None:
         intents = discord.Intents.default()
+        intents.reactions = True
         super().__init__(intents=intents)
         self.tree = app_commands.CommandTree(self)
         self.milestone_metadata = load_milestone_metadata()
         self.milestone_ids = load_milestone_ids()
+
+    async def fetch_or_get_channel(self, channel_id: int) -> discord.abc.GuildChannel | None:
+        channel = self.get_channel(channel_id)
+        if channel is not None:
+            return channel
+
+        try:
+            fetched_channel = await self.fetch_channel(channel_id)
+        except discord.DiscordException:
+            return None
+
+        if isinstance(fetched_channel, discord.abc.GuildChannel):
+            return fetched_channel
+        return None
+
+    async def log_reaction_change(
+        self,
+        payload: discord.RawReactionActionEvent,
+        diff: int,
+    ) -> None:
+        if payload.channel_id != SUBMITTED_ANNOTATIONS_CHANNEL_ID:
+            return
+        if self.user is not None and payload.user_id == self.user.id:
+            return
+
+        emoji = str(payload.emoji)
+        if emoji not in VOTE_EMOJIS:
+            return
+
+        channel = await self.fetch_or_get_channel(payload.channel_id)
+        if channel is None or not hasattr(channel, "fetch_message"):
+            return
+
+        try:
+            message = await channel.fetch_message(payload.message_id)
+        except discord.DiscordException:
+            return
+
+        count = 0
+        for reaction in message.reactions:
+            if str(reaction.emoji) == emoji:
+                count = reaction.count
+                break
+
+        human_count = max(count - 1, 0)
+        log_channel = await self.fetch_or_get_channel(REACTION_LOGS_CHANNEL_ID)
+        if not isinstance(log_channel, discord.abc.Messageable):
+            return
+
+        await log_channel.send(
+            f"message_id={payload.message_id} emoji={emoji} "
+            f"diff={diff:+d} count={count} human_count={human_count}"
+        )
+
+    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
+        await self.log_reaction_change(payload, +1)
+
+    async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent) -> None:
+        await self.log_reaction_change(payload, -1)
 
     async def setup_hook(self) -> None:
         @self.tree.command(name="ping", description="Health check", guild=GUILD_ID)
