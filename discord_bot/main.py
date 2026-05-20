@@ -13,6 +13,7 @@ MILESTONE_METADATA_PATH = REPO_ROOT / "data/generated/milestone-metadata.json"
 MILESTONE_IDS_PATH = REPO_ROOT / "data/logic/milestone-ids.json"
 GUILD_ID = discord.Object(id=1460320916637749321)
 SUBMITTED_ANNOTATIONS_CHANNEL_ID = 1506720845450576083  # testing
+REACTION_LOGS_CHANNEL_ID = 1506745123424174111
 
 
 def load_milestone_metadata() -> dict[str, dict[str, Any]]:
@@ -52,15 +53,15 @@ class BotClient(discord.Client):
             milestone_id: int,
             contents: app_commands.Range[str, 1, 1800],
         ) -> None:
-            milestone = self.milestone_ids.get(milestone_id)
-            if milestone is None:
+            milestone_name = self.milestone_ids.get(milestone_id)
+            if milestone_name is None:
                 await interaction.response.send_message(
                     f"I don't recognize milestone id {milestone_id}.",
                     ephemeral=True,
                 )
                 return
 
-            metadata = self.milestone_metadata.get(milestone)
+            metadata = self.milestone_metadata.get(milestone_name)
             if metadata is None:
                 await interaction.response.send_message(
                     f"Milestone id {milestone_id} exists, but I couldn't find its metadata.",
@@ -79,14 +80,19 @@ class BotClient(discord.Client):
 
             display_name = interaction.user.display_name
 
-            header = f"**Milestone annotation submission** from ***{display_name}***\n"
+            header = f"**Milestone annotation submission for** __**{milestone_name}**__\n"
+            submitted_by = f"*submitted by* __*{display_name}*__\n"
             spacing = "\n"
             submission = f"> {contents}\n"
-            footer = "*score this submission with a thumbs up or thumbs down reaction*"
-            embed = discord.Embed(description=header + spacing + submission + footer)
+            footer = "*score this submission with a thumbs up or thumbs down*"
+            embed = discord.Embed(
+                description=header + submitted_by + spacing + submission + footer
+            )
             embed.set_thumbnail(url=img)
 
-            await channel.send(embed=embed)
+            message = await channel.send(embed=embed)
+            await message.add_reaction("👍")
+            await message.add_reaction("👎")
 
             await interaction.response.send_message("Annotation submitted.", ephemeral=True)
 
