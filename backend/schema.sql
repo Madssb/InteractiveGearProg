@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS public.annotations (
   down_count integer NOT NULL DEFAULT 0 CHECK (down_count >= 0),
   chart_version text NOT NULL,
   annotation_text text NOT NULL,
-  created_at date NOT NULL DEFAULT CURRENT_DATE
+  created_at timestamptz NOT NULL DEFAULT now()
 );
 
 CREATE INDEX IF NOT EXISTS annotations_milestone_chart_idx

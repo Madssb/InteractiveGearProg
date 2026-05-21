@@ -1,5 +1,6 @@
 import json
 import os
+from functools import cache
 
 import asyncpg
 from dotenv import load_dotenv
@@ -10,6 +11,19 @@ if not DATABASE_URL:
     raise SystemExit("DATABASE_URL is not set")
 
 _pool: asyncpg.Pool | None = None
+
+
+@cache
+def latest_chart_version() -> str:
+    changelog_path = os.path.join(
+        os.path.dirname(__file__),
+        "..",
+        "data",
+        "contents",
+        "changelog.json",
+    )
+    with open(changelog_path, encoding="utf-8") as changelog:
+        return next(iter(json.load(changelog)))
 
 
 async def get_pool():
@@ -86,4 +100,28 @@ async def milestones_hidden_snapshots(milestones_hidden: list[str]):
         VALUES ($1)
         """,
         json.dumps(milestones_hidden)
+    )
+
+
+async def annotation_submission(
+    message_id: int,
+    milestone_id: int,
+    user_id: int,
+    annotation_text: str
+) -> 0 | 1:
+    """
+    Handle annotation submission.
+    """
+    pool = await get_pool()
+    chart_version = latest_chart_version()
+    await pool.execute(
+        """
+        INSERT INTO annotations (message_id, milestone_id, user_id, chart_version, annotation_text)
+        VALUES($1, $2, $3, $4, $5) 
+        """,
+        message_id,
+        milestone_id,
+        user_id,
+        chart_version,
+        annotation_text
     )
