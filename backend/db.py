@@ -108,7 +108,7 @@ async def annotation_submission(
     milestone_id: int,
     user_id: int,
     annotation_text: str
-) -> 0 | 1:
+):
     """
     Handle annotation submission.
     """
