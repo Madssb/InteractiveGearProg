@@ -13,6 +13,7 @@ WORKDIR /app
 COPY backend/pyproject.toml backend/uv.lock /app/backend/
 COPY osrs_milestone_metadata /app/osrs_milestone_metadata
 COPY data/contents/changelog.json /app/data/contents/changelog.json
+COPY data/logic/milestone-ids.json /app/data/logic/milestone-ids.json
 WORKDIR /app/backend
 
 RUN --mount=type=cache,target=/root/.cache/uv \

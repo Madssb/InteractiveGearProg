@@ -4,6 +4,17 @@ from functools import cache
 
 import asyncpg
 from dotenv import load_dotenv
+from datetime import date
+from typing import TypedDict
+
+
+class MilestoneAnnotationRow(TypedDict):
+    annotation_id: int
+    up_count: int
+    down_count: int
+    chart_version: str
+    annotation_text: str
+    created_at: date
 
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -26,7 +37,7 @@ def latest_chart_version() -> str:
         return next(iter(json.load(changelog)))
 
 
-async def get_pool():
+async def get_pool() -> asyncpg.Pool:
     global _pool
     if _pool is None:
         _pool = await asyncpg.create_pool(DATABASE_URL)
@@ -108,16 +119,22 @@ async def annotation_submission(
     milestone_id: int,
     user_id: int,
     annotation_text: str
-):
+) -> int:
     """
     Handle annotation submission.
     """
     pool = await get_pool()
     chart_version = latest_chart_version()
-    await pool.execute(
+    annotation_id = await pool.fetchval(
         """
-        INSERT INTO annotations (message_id, milestone_id, user_id, chart_version, annotation_text)
+        INSERT INTO annotations (
+            message_id,
+            milestone_id, user_id,
+            chart_version,
+            annotation_text
+        )
         VALUES($1, $2, $3, $4, $5) 
+        RETURNING annotation_id
         """,
         message_id,
         milestone_id,
@@ -125,3 +142,70 @@ async def annotation_submission(
         chart_version,
         annotation_text
     )
+    return annotation_id
+
+async def annotation_vote(
+    message_id: int,
+    up_count: int,
+    down_count: int,
+) -> None:
+    """Register annotation vote
+    """
+    pool = await get_pool()
+    await pool.execute(
+        """
+        UPDATE annotations
+        SET up_count = $1, down_count = $2
+        WHERE message_id = $3
+        """,
+        up_count,
+        down_count,
+        message_id
+    )
+
+async def annotation_report(
+    annotation_id: int,
+    reporter_user_id: int,
+    reason: str,
+) -> None:
+    pool = await get_pool()
+    await pool.execute(
+        """
+        INSERT INTO annotation_reports (
+            annotation_id,
+            reporter_user_id,
+            reason
+        )
+        VALUES ($1, $2, $3)
+        """,
+        annotation_id,
+        reporter_user_id,
+        reason,
+    )
+
+async def milestone_annotations_lookup(milestone_id: int) -> list[MilestoneAnnotationRow]:
+    """
+    Fetch annotations for milestones, exclude annotations with ongoing reports.
+    """
+    pool = await get_pool()
+    rows = await pool.fetch(
+        """
+        SELECT
+            a.annotation_id,
+            a.up_count,
+            a.down_count,
+            a.chart_version,
+            a.annotation_text,
+            a.created_at::date AS created_at
+        FROM annotations AS a
+        WHERE a.milestone_id = $1
+        AND NOT EXISTS (
+            SELECT 1
+            FROM annotation_reports AS r
+            WHERE r.annotation_id = a.annotation_id
+                AND r.ongoing = true
+        )
+        """,
+        milestone_id,
+    )
+    return [dict(row) for row in rows]

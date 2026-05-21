@@ -12,15 +12,14 @@ import discord
 from dotenv import load_dotenv
 from discord import app_commands
 
-from db import annotation_submission
+from db import annotation_report, annotation_submission, annotation_vote
+from milestones import load_milestone_names_by_id
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 MILESTONE_METADATA_PATH = REPO_ROOT / "data/generated/milestone-metadata.json"
-MILESTONE_IDS_PATH = REPO_ROOT / "data/logic/milestone-ids.json"
 GUILD_ID = discord.Object(id=1460320916637749321)
 SUBMITTED_ANNOTATIONS_CHANNEL_ID = 1506720845450576083  # testing
-REACTION_LOGS_CHANNEL_ID = 1506745123424174111
 VOTE_EMOJIS = {"👍", "👎"}
 logger = logging.getLogger(__name__)
 
@@ -31,16 +30,6 @@ def load_milestone_metadata() -> dict[str, dict[str, Any]]:
         return json.load(f)
 
 
-def load_milestone_ids() -> dict[int, str]:
-    # lookup table for validating milestone IDs.
-    with MILESTONE_IDS_PATH.open("r", encoding="utf-8") as f:
-        raw_milestone_ids = json.load(f)
-    return {
-        int(milestone_id): milestone
-        for milestone_id, milestone in raw_milestone_ids.items()
-    }
-
-
 class BotClient(discord.Client):
     def __init__(self) -> None:
         intents = discord.Intents.default()
@@ -48,7 +37,7 @@ class BotClient(discord.Client):
         super().__init__(intents=intents)
         self.tree = app_commands.CommandTree(self)
         self.milestone_metadata = load_milestone_metadata()
-        self.milestone_ids = load_milestone_ids()
+        self.milestone_ids = load_milestone_names_by_id()
 
     async def fetch_or_get_channel(self, channel_id: int) -> discord.abc.GuildChannel | None:
         channel = self.get_channel(channel_id)
@@ -69,7 +58,6 @@ class BotClient(discord.Client):
     async def log_reaction_change(
         self,
         payload: discord.RawReactionActionEvent,
-        diff: int,
     ) -> None:
         """Catch upvotes and downvotes for submissions
         """
@@ -96,27 +84,23 @@ class BotClient(discord.Client):
             )
             return
 
-        count = 0
+        vote_counts = {emoji: 0 for emoji in VOTE_EMOJIS}
         for reaction in message.reactions:
-            if str(reaction.emoji) == emoji:
-                count = reaction.count
-                break
+            reaction_emoji = str(reaction.emoji)
+            if reaction_emoji in vote_counts:
+                vote_counts[reaction_emoji] = max(reaction.count - 1, 0)
 
-        human_count = max(count - 1, 0)
-        log_channel = await self.fetch_or_get_channel(REACTION_LOGS_CHANNEL_ID)
-        if not isinstance(log_channel, discord.abc.Messageable):
-            return
-
-        await log_channel.send(
-            f"message_id={payload.message_id} emoji={emoji} "
-            f"diff={diff:+d} count={count} human_count={human_count}"
+        await annotation_vote(
+            message_id=payload.message_id,
+            up_count=vote_counts["👍"],
+            down_count=vote_counts["👎"],
         )
 
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
-        await self.log_reaction_change(payload, +1)
+        await self.log_reaction_change(payload)
 
     async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent) -> None:
-        await self.log_reaction_change(payload, -1)
+        await self.log_reaction_change(payload)
 
     async def setup_hook(self) -> None:
         @self.tree.command(name="ping", description="Health check", guild=GUILD_ID)
@@ -133,7 +117,8 @@ class BotClient(discord.Client):
             milestone_id: int,
             contents: app_commands.Range[str, 1, 1800],
         ) -> None:
-            
+            """Handle annotation submissions
+            """
             # valid milestone required
             milestone_name = self.milestone_ids.get(milestone_id)
             if milestone_name is None:
@@ -177,12 +162,14 @@ class BotClient(discord.Client):
             try:
                 await message.add_reaction("👍")
                 await message.add_reaction("👎")
-                await annotation_submission(
+                annotation_id = await annotation_submission(
                     message_id=message.id,
                     milestone_id=milestone_id,
                     user_id=interaction.user.id,
                     annotation_text=contents
                 )
+                embed.set_footer(text=f"Annotation ID: {annotation_id}")
+                await message.edit(embed=embed)
             except Exception:
                 logger.exception(
                     "annotation submission failed message_id=%s milestone_id=%s user_id=%s",
@@ -204,6 +191,37 @@ class BotClient(discord.Client):
                 return
 
             await interaction.response.send_message("Annotation submitted.", ephemeral=True)
+
+        @self.tree.command(name="report", description="Report an annotation", guild=GUILD_ID)
+        @app_commands.describe(
+            annotation_id="The annotation ID shown on the annotation",
+            reason="Why this annotation should be reviewed",
+        )
+        async def report(
+            interaction: discord.Interaction,
+            annotation_id: int,
+            reason: app_commands.Range[str, 1, 1000],
+        ) -> None:
+            """Handle annotation reports."""
+            try:
+                await annotation_report(
+                    annotation_id=annotation_id,
+                    reporter_user_id=interaction.user.id,
+                    reason=reason,
+                )
+            except Exception:
+                logger.exception(
+                    "annotation report failed annotation_id=%s reporter_user_id=%s",
+                    annotation_id,
+                    interaction.user.id,
+                )
+                await interaction.response.send_message(
+                    "Report failed. Check the annotation ID or contact Ladlor.",
+                    ephemeral=True,
+                )
+                return
+
+            await interaction.response.send_message("Report submitted.", ephemeral=True)
 
         await self.tree.sync(guild=GUILD_ID)
 
