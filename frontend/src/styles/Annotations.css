@@ -1,0 +1,75 @@
+.annotations {
+    /* background-color: #363636; */
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    width: fit-content;
+    margin-inline: auto;
+    padding: 4px 4px;
+    /* border: 3px solid black; */
+}
+
+.annotations-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.annotations-header h2 {
+    flex: 1;
+    margin: 0;
+}
+
+.annotations-close {
+    flex: none;
+    align-self: center;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    font-size: 20px;
+    line-height: 1;
+}
+
+.annotations-close:hover {
+    color: #fff;
+}
+
+.annotations-close:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
+
+.annotation {
+    background-color: #363636;
+    border: 1px solid black;
+    display: inline-grid;
+    width: 100%;
+}
+
+.annotation-text {
+    border-bottom: 1px solid black;
+    padding: 10px 12px;
+    width: auto;
+}
+
+.annotation-footer {
+    display: flex;
+    width: 100%;
+}
+
+.annotation-footer-item {
+    border-right: 1px solid black;
+    padding: 6px 10px;
+    white-space: nowrap;
+}
+
+.annotation-footer-item:last-child {
+    border-right: 0;
+}

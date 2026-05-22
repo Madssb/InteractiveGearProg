@@ -9,12 +9,14 @@ import { apiUrl } from '@/utils/apiConfig';
 import migrateLegacySharedNodeStates from '@/utils/migrateState';
 import removeStarredItems from '@/utils/removeStarredItems.js';
 import updateSequenceLanceRule from '@/utils/sequenceRules.js';
+import { handleLevels } from '@/utils/textSanitizers';
 import { useLocalStorageSet, useLocalStorageState } from '@/utils/useLocalStorageState';
 import milestoneMetadata from '@data/generated/milestone-metadata.json';
 import milestoneSequenceBarebonesRaw from '@data/generated/milestone-sequence-barebones.json';
 import milestoneSequenceRetirementRaw from '@data/logic/milestone-sequence-retirement.json';
 import milestoneSequenceMainRaw from '@data/logic/milestone-sequence-main.json';
 import React, { useState } from 'react';
+import Annotations from "../components/Annotations";
 
 const PROGRESS_SNAPSHOT_DATE_KEY = "progressSnapshotSubmittedDate";
 const HIDDEN_MILESTONES_SNAPSHOT_DATE_KEY = "hiddenMilestonesSnapshotSubmittedDate";
@@ -72,6 +74,22 @@ async function submitHiddenMilestonesSnapshot(milestonesHidden) {
     }
 }
 
+async function getMilestoneAnnotations(milestone){
+    if (!milestone) return [];
+    const milestoneId = milestoneMetadata[handleLevels(milestone)]?.id;
+    if (!milestoneId) return [];
+    const url = apiUrl(`/annotations?milestone_id=${milestoneId}`)
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Response status: ${response.status}`);
+        const annotations = await response.json();
+        return annotations;
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
+}
+
 
 export default function ChartPage(){
 
@@ -92,6 +110,19 @@ export default function ChartPage(){
         spell: false,
         skill: false,
     });
+
+    const [annotations, setAnnotations] = useState([]);
+    const [annotatedMilestone, setAnnotatedMilestone] = useState();
+
+    async function handleShowAnnotations(milestone){
+        setAnnotations(await getMilestoneAnnotations(milestone));
+        setAnnotatedMilestone(milestone);
+    }
+    async function handleCloseAnnotations(){
+        setAnnotations([]);
+        setAnnotatedMilestone();
+    }
+
     function handleHideClick(milestone){
         setMilestonesHidden(prev => {
             const next = new Set(prev);
@@ -259,22 +290,30 @@ export default function ChartPage(){
                 />
             )}
             {milestonesHidden.size > 0 && (
-            <button
-                id="show-button"
-                onClick={handleShowClick}
-            >
-                Show hidden items
-            </button>
-            )}   
+                <button
+                    id="show-button"
+                    onClick={handleShowClick}
+                >
+                    Show hidden items
+                </button>
+            )}
+            {annotatedMilestone && (
+                <Annotations
+                    annotations={annotations}
+                    onCloseAnnotations={handleCloseAnnotations}
+                    milestone={annotatedMilestone}
+                />
+            )}
             {menu.visible && (
-            <ContextMenu
-            milestone={menu.milestone}
-            milestoneMetadata={milestoneMetadata}
-            onClose={handleCloseMenu}
-            onHide={handleHideClick}
-            x={menu.x}
-            y={menu.y}
-            />
+                <ContextMenu
+                    milestone={menu.milestone}
+                    milestoneMetadata={milestoneMetadata}
+                    onClose={handleCloseMenu}
+                    onHide={handleHideClick}
+                    onShowAnnotations={handleShowAnnotations}
+                    x={menu.x}
+                    y={menu.y}
+                />
             )}
             <Acknowledgements />
             <FAQSection />

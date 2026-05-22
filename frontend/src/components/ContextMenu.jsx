@@ -3,9 +3,10 @@ import '@/styles/context-menu.css';
 import { handleLevels } from '@/utils/textSanitizers';
 import { useLayoutEffect, useRef, useState } from 'react';
 
-export default function ContextMenu({ milestone, onClose, onHide, onDelete, milestoneMetadata, x, y}){
+export default function ContextMenu({ milestone, onClose, onHide, onDelete, onShowAnnotations, milestoneMetadata, x, y}){
     
     let wikiUrl = milestoneMetadata[handleLevels(milestone)]["wikiUrl"];
+    let milestoneId = milestoneMetadata[handleLevels(milestone)]["id"];
     // avoid menu screen clipping
     const ref = useRef(null);
     const [pos, setPos] = useState({ top: y, left: x });
@@ -40,7 +41,7 @@ export default function ContextMenu({ milestone, onClose, onHide, onDelete, mile
         >
             <div id='menu-title'>{milestone}</div>
             <div id='button-container'>
-                    {wikiUrl &&                 <button
+                    {wikiUrl && <button
                     id='wiki-button' 
                     className='menu-button'
                     onClick={() => {
@@ -51,18 +52,6 @@ export default function ContextMenu({ milestone, onClose, onHide, onDelete, mile
                     <span className='left-text'>go to </span>
                     <span className='right-text'>Wiki</span>
                 </button>}
-                {onHide && (
-                    <button
-                        id='hide-button'
-                        className='menu-button'
-                        onClick={() => {
-                            onHide(milestone);
-                            onClose();
-                        }}
-                    >
-                        <span className='left-text'>Hide</span>
-                    </button>
-                )}
                 {onDelete && (
                     <button
                         id='delete-button'
@@ -74,6 +63,48 @@ export default function ContextMenu({ milestone, onClose, onHide, onDelete, mile
                     >
                         <span className='left-text'>Delete </span>
                         <span className='right-text'>{milestone}</span>
+                    </button>
+                )}
+                {onShowAnnotations && (
+                    <button
+                        id='annotation-button'
+                        className='menu-button'
+                        onClick={() => {
+                            onShowAnnotations(milestone);
+                            onClose();
+                        }}
+                    >
+                        <span className='left-text'>Show </span>
+                        <span className='right-text'>Annotations</span>
+                    </button>
+                )}
+                {onShowAnnotations && (
+                    <button
+                        id='copy-id-button'
+                        className='menu-button'
+                        onClick={async () => {
+                            try {
+                                await navigator.clipboard.writeText(String(milestoneId));
+                            } catch (err) {
+                                console.error("Failed to copy milestone ID", err);
+                            }
+                            onClose();
+                        }}
+                    >
+                        <span className='left-text'>Copy </span>
+                        <span className='right-text'>ID</span>
+                    </button>
+                )}
+                {onHide && (
+                    <button
+                        id='hide-button'
+                        className='menu-button'
+                        onClick={() => {
+                            onHide(milestone);
+                            onClose();
+                        }}
+                    >
+                        <span className='left-text'>Hide</span>
                     </button>
                 )}
                 <button
