@@ -458,6 +458,7 @@ async def milestone_annotations_lookup(milestone_id: int) -> list[MilestoneAnnot
             WHERE r.annotation_id = a.annotation_id
                 AND r.ongoing = true
         )
+        ORDER BY (a.up_count - a.down_count) DESC, a.up_count DESC, a.created_at ASC
         """,
         milestone_id,
     )
