@@ -57,7 +57,7 @@ export default function Annotations({ annotations, onCloseAnnotations, milestone
             {annotations.length === 0 && (
                 <p className="annotations-empty">
                     No user-submitted annotations exist for this milestone yet.
-                    Request one in the Ironscape Discord.
+                    Request one in the Ladlorchart Community Discord (made available shortly).
                 </p>
             )}
             {annotations.map(annotation => (
