@@ -1,4 +1,7 @@
 {
+  "1.8.0": [
+    "Implemented user submitted annotations for milestones. Submissions happen via botlor in the ladlorchart community discord made for this purpose aswell as general discussion."
+  ],
   "1.7.0": [
     "Re-syncing early chart logic with BRUHSailer. Subsantial amount of milestones in chapter 2 and 3, i.e. early chart, affected.",
     "Moved Torva, venator bow, and ghommal's hilt from the main chart to the retirement home.",
