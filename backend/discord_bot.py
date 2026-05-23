@@ -21,7 +21,7 @@ from milestones import load_milestone_names_by_id
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 MILESTONE_METADATA_PATH = REPO_ROOT / "data/generated/milestone-metadata.json"
-GUILD_ID = discord.Object(id=1460320916637749321)
+GUILD_ID_ENV = "GUILD_ID"
 SUBMITTED_ANNOTATIONS_CHANNEL_ID_ENV = "SUBMITTED_ANNOTATIONS_CHANNEL_ID"
 REPORT_LOGS_CHANNEL_ID_ENV = "REPORT_LOGS_CHANNEL_ID"
 logger = logging.getLogger(__name__)
@@ -36,12 +36,14 @@ def load_milestone_metadata() -> dict[str, dict[str, Any]]:
 class BotClient(discord.Client):
     def __init__(
         self,
+        guild: discord.Object,
         submitted_annotations_channel_id: int,
         report_logs_channel_id: int,
     ) -> None:
         intents = discord.Intents.default()
         intents.reactions = True
         super().__init__(intents=intents)
+        self.guild = guild
         self.submitted_annotations_channel_id = submitted_annotations_channel_id
         self.report_logs_channel_id = report_logs_channel_id
         self.tree = app_commands.CommandTree(self)
@@ -63,20 +65,20 @@ class BotClient(discord.Client):
         )
 
     async def setup_hook(self) -> None:
-        @self.tree.command(name="ping", description="Health check", guild=GUILD_ID)
+        @self.tree.command(name="ping", description="Health check", guild=self.guild)
         async def ping(interaction: discord.Interaction) -> None:
             await interaction.response.send_message("im alive", ephemeral=True)
 
         register_annotation_commands(
             self.tree,
             self,
-            GUILD_ID,
+            self.guild,
             self.submitted_annotations_channel_id,
             self.report_logs_channel_id,
         )
-        register_moderation_commands(self.tree, GUILD_ID)
+        register_moderation_commands(self.tree, self.guild)
 
-        @self.tree.command(name="report_user", description="Report a user", guild=GUILD_ID)
+        @self.tree.command(name="report_user", description="Report a user", guild=self.guild)
         @app_commands.describe(
             username="The username or display name of the user being reported",
             reason="Why this user should be reviewed",
@@ -141,7 +143,7 @@ class BotClient(discord.Client):
                 ephemeral=True,
             )
 
-        await self.tree.sync(guild=GUILD_ID)
+        await self.tree.sync(guild=self.guild)
 
 
 def get_required_int_env(name: str) -> int:
@@ -162,10 +164,11 @@ if __name__ == "__main__":
     token = os.getenv("BOTLOR_TOKEN")
     if not token:
         raise RuntimeError("BOTLOR_TOKEN environment variable is not set")
+    guild = discord.Object(id=get_required_int_env(GUILD_ID_ENV))
     submitted_annotations_channel_id = get_required_int_env(
         SUBMITTED_ANNOTATIONS_CHANNEL_ID_ENV
     )
     report_logs_channel_id = get_required_int_env(REPORT_LOGS_CHANNEL_ID_ENV)
 
-    bot = BotClient(submitted_annotations_channel_id, report_logs_channel_id)
+    bot = BotClient(guild, submitted_annotations_channel_id, report_logs_channel_id)
     bot.run(token)
