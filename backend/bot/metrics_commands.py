@@ -78,26 +78,12 @@ def register_metrics_commands(
         completed_count = metric["completed_count"]
         completion_rate_value = metric["completion_rate"]
 
-        embed = discord.Embed(title="Milestone Completion Rate")
-        embed.add_field(
-            name="Milestone",
-            value=f"`{milestone_id}` {milestone_name}",
-            inline=False,
-        )
+        embed = discord.Embed(title=f"Completion rate: {milestone_name}")
         if completion_rate_value is None:
             embed.description = "No player milestone snapshots have been recorded yet."
         else:
             percentage = completion_rate_value * 100
-            embed.add_field(
-                name="Completion Rate",
-                value=f"{percentage:.2f}% (`{completed_count}/{total_count}` snapshots)",
-                inline=False,
-            )
-            embed.add_field(
-                name="Definition",
-                value="`P_j = (1 / N) sum_i x_ij`",
-                inline=False,
-            )
+            embed.description = f"{percentage:.2f}% ({completed_count}/{total_count} snapshots)"
 
         await interaction.followup.send(embed=embed)
 
@@ -146,33 +132,11 @@ def register_metrics_commands(
         skipped_count = metric["skipped_count"]
         skip_rate_value = metric["skip_rate"]
 
-        embed = discord.Embed(title="Milestone Skip Rate")
-        embed.add_field(
-            name="Milestone",
-            value=f"`{milestone_id}` {milestone_name}",
-            inline=False,
-        )
-        embed.add_field(
-            name="Eligibility",
-            value=(
-                f"At least `{threshold}` later milestone"
-                f"{'' if threshold == 1 else 's'} completed."
-            ),
-            inline=False,
-        )
+        embed = discord.Embed(title=f"Skip rate: {milestone_name}")
         if skip_rate_value is None:
             embed.description = "No skip-eligible snapshots have been recorded for this milestone."
         else:
             percentage = skip_rate_value * 100
-            embed.add_field(
-                name="Skip Rate",
-                value=f"{percentage:.2f}% (`{skipped_count}/{eligible_count}` eligible snapshots)",
-                inline=False,
-            )
-            embed.add_field(
-                name="Definition",
-                value="`S_j = sum_i y_ij / sum_i f_ij`",
-                inline=False,
-            )
+            embed.description = f"{percentage:.2f}% ({skipped_count}/{eligible_count} snapshots)"
 
         await interaction.followup.send(embed=embed)
