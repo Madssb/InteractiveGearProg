@@ -38,6 +38,18 @@ class UnresolvedReport(TypedDict):
     report_id: int
 
 
+class MilestoneCompletionRate(TypedDict):
+    completed_count: int
+    total_count: int
+    completion_rate: float | None
+
+
+class MilestoneSkipRate(TypedDict):
+    skipped_count: int
+    eligible_count: int
+    skip_rate: float | None
+
+
 async def next_report_id(connection: asyncpg.Connection) -> int:
     await connection.execute("SELECT pg_advisory_xact_lock(1506719382213099610)")
     report_id = await connection.fetchval(
@@ -149,6 +161,77 @@ async def milestones_hidden_snapshots(milestones_hidden: list[str]):
         """,
         json.dumps(milestones_hidden)
     )
+
+
+async def milestone_completion_rate(milestone_name: str) -> MilestoneCompletionRate:
+    pool = await get_pool()
+    row = await pool.fetchrow(
+        """
+        SELECT
+            COUNT(*) AS total_count,
+            COUNT(*) FILTER (
+                WHERE milestones_completed ? $1
+            ) AS completed_count
+        FROM milestones_completed_snapshots
+        """,
+        milestone_name,
+    )
+    total_count = row["total_count"]
+    completed_count = row["completed_count"]
+    completion_rate = None
+    if total_count:
+        completion_rate = completed_count / total_count
+
+    return {
+        "completed_count": completed_count,
+        "total_count": total_count,
+        "completion_rate": completion_rate,
+    }
+
+
+async def milestone_skip_rate(
+    milestone_name: str,
+    subsequent_milestone_names: list[str],
+    skip_threshold: int,
+) -> MilestoneSkipRate:
+    pool = await get_pool()
+    row = await pool.fetchrow(
+        """
+        WITH snapshot_metrics AS (
+            SELECT
+                milestones_completed ? $1 AS completed_target,
+                (
+                    SELECT COUNT(*)
+                    FROM jsonb_array_elements_text(milestones_completed) AS completed(name)
+                    WHERE completed.name = ANY($2::text[])
+                ) AS subsequent_completed_count
+            FROM milestones_completed_snapshots
+        )
+        SELECT
+            COUNT(*) FILTER (
+                WHERE subsequent_completed_count >= $3
+            ) AS eligible_count,
+            COUNT(*) FILTER (
+                WHERE subsequent_completed_count >= $3
+                    AND NOT completed_target
+            ) AS skipped_count
+        FROM snapshot_metrics
+        """,
+        milestone_name,
+        subsequent_milestone_names,
+        skip_threshold,
+    )
+    eligible_count = row["eligible_count"]
+    skipped_count = row["skipped_count"]
+    skip_rate = None
+    if eligible_count:
+        skip_rate = skipped_count / eligible_count
+
+    return {
+        "skipped_count": skipped_count,
+        "eligible_count": eligible_count,
+        "skip_rate": skip_rate,
+    }
 
 
 async def annotation_submission(

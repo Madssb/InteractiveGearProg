@@ -13,18 +13,18 @@ from dotenv import load_dotenv
 from discord import app_commands
 
 from bot.annotation_commands import log_reaction_change, register_annotation_commands
+from bot.metrics_commands import register_metrics_commands
 from bot.milestone_commands import register_milestone_commands
 from bot.moderation_commands import register_moderation_commands
 from bot.report_logs import send_report_log
 from db import user_report
-from milestones import load_milestone_names_by_id
+from milestones import load_main_milestone_groups, load_milestone_names_by_id
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 MILESTONE_METADATA_PATH = REPO_ROOT / "data/generated/milestone-metadata.json"
 GUILD_ID_ENV = "GUILD_ID"
 SUBMITTED_ANNOTATIONS_CHANNEL_ID_ENV = "SUBMITTED_ANNOTATIONS_CHANNEL_ID"
-ANNOTARDATION_CHANNEL_ID_ENV = "ANNOTARDATION_CHANNEL_ID"
 REPORT_LOGS_CHANNEL_ID_ENV = "REPORT_LOGS_CHANNEL_ID"
 logger = logging.getLogger(__name__)
 
@@ -40,7 +40,6 @@ class BotClient(discord.Client):
         self,
         guild: discord.Object,
         submitted_annotations_channel_id: int,
-        annotardation_channel_id: int,
         report_logs_channel_id: int,
     ) -> None:
         intents = discord.Intents.default()
@@ -48,11 +47,11 @@ class BotClient(discord.Client):
         super().__init__(intents=intents)
         self.guild = guild
         self.submitted_annotations_channel_id = submitted_annotations_channel_id
-        self.annotardation_channel_id = annotardation_channel_id
         self.report_logs_channel_id = report_logs_channel_id
         self.tree = app_commands.CommandTree(self)
         self.milestone_metadata = load_milestone_metadata()
         self.milestone_ids = load_milestone_names_by_id()
+        self.milestone_groups = load_main_milestone_groups()
 
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
         await log_reaction_change(
@@ -78,11 +77,16 @@ class BotClient(discord.Client):
             self,
             self.guild,
             self.submitted_annotations_channel_id,
-            self.annotardation_channel_id,
             self.report_logs_channel_id,
         )
         register_moderation_commands(self.tree, self.guild)
         register_milestone_commands(self.tree, self.guild, self.milestone_ids)
+        register_metrics_commands(
+            self.tree,
+            self.guild,
+            self.milestone_ids,
+            self.milestone_groups,
+        )
 
         @self.tree.command(name="report_user", description="Report a user", guild=self.guild)
         @app_commands.describe(
@@ -179,13 +183,11 @@ if __name__ == "__main__":
     submitted_annotations_channel_id = get_required_int_env(
         SUBMITTED_ANNOTATIONS_CHANNEL_ID_ENV
     )
-    annotardation_channel_id = get_required_int_env(ANNOTARDATION_CHANNEL_ID_ENV)
     report_logs_channel_id = get_required_int_env(REPORT_LOGS_CHANNEL_ID_ENV)
 
     bot = BotClient(
         guild,
         submitted_annotations_channel_id,
-        annotardation_channel_id,
         report_logs_channel_id,
     )
     bot.run(token)
