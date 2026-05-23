@@ -18,6 +18,11 @@ class MilestoneAnnotationRow(TypedDict):
     created_at: date
 
 
+class MilestoneAnnotationMessageRow(TypedDict):
+    annotation_id: int
+    message_id: int
+
+
 class AnnotationOwnerAndMessageIds(TypedDict):
     user_id: int
     message_id: int
@@ -458,6 +463,43 @@ async def milestone_annotations_lookup(milestone_id: int) -> list[MilestoneAnnot
         milestone_id,
     )
     return [dict(row) for row in rows]
+
+
+async def milestone_annotation_message_lookup(
+    milestone_id: int,
+) -> list[MilestoneAnnotationMessageRow]:
+    """
+    Fetch annotation Discord message IDs for a milestone, excluding ongoing reports.
+    """
+    pool = await get_pool()
+    rows = await pool.fetch(
+        """
+        SELECT a.annotation_id, a.message_id
+        FROM annotations AS a
+        WHERE a.milestone_id = $1
+        AND a.message_id IS NOT NULL
+        AND NOT EXISTS (
+            SELECT 1
+            FROM annotation_reports AS r
+            WHERE r.annotation_id = a.annotation_id
+                AND r.ongoing = true
+        )
+        ORDER BY (a.up_count - a.down_count) DESC, a.up_count DESC, a.created_at ASC
+        """,
+        milestone_id,
+    )
+    return [dict(row) for row in rows]
+
+
+async def annotated_milestone_ids() -> set[int]:
+    pool = await get_pool()
+    rows = await pool.fetch(
+        """
+        SELECT DISTINCT milestone_id
+        FROM annotations
+        """
+    )
+    return {row["milestone_id"] for row in rows}
 
 
 async def get_annotation_owner_and_message_ids(

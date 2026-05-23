@@ -84,7 +84,12 @@ class BotClient(discord.Client):
             self.guild,
             self.submitted_annotations_channel_id,
         )
-        register_milestone_commands(self.tree, self.guild, self.milestone_ids)
+        register_milestone_commands(
+            self.tree,
+            self.guild,
+            self.milestone_ids,
+            self.submitted_annotations_channel_id,
+        )
         register_metrics_commands(
             self.tree,
             self.guild,
