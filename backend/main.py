@@ -77,6 +77,7 @@ class MilestoneAnnotationResponse(BaseModel):
     down_count: int
     chart_version: str
     annotation_text: str
+    user_display_name: str
     created_at: date
 
 

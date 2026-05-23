@@ -212,6 +212,7 @@ def register_annotation_commands(
                 message_id=message.id,
                 milestone_id=milestone_id,
                 user_id=interaction.user.id,
+                user_display_name=display_name,
                 annotation_text=contents,
             )
             embed.set_footer(text=f"Annotation ID: {annotation_id}")

@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS public.annotations (
   message_id bigint UNIQUE,
   milestone_id integer NOT NULL,
   user_id bigint NOT NULL,
+  user_display_name text NOT NULL DEFAULT 'unknown',
   up_count integer NOT NULL DEFAULT 0 CHECK (up_count >= 0),
   down_count integer NOT NULL DEFAULT 0 CHECK (down_count >= 0),
   chart_version text NOT NULL,

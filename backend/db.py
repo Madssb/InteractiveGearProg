@@ -14,6 +14,7 @@ class MilestoneAnnotationRow(TypedDict):
     down_count: int
     chart_version: str
     annotation_text: str
+    user_display_name: str
     created_at: date
 
 
@@ -154,6 +155,7 @@ async def annotation_submission(
     message_id: int,
     milestone_id: int,
     user_id: int,
+    user_display_name: str,
     annotation_text: str
 ) -> int:
     """
@@ -165,16 +167,19 @@ async def annotation_submission(
         """
         INSERT INTO annotations (
             message_id,
-            milestone_id, user_id,
+            milestone_id,
+            user_id,
+            user_display_name,
             chart_version,
             annotation_text
         )
-        VALUES($1, $2, $3, $4, $5) 
+        VALUES($1, $2, $3, $4, $5, $6)
         RETURNING annotation_id
         """,
         message_id,
         milestone_id,
         user_id,
+        user_display_name,
         chart_version,
         annotation_text
     )
@@ -355,6 +360,7 @@ async def milestone_annotations_lookup(milestone_id: int) -> list[MilestoneAnnot
             a.down_count,
             a.chart_version,
             a.annotation_text,
+            a.user_display_name,
             a.created_at::date AS created_at
         FROM annotations AS a
         WHERE a.milestone_id = $1

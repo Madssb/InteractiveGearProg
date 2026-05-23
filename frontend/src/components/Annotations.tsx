@@ -6,6 +6,7 @@ export type AnnotationData = {
     down_count: number;
     chart_version: string;
     annotation_text: string;
+    user_display_name: string;
     created_at: string;
 };
 
@@ -22,6 +23,7 @@ function Annotation({ annotation }: AnnotationProps) {
             <div className="annotation-footer">
                 <div className="annotation-footer-item">upvotes: {annotation.up_count}</div>
                 <div className="annotation-footer-item">downvotes: {annotation.down_count}</div>
+                <div className="annotation-footer-item">by: {annotation.user_display_name}</div>
                 <div className="annotation-footer-item">date: {annotation.created_at}</div>
                 <div className="annotation-footer-item">version: {annotation.chart_version}</div>
                 <div className="annotation-footer-item">annotation ID: {annotation.annotation_id}</div>
