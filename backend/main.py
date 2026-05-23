@@ -304,13 +304,10 @@ async def submit_hidden_milestones_snapshot(request: Request, milestones_hidden:
     await milestones_hidden_snapshots(milestones_hidden)
 
 @app.get("/annotations", response_model=list[MilestoneAnnotationResponse])
-async def fetch_milestone_annotations(request: Request, milestone: str):
+async def fetch_milestone_annotations(request: Request, milestone_id: int):
     """Fetch annotations for milestone. omit annotations with ongoing reports.
     """
     enforce_rate_limit(request, "/annotations")
-    milestone_id = MILESTONE_IDS_BY_NAME.get(milestone)
-    if milestone_id is None:
-        raise HTTPException(status_code=404, detail="Milestone not found")
     return await milestone_annotations_lookup(milestone_id)
 
 

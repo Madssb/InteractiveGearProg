@@ -5,7 +5,7 @@ from functools import cache
 import asyncpg
 from dotenv import load_dotenv
 from datetime import date
-from typing import TypedDict
+from typing import Literal, TypedDict
 
 
 class MilestoneAnnotationRow(TypedDict):
@@ -15,6 +15,42 @@ class MilestoneAnnotationRow(TypedDict):
     chart_version: str
     annotation_text: str
     created_at: date
+
+
+class AnnotationOwnerAndMessageIds(TypedDict):
+    user_id: int
+    message_id: int
+
+
+class ResolvedReport(TypedDict):
+    report_type: Literal["annotation", "user"]
+    report_id: int
+
+
+class ResolveReportResult(TypedDict):
+    status: Literal["resolved", "not_found", "ambiguous"]
+    resolved_report: ResolvedReport | None
+
+
+class UnresolvedReport(TypedDict):
+    report_type: Literal["annotation", "user"]
+    report_id: int
+
+
+async def next_report_id(connection: asyncpg.Connection) -> int:
+    await connection.execute("SELECT pg_advisory_xact_lock(1506719382213099610)")
+    report_id = await connection.fetchval(
+        """
+        SELECT COALESCE(MAX(report_id), 0) + 1
+        FROM (
+            SELECT report_id FROM annotation_reports
+            UNION ALL
+            SELECT report_id FROM user_reports
+        ) AS report_ids
+        """
+    )
+    return report_id
+
 
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -167,21 +203,144 @@ async def annotation_report(
     annotation_id: int,
     reporter_user_id: int,
     reason: str,
-) -> None:
+) -> int:
     pool = await get_pool()
-    await pool.execute(
+    async with pool.acquire() as connection:
+        async with connection.transaction():
+            report_id = await next_report_id(connection)
+            await connection.execute(
+                """
+                INSERT INTO annotation_reports (
+                    report_id,
+                    annotation_id,
+                    reporter_user_id,
+                    reason
+                )
+                OVERRIDING SYSTEM VALUE
+                VALUES ($1, $2, $3, $4)
+                """,
+                report_id,
+                annotation_id,
+                reporter_user_id,
+                reason,
+            )
+            return report_id
+
+
+async def user_report(
+    reported_name: str,
+    reporter_user_id: int,
+    reason: str,
+) -> int:
+    pool = await get_pool()
+    async with pool.acquire() as connection:
+        async with connection.transaction():
+            report_id = await next_report_id(connection)
+            await connection.execute(
+                """
+                INSERT INTO user_reports (
+                    report_id,
+                    reported_name,
+                    reporter_user_id,
+                    reason
+                )
+                OVERRIDING SYSTEM VALUE
+                VALUES ($1, $2, $3, $4)
+                """,
+                report_id,
+                reported_name,
+                reporter_user_id,
+                reason,
+            )
+            return report_id
+
+
+async def resolve_report(report_id: int, verdict: str) -> ResolveReportResult:
+    pool = await get_pool()
+    async with pool.acquire() as connection:
+        async with connection.transaction():
+            annotation_report_id = await connection.fetchval(
+                """
+                SELECT report_id
+                FROM annotation_reports
+                WHERE report_id = $1
+                    AND ongoing = true
+                FOR UPDATE
+                """,
+                report_id,
+            )
+            user_report_id = await connection.fetchval(
+                """
+                SELECT report_id
+                FROM user_reports
+                WHERE report_id = $1
+                    AND ongoing = true
+                FOR UPDATE
+                """,
+                report_id,
+            )
+
+            matches = [
+                ("annotation", annotation_report_id),
+                ("user", user_report_id),
+            ]
+            matches = [
+                (report_type, matched_id)
+                for report_type, matched_id in matches
+                if matched_id is not None
+            ]
+
+            if not matches:
+                return {"status": "not_found", "resolved_report": None}
+
+            if len(matches) > 1:
+                return {"status": "ambiguous", "resolved_report": None}
+
+            report_type, matched_id = matches[0]
+            table_name = (
+                "annotation_reports"
+                if report_type == "annotation"
+                else "user_reports"
+            )
+            await connection.execute(
+                f"""
+                UPDATE {table_name}
+                SET ongoing = false,
+                    verdict = $1,
+                    resolved_at = now()
+                WHERE report_id = $2
+                """,
+                verdict,
+                matched_id,
+            )
+            return {
+                "status": "resolved",
+                "resolved_report": {
+                    "report_type": report_type,
+                    "report_id": matched_id,
+                },
+            }
+
+
+async def unresolved_reports() -> list[UnresolvedReport]:
+    pool = await get_pool()
+    rows = await pool.fetch(
         """
-        INSERT INTO annotation_reports (
-            annotation_id,
-            reporter_user_id,
-            reason
-        )
-        VALUES ($1, $2, $3)
-        """,
-        annotation_id,
-        reporter_user_id,
-        reason,
+        SELECT 'annotation' AS report_type, report_id
+        FROM annotation_reports
+        WHERE ongoing = true
+
+        UNION ALL
+
+        SELECT 'user' AS report_type, report_id
+        FROM user_reports
+        WHERE ongoing = true
+
+        ORDER BY report_id
+        """
     )
+    return [dict(row) for row in rows]
+
 
 async def milestone_annotations_lookup(milestone_id: int) -> list[MilestoneAnnotationRow]:
     """
@@ -209,3 +368,33 @@ async def milestone_annotations_lookup(milestone_id: int) -> list[MilestoneAnnot
         milestone_id,
     )
     return [dict(row) for row in rows]
+
+
+async def get_annotation_owner_and_message_ids(
+    annotation_id: int,
+) -> AnnotationOwnerAndMessageIds | None:
+    """Fetch Discord user and message IDs for an annotation."""
+    pool = await get_pool()
+    row = await pool.fetchrow(
+        """
+        SELECT user_id, message_id
+        FROM annotations
+        WHERE annotation_id = $1
+        """,
+        annotation_id,
+    )
+    if row is None:
+        return None
+    return dict(row)
+
+
+async def remove_annotation_record(annotation_id: int) -> bool:
+    pool = await get_pool()
+    status = await pool.execute(
+        """
+        DELETE FROM annotations
+        WHERE annotation_id = $1
+        """,
+        annotation_id,
+    )
+    return status == "DELETE 1"

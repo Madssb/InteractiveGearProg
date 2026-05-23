@@ -42,7 +42,19 @@ CREATE INDEX IF NOT EXISTS annotations_user_idx
 CREATE TABLE IF NOT EXISTS public.annotation_reports (
   report_id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   annotation_id integer NOT NULL
-    REFERENCES public.annotations(annotation_id),
+    REFERENCES public.annotations(annotation_id)
+    ON DELETE CASCADE,
+  reporter_user_id bigint NOT NULL,
+  reason text NOT NULL,
+  ongoing boolean NOT NULL DEFAULT true,
+  verdict text,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  resolved_at timestamptz
+);
+
+CREATE TABLE IF NOT EXISTS public.user_reports (
+  report_id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  reported_name text NOT NULL,
   reporter_user_id bigint NOT NULL,
   reason text NOT NULL,
   ongoing boolean NOT NULL DEFAULT true,

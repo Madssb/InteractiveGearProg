@@ -1,6 +1,6 @@
 """
 Botlor discord bot source code
-Currently support making annotation submissions for the milestones.
+Currently supports making annotation submissions for the milestones.
 """
 import json
 import logging
@@ -12,15 +12,18 @@ import discord
 from dotenv import load_dotenv
 from discord import app_commands
 
-from db import annotation_report, annotation_submission, annotation_vote
+from bot.annotation_commands import log_reaction_change, register_annotation_commands
+from bot.moderation_commands import register_moderation_commands
+from bot.report_logs import send_report_log
+from db import user_report
 from milestones import load_milestone_names_by_id
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 MILESTONE_METADATA_PATH = REPO_ROOT / "data/generated/milestone-metadata.json"
 GUILD_ID = discord.Object(id=1460320916637749321)
-SUBMITTED_ANNOTATIONS_CHANNEL_ID = 1506720845450576083  # testing
-VOTE_EMOJIS = {"👍", "👎"}
+SUBMITTED_ANNOTATIONS_CHANNEL_ID_ENV = "SUBMITTED_ANNOTATIONS_CHANNEL_ID"
+REPORT_LOGS_CHANNEL_ID_ENV = "REPORT_LOGS_CHANNEL_ID"
 logger = logging.getLogger(__name__)
 
 
@@ -31,199 +34,125 @@ def load_milestone_metadata() -> dict[str, dict[str, Any]]:
 
 
 class BotClient(discord.Client):
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        submitted_annotations_channel_id: int,
+        report_logs_channel_id: int,
+    ) -> None:
         intents = discord.Intents.default()
         intents.reactions = True
         super().__init__(intents=intents)
+        self.submitted_annotations_channel_id = submitted_annotations_channel_id
+        self.report_logs_channel_id = report_logs_channel_id
         self.tree = app_commands.CommandTree(self)
         self.milestone_metadata = load_milestone_metadata()
         self.milestone_ids = load_milestone_names_by_id()
 
-    async def fetch_or_get_channel(self, channel_id: int) -> discord.abc.GuildChannel | None:
-        channel = self.get_channel(channel_id)
-        if channel is not None:
-            return channel
-
-        logger.warning("channel not cached; fetching channel_id=%s", channel_id)
-        try:  # fallback if channel is not cached
-            fetched_channel = await self.fetch_channel(channel_id)
-        except discord.DiscordException:
-            logger.exception("failed to fetch channel_id=%s", channel_id)
-            return None
-
-        if isinstance(fetched_channel, discord.abc.GuildChannel):
-            return fetched_channel
-        return None
-
-    async def log_reaction_change(
-        self,
-        payload: discord.RawReactionActionEvent,
-    ) -> None:
-        """Catch upvotes and downvotes for submissions
-        """
-        if payload.channel_id != SUBMITTED_ANNOTATIONS_CHANNEL_ID:
-            return
-        if self.user is not None and payload.user_id == self.user.id: # ignore bot self-reacts
-            return
-
-        emoji = str(payload.emoji)
-        if emoji not in VOTE_EMOJIS:
-            return
-
-        channel = await self.fetch_or_get_channel(payload.channel_id)
-        if channel is None:
-            return
-
-        try:
-            message = await channel.fetch_message(payload.message_id)
-        except discord.DiscordException:
-            logger.exception(
-                "failed to fetch reacted message channel_id=%s message_id=%s",
-                payload.channel_id,
-                payload.message_id,
-            )
-            return
-
-        vote_counts = {emoji: 0 for emoji in VOTE_EMOJIS}
-        for reaction in message.reactions:
-            reaction_emoji = str(reaction.emoji)
-            if reaction_emoji in vote_counts:
-                vote_counts[reaction_emoji] = max(reaction.count - 1, 0)
-
-        await annotation_vote(
-            message_id=payload.message_id,
-            up_count=vote_counts["👍"],
-            down_count=vote_counts["👎"],
+    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
+        await log_reaction_change(
+            self,
+            payload,
+            self.submitted_annotations_channel_id,
         )
 
-    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
-        await self.log_reaction_change(payload)
-
     async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent) -> None:
-        await self.log_reaction_change(payload)
+        await log_reaction_change(
+            self,
+            payload,
+            self.submitted_annotations_channel_id,
+        )
 
     async def setup_hook(self) -> None:
         @self.tree.command(name="ping", description="Health check", guild=GUILD_ID)
         async def ping(interaction: discord.Interaction) -> None:
             await interaction.response.send_message("im alive", ephemeral=True)
 
-        @self.tree.command(name="annotate", description="Make an annotation for a milestone step", guild=GUILD_ID)
-        @app_commands.describe(
-            milestone_id="The milestone step this annotation is for",
-            contents="The annotation contents to submit",
+        register_annotation_commands(
+            self.tree,
+            self,
+            GUILD_ID,
+            self.submitted_annotations_channel_id,
+            self.report_logs_channel_id,
         )
-        async def annotate(
-            interaction: discord.Interaction,
-            milestone_id: int,
-            contents: app_commands.Range[str, 1, 1800],
-        ) -> None:
-            """Handle annotation submissions
-            """
-            # valid milestone required
-            milestone_name = self.milestone_ids.get(milestone_id)
-            if milestone_name is None:
-                await interaction.response.send_message(
-                    f"I don't recognize milestone id {milestone_id}.",
-                    ephemeral=True,
-                )
-                return
+        register_moderation_commands(self.tree, GUILD_ID)
 
-            # img required
-            metadata = self.milestone_metadata.get(milestone_name)
-            if metadata is None:
-                await interaction.response.send_message(
-                    f"Milestone id {milestone_id} exists, but I couldn't find its metadata.",
-                    ephemeral=True,
-                )
-                return
-            img = metadata["imgUrl"]
-
-            # channel access required
-            channel = interaction.client.get_channel(SUBMITTED_ANNOTATIONS_CHANNEL_ID)
-            if not isinstance(channel, discord.abc.Messageable):
-                await interaction.response.send_message(
-                    "I couldn't find the annotation submission channel.",
-                    ephemeral=True,
-                )
-                return
-
-            # formatting
-            display_name = interaction.user.display_name
-            header = f"**Milestone annotation submission for** __**{milestone_name}**__\n"
-            submitted_by = f"*submitted by* __*{display_name}*__\n"
-            spacing = "\n"
-            submission = f"> {contents}\n"
-            footer = "*score this submission with a thumbs up or thumbs down*"
-            embed = discord.Embed(
-                description=header + submitted_by + spacing + submission + footer
-            )
-            embed.set_thumbnail(url=img)
-            message = await channel.send(embed=embed)
-            try:
-                await message.add_reaction("👍")
-                await message.add_reaction("👎")
-                annotation_id = await annotation_submission(
-                    message_id=message.id,
-                    milestone_id=milestone_id,
-                    user_id=interaction.user.id,
-                    annotation_text=contents
-                )
-                embed.set_footer(text=f"Annotation ID: {annotation_id}")
-                await message.edit(embed=embed)
-            except Exception:
-                logger.exception(
-                    "annotation submission failed message_id=%s milestone_id=%s user_id=%s",
-                    message.id,
-                    milestone_id,
-                    interaction.user.id,
-                )
-                try:
-                    await message.delete()
-                except discord.DiscordException:
-                    logger.exception(
-                        "failed to delete failed annotation message_id=%s",
-                        message.id,
-                    )
-                await interaction.response.send_message(
-                    "Submission failed, contact Ladlor.",
-                    ephemeral=True,
-                )
-                return
-
-            await interaction.response.send_message("Annotation submitted.", ephemeral=True)
-
-        @self.tree.command(name="report", description="Report an annotation", guild=GUILD_ID)
+        @self.tree.command(name="report_user", description="Report a user", guild=GUILD_ID)
         @app_commands.describe(
-            annotation_id="The annotation ID shown on the annotation",
-            reason="Why this annotation should be reviewed",
+            username="The username or display name of the user being reported",
+            reason="Why this user should be reviewed",
         )
-        async def report(
+        async def report_user_command(
             interaction: discord.Interaction,
-            annotation_id: int,
+            username: app_commands.Range[str, 1, 100],
             reason: app_commands.Range[str, 1, 1000],
         ) -> None:
-            """Handle annotation reports."""
+            """Handle user reports."""
+            reported_name = username.strip()
+            if not reported_name:
+                await interaction.response.send_message(
+                    "Please include a username or display name.",
+                    ephemeral=True,
+                )
+                return
+
             try:
-                await annotation_report(
-                    annotation_id=annotation_id,
+                report_id = await user_report(
+                    reported_name=reported_name,
                     reporter_user_id=interaction.user.id,
                     reason=reason,
                 )
             except Exception:
                 logger.exception(
-                    "annotation report failed annotation_id=%s reporter_user_id=%s",
-                    annotation_id,
+                    "user report failed reported_name=%s reporter_user_id=%s",
+                    reported_name,
                     interaction.user.id,
                 )
                 await interaction.response.send_message(
-                    "Report failed. Check the annotation ID or contact Ladlor.",
+                    "Report failed. Contact Ladlor.",
                     ephemeral=True,
                 )
                 return
 
-            await interaction.response.send_message("Report submitted.", ephemeral=True)
+            embed = discord.Embed(
+                title="User Report",
+                description=reason,
+            )
+            embed.add_field(name="Report ID", value=str(report_id), inline=True)
+            embed.add_field(name="Reported Name", value=reported_name, inline=False)
+            embed.add_field(
+                name="Reporter",
+                value=f"{interaction.user.mention} (`{interaction.user.id}`)",
+                inline=False,
+            )
+            log_sent = await send_report_log(
+                self,
+                self.report_logs_channel_id,
+                embed,
+            )
+            if not log_sent:
+                await interaction.response.send_message(
+                    "Report saved, but I couldn't notify moderators. Contact Ladlor.",
+                    ephemeral=True,
+                )
+                return
+
+            await interaction.response.send_message(
+                f"Report {report_id} submitted for {reported_name}.",
+                ephemeral=True,
+            )
 
         await self.tree.sync(guild=GUILD_ID)
+
+
+def get_required_int_env(name: str) -> int:
+    value = os.getenv(name)
+    if not value:
+        raise RuntimeError(f"{name} environment variable is not set")
+
+    try:
+        return int(value)
+    except ValueError as exc:
+        raise RuntimeError(f"{name} must be an integer") from exc
 
 
 if __name__ == "__main__":
@@ -233,6 +162,10 @@ if __name__ == "__main__":
     token = os.getenv("BOTLOR_TOKEN")
     if not token:
         raise RuntimeError("BOTLOR_TOKEN environment variable is not set")
+    submitted_annotations_channel_id = get_required_int_env(
+        SUBMITTED_ANNOTATIONS_CHANNEL_ID_ENV
+    )
+    report_logs_channel_id = get_required_int_env(REPORT_LOGS_CHANNEL_ID_ENV)
 
-    bot = BotClient()
+    bot = BotClient(submitted_annotations_channel_id, report_logs_channel_id)
     bot.run(token)

@@ -1,3 +1,5 @@
+import '@/styles/Annotations.css';
+
 export type AnnotationData = {
     annotation_id: number;
     up_count: number;
