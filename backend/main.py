@@ -6,9 +6,11 @@ import threading
 import time
 from collections import OrderedDict, defaultdict, deque
 from typing import Annotated, Dict, List, Tuple
+from datetime import date
 
 from db import (
     load_share,
+    milestone_annotations_lookup,
     milestones_completed_snapshots,
     milestones_hidden_snapshots,
     save_share,
@@ -24,6 +26,7 @@ from osrs_milestone_metadata import (
     MilestoneMetadataRecord,
     query_milestone_metadata,
 )
+from milestones import load_milestone_ids_by_name
 
 
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
@@ -68,6 +71,16 @@ class ShareResponse(BaseModel):
     sequence: NestedSequenceType
 
 
+class MilestoneAnnotationResponse(BaseModel):
+    annotation_id: int
+    up_count: int
+    down_count: int
+    chart_version: str
+    annotation_text: str
+    user_display_name: str
+    created_at: date
+
+
 class LRU(OrderedDict):
     def __init__(self, maxsize: int):
         super().__init__()
@@ -82,6 +95,7 @@ class LRU(OrderedDict):
 
 
 CACHE: Dict[str, MilestoneMetadataRecord] = LRU(maxsize=5000)
+MILESTONE_IDS_BY_NAME = load_milestone_ids_by_name()
 RATE_LIMIT_PER_SECOND = 3
 RATE_LIMIT_PER_MINUTE = 20
 SEC_WINDOW_SECONDS = 1.0
@@ -289,6 +303,13 @@ async def submit_hidden_milestones_snapshot(request: Request, milestones_hidden:
         return
     enforce_rate_limit(request, "/submit-hidden-milestones-snapshot")
     await milestones_hidden_snapshots(milestones_hidden)
+
+@app.get("/annotations", response_model=list[MilestoneAnnotationResponse])
+async def fetch_milestone_annotations(request: Request, milestone_id: int):
+    """Fetch annotations for milestone. omit annotations with ongoing reports.
+    """
+    enforce_rate_limit(request, "/annotations")
+    return await milestone_annotations_lookup(milestone_id)
 
 
 @app.get("/health")

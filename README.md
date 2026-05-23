@@ -35,13 +35,12 @@ For a **minimal, ready-to-fork template** (without site extras like changelog, F
 | **Path** | **Purpose** |
 | --- | --- |
 | `frontend/` | React/Vite frontend for the interactive chart UI and chart builder. |
-| `backend/` | FastAPI backend, local development entrypoint, and backend tests. |
+| `backend/` | FastAPI backend, Discord bot entrypoint, shared schema, and backend tests. |
 | `data/` | Chart sequencing data, generated metadata, and static content consumed by the app. |
 | `tools/` | Utility scripts for generating or refreshing project data. |
 | `osrs_milestone_metadata/` | Supporting package for resolving item image and wiki metadata. |
 | `docs/` | Project documentation, deployment notes, and reference material. |
 | `infra/` | Infrastructure-related files such as systemd units and cloudflared configs. |
-| `discord_bot/` | Discord bot code related to the wider project ecosystem. |
 | `.github/` | GitHub Actions workflows and repository automation. |
 
 ## Acknowledgments
