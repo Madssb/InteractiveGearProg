@@ -145,7 +145,12 @@ class BotClient(discord.Client):
                 ephemeral=True,
             )
 
-        await self.tree.sync(guild=self.guild)
+        synced_commands = await self.tree.sync(guild=self.guild)
+        logger.info(
+            "synced discord commands guild_id=%s commands=%s",
+            self.guild.id,
+            ", ".join(command.name for command in synced_commands),
+        )
 
 
 def get_required_int_env(name: str) -> int:
