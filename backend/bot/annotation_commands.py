@@ -201,9 +201,8 @@ def register_annotation_commands(
         submitted_by = f"*submitted by* __*{display_name}*__\n"
         spacing = "\n"
         submission = f"> {contents}\n"
-        footer = "*score this submission with a thumbs up or thumbs down*"
         embed = discord.Embed(
-            description=header + submitted_by + spacing + submission + footer
+            description=header + submitted_by + spacing + submission
         )
         embed.set_thumbnail(url=img)
         try:

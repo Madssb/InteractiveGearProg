@@ -79,7 +79,11 @@ class BotClient(discord.Client):
             self.submitted_annotations_channel_id,
             self.report_logs_channel_id,
         )
-        register_moderation_commands(self.tree, self.guild)
+        register_moderation_commands(
+            self.tree,
+            self.guild,
+            self.submitted_annotations_channel_id,
+        )
         register_milestone_commands(self.tree, self.guild, self.milestone_ids)
         register_metrics_commands(
             self.tree,
