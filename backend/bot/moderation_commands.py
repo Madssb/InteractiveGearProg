@@ -4,14 +4,12 @@ import logging
 import discord
 from discord import app_commands
 
-from bot.annotation_commands import fetch_or_get_channel
 from bot.report_logs import REPORT_PING_ROLE_ID
-from db import annotation_message_rows, resolve_report, unresolved_reports
+from db import resolve_report, unresolved_reports
 
 
 logger = logging.getLogger(__name__)
 MODERATOR_ROLE_ID = REPORT_PING_ROLE_ID
-ANNOTATION_VOTE_PROMPT = "*score this submission with a thumbs up or thumbs down*"
 
 
 def register_moderation_commands(
@@ -153,92 +151,6 @@ def register_moderation_commands(
 
     @view_unresolved.error
     async def view_unresolved_error(
-        interaction: discord.Interaction,
-        error: app_commands.AppCommandError,
-    ) -> None:
-        await handle_moderation_command_error(interaction, error)
-
-    @tree.command(
-        name="cleanup_annotation_vote_prompts",
-        description="TEMP: remove old annotation vote prompt text",
-        guild=guild,
-    )
-    @app_commands.default_permissions(manage_messages=True)
-    @app_commands.checks.has_role(MODERATOR_ROLE_ID)
-    async def cleanup_annotation_vote_prompts(
-        interaction: discord.Interaction,
-    ) -> None:
-        """Temporarily clean old annotation embed prompt text."""
-        await interaction.response.defer(ephemeral=True, thinking=True)
-
-        channel = await fetch_or_get_channel(
-            interaction.client,
-            submitted_annotations_channel_id,
-        )
-        if not isinstance(channel, discord.abc.Messageable):
-            await interaction.followup.send(
-                "I couldn't find the annotation submission channel.",
-                ephemeral=True,
-            )
-            return
-
-        rows = await annotation_message_rows()
-        checked_count = 0
-        edited_count = 0
-        missing_count = 0
-        skipped_count = 0
-        failed_count = 0
-
-        for row in rows:
-            checked_count += 1
-            try:
-                message = await channel.fetch_message(row["message_id"])
-            except discord.NotFound:
-                missing_count += 1
-                continue
-            except discord.DiscordException:
-                failed_count += 1
-                logger.exception(
-                    "failed to fetch annotation message annotation_id=%s message_id=%s",
-                    row["annotation_id"],
-                    row["message_id"],
-                )
-                continue
-
-            if not message.embeds:
-                skipped_count += 1
-                continue
-
-            embed = message.embeds[0]
-            description = embed.description
-            if not description or ANNOTATION_VOTE_PROMPT not in description:
-                skipped_count += 1
-                continue
-
-            cleaned_description = description.replace(ANNOTATION_VOTE_PROMPT, "")
-            embed.description = cleaned_description.rstrip()
-            try:
-                await message.edit(embed=embed)
-            except discord.DiscordException:
-                failed_count += 1
-                logger.exception(
-                    "failed to edit annotation message annotation_id=%s message_id=%s",
-                    row["annotation_id"],
-                    row["message_id"],
-                )
-                continue
-
-            edited_count += 1
-
-        await interaction.followup.send(
-            "Cleanup complete. "
-            f"Checked {checked_count}, edited {edited_count}, "
-            f"missing {missing_count}, skipped {skipped_count}, failed {failed_count}.",
-            ephemeral=True,
-        )
-
-    @cleanup_annotation_vote_prompts.error
-    async def cleanup_annotation_vote_prompts_error(
         interaction: discord.Interaction,
         error: app_commands.AppCommandError,
     ) -> None:

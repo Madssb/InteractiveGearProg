@@ -23,11 +23,6 @@ class AnnotationOwnerAndMessageIds(TypedDict):
     message_id: int
 
 
-class AnnotationMessageRow(TypedDict):
-    annotation_id: int
-    message_id: int
-
-
 class ResolvedReport(TypedDict):
     report_type: Literal["annotation", "user"]
     report_id: int
@@ -481,19 +476,6 @@ async def get_annotation_owner_and_message_ids(
     if row is None:
         return None
     return dict(row)
-
-
-async def annotation_message_rows() -> list[AnnotationMessageRow]:
-    pool = await get_pool()
-    rows = await pool.fetch(
-        """
-        SELECT annotation_id, message_id
-        FROM annotations
-        WHERE message_id IS NOT NULL
-        ORDER BY annotation_id
-        """
-    )
-    return [dict(row) for row in rows]
 
 
 async def remove_annotation_record(annotation_id: int) -> bool:
