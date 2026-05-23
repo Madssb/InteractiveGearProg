@@ -25,6 +25,9 @@ services:
       start_period: 10s
   discord_bot:
     image: ladlorapi-backend
+    build:
+      context: ..
+      dockerfile: backend/Dockerfile
     command: ["uv", "run", "python", "discord_bot.py"]
     restart: unless-stopped
     env_file:
