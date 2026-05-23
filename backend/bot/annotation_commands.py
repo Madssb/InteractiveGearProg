@@ -86,6 +86,7 @@ def register_annotation_commands(
     client: discord.Client,
     guild: discord.Object,
     submitted_annotations_channel_id: int,
+    annotardation_channel_id: int,
     report_logs_channel_id: int,
 ) -> None:
     async def handle_annotation_report(
@@ -267,6 +268,92 @@ def register_annotation_commands(
             return
 
         await interaction.followup.send("Annotation submitted.", ephemeral=True)
+
+    @tree.command(
+        name="annotardation",
+        description="Submit a meme explanation for a milestone",
+        guild=guild,
+    )
+    @app_commands.describe(
+        milestone_id="ID for the milestone this is for.",
+        explanation="The meme explanation to submit",
+    )
+    async def submit_annotardation(
+        interaction: discord.Interaction,
+        milestone_id: int,
+        explanation: app_commands.Range[str, 1, 1800],
+    ) -> None:
+        """Handle annotardation submissions."""
+        milestone_name = client.milestone_ids.get(milestone_id)
+        if milestone_name is None:
+            await interaction.response.send_message(
+                f"I don't recognize milestone id {milestone_id}.",
+                ephemeral=True,
+            )
+            return
+
+        metadata = client.milestone_metadata.get(milestone_name)
+        if metadata is None:
+            await interaction.response.send_message(
+                f"Milestone id {milestone_id} exists, but I couldn't find its metadata.",
+                ephemeral=True,
+            )
+            return
+        img = metadata["imgUrl"]
+
+        channel = await fetch_or_get_channel(
+            interaction.client,
+            annotardation_channel_id,
+        )
+        if not isinstance(channel, discord.abc.Messageable):
+            await interaction.response.send_message(
+                "I couldn't find the annotardation channel.",
+                ephemeral=True,
+            )
+            return
+
+        await interaction.response.defer(ephemeral=True, thinking=True)
+
+        display_name = interaction.user.display_name
+        header = f"**Milestone annotardation submission for** __**{milestone_name}**__\n"
+        submitted_by = f"*submitted by* __*{display_name}*__\n"
+        spacing = "\n"
+        submission = f"> {explanation}\n"
+        footer = "*meme explanation, not a chart annotation*"
+        embed = discord.Embed(
+            description=header + submitted_by + spacing + submission + footer
+        )
+        embed.set_thumbnail(url=img)
+
+        try:
+            await channel.send(embed=embed)
+        except discord.Forbidden:
+            logger.exception(
+                "missing permissions to send annotardation submission "
+                "channel_id=%s milestone_id=%s user_id=%s",
+                annotardation_channel_id,
+                milestone_id,
+                interaction.user.id,
+            )
+            await interaction.followup.send(
+                "Submission failed because I can't post in the annotardation channel. Contact Ladlor.",
+                ephemeral=True,
+            )
+            return
+        except discord.DiscordException:
+            logger.exception(
+                "failed to send annotardation submission channel_id=%s milestone_id=%s user_id=%s",
+                annotardation_channel_id,
+                milestone_id,
+                interaction.user.id,
+            )
+            await interaction.followup.send(
+                "Submission failed, contact Ladlor.",
+                ephemeral=True,
+            )
+            return
+
+        await interaction.followup.send("Annotardation submitted.", ephemeral=True)
 
     @submit_annotation.error
     async def submit_annotation_error(

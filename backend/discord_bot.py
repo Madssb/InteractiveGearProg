@@ -24,6 +24,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 MILESTONE_METADATA_PATH = REPO_ROOT / "data/generated/milestone-metadata.json"
 GUILD_ID_ENV = "GUILD_ID"
 SUBMITTED_ANNOTATIONS_CHANNEL_ID_ENV = "SUBMITTED_ANNOTATIONS_CHANNEL_ID"
+ANNOTARDATION_CHANNEL_ID_ENV = "ANNOTARDATION_CHANNEL_ID"
 REPORT_LOGS_CHANNEL_ID_ENV = "REPORT_LOGS_CHANNEL_ID"
 logger = logging.getLogger(__name__)
 
@@ -39,6 +40,7 @@ class BotClient(discord.Client):
         self,
         guild: discord.Object,
         submitted_annotations_channel_id: int,
+        annotardation_channel_id: int,
         report_logs_channel_id: int,
     ) -> None:
         intents = discord.Intents.default()
@@ -46,6 +48,7 @@ class BotClient(discord.Client):
         super().__init__(intents=intents)
         self.guild = guild
         self.submitted_annotations_channel_id = submitted_annotations_channel_id
+        self.annotardation_channel_id = annotardation_channel_id
         self.report_logs_channel_id = report_logs_channel_id
         self.tree = app_commands.CommandTree(self)
         self.milestone_metadata = load_milestone_metadata()
@@ -75,6 +78,7 @@ class BotClient(discord.Client):
             self,
             self.guild,
             self.submitted_annotations_channel_id,
+            self.annotardation_channel_id,
             self.report_logs_channel_id,
         )
         register_moderation_commands(self.tree, self.guild)
@@ -175,7 +179,13 @@ if __name__ == "__main__":
     submitted_annotations_channel_id = get_required_int_env(
         SUBMITTED_ANNOTATIONS_CHANNEL_ID_ENV
     )
+    annotardation_channel_id = get_required_int_env(ANNOTARDATION_CHANNEL_ID_ENV)
     report_logs_channel_id = get_required_int_env(REPORT_LOGS_CHANNEL_ID_ENV)
 
-    bot = BotClient(guild, submitted_annotations_channel_id, report_logs_channel_id)
+    bot = BotClient(
+        guild,
+        submitted_annotations_channel_id,
+        annotardation_channel_id,
+        report_logs_channel_id,
+    )
     bot.run(token)
