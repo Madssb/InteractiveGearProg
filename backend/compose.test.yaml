@@ -21,6 +21,15 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
+  discord_bot:
+    image: ladlorapi-backend
+    command: ["uv", "run", "python", "discord_bot.py"]
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      backend:
+        condition: service_healthy
   cloudflared:
     image: cloudflare/cloudflared:latest
     command: tunnel --config /etc/cloudflared/config.test.yml run

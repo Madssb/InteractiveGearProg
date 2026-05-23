@@ -22,6 +22,10 @@ Run the Discord bot as a separate process from the same backend environment:
 uv run python discord_bot.py
 ```
 
+The Docker Compose files run the API and Discord bot as separate services from
+the same backend image. The bot service overrides the image command with
+`uv run python discord_bot.py`.
+
 ## Environment
 
 Ensure an `.env` file exists in `backend/`. The backend reads it at startup for database configuration and related runtime settings.
