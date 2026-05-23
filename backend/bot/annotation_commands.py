@@ -194,6 +194,8 @@ def register_annotation_commands(
             )
             return
 
+        await interaction.response.defer(ephemeral=True, thinking=True)
+
         display_name = interaction.user.display_name
         header = f"**Milestone annotation submission for** __**{milestone_name}**__\n"
         submitted_by = f"*submitted by* __*{display_name}*__\n"
@@ -204,7 +206,34 @@ def register_annotation_commands(
             description=header + submitted_by + spacing + submission + footer
         )
         embed.set_thumbnail(url=img)
-        message = await channel.send(embed=embed)
+        try:
+            message = await channel.send(embed=embed)
+        except discord.Forbidden:
+            logger.exception(
+                "missing permissions to send annotation submission "
+                "channel_id=%s milestone_id=%s user_id=%s",
+                submitted_annotations_channel_id,
+                milestone_id,
+                interaction.user.id,
+            )
+            await interaction.followup.send(
+                "Submission failed because I can't post in the annotation channel. Contact Ladlor.",
+                ephemeral=True,
+            )
+            return
+        except discord.DiscordException:
+            logger.exception(
+                "failed to send annotation submission channel_id=%s milestone_id=%s user_id=%s",
+                submitted_annotations_channel_id,
+                milestone_id,
+                interaction.user.id,
+            )
+            await interaction.followup.send(
+                "Submission failed, contact Ladlor.",
+                ephemeral=True,
+            )
+            return
+
         try:
             await message.add_reaction("👍")
             await message.add_reaction("👎")
@@ -231,13 +260,13 @@ def register_annotation_commands(
                     "failed to delete failed annotation message_id=%s",
                     message.id,
                 )
-            await interaction.response.send_message(
+            await interaction.followup.send(
                 "Submission failed, contact Ladlor.",
                 ephemeral=True,
             )
             return
 
-        await interaction.response.send_message("Annotation submitted.", ephemeral=True)
+        await interaction.followup.send("Annotation submitted.", ephemeral=True)
 
     @submit_annotation.error
     async def submit_annotation_error(

@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 from discord import app_commands
 
 from bot.annotation_commands import log_reaction_change, register_annotation_commands
+from bot.milestone_commands import register_milestone_commands
 from bot.moderation_commands import register_moderation_commands
 from bot.report_logs import send_report_log
 from db import user_report
@@ -77,6 +78,7 @@ class BotClient(discord.Client):
             self.report_logs_channel_id,
         )
         register_moderation_commands(self.tree, self.guild)
+        register_milestone_commands(self.tree, self.guild, self.milestone_ids)
 
         @self.tree.command(name="report_user", description="Report a user", guild=self.guild)
         @app_commands.describe(
