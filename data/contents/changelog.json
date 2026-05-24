@@ -1,4 +1,8 @@
 {
+  "1.8.1": [
+    "added community discord url in footer and annotations when empty.",
+    "annotations now split the chart in half and show in the middle on mobile."
+  ],
   "1.8.0": [
     "Implemented user submitted annotations for milestones. Submissions happen via botlor in the ladlorchart community discord made for this purpose aswell as general discussion."
   ],
