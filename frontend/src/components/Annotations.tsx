@@ -57,7 +57,7 @@ export default function Annotations({ annotations, onCloseAnnotations, milestone
             {annotations.length === 0 && (
                 <p className="annotations-empty">
                     No user-submitted annotations exist for this milestone yet.
-                    Request one in the Ladlorchart Community Discord (made available shortly).
+                    Request one in the <a href="https://discord.gg/MzBPph3weE" className="href">Ladlorchart Community Discord</a>.
                 </p>
             )}
             {annotations.map(annotation => (
