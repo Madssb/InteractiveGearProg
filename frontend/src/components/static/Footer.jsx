@@ -26,7 +26,7 @@ export default function Footer({ showImageAttribution = false }) {
                         </span>
                     ))}
                     <a href="https://github.com/Madssb/InteractiveGearProg">Source Code</a> |{" "}
-                    <a href="https://discord.gg/MzBPph3weE" className="href">Discord</a>
+                    <a href="https://discord.gg/MzBPph3weE" className="href">Discord</a> |{" "}
                     <a href="https://www.paypal.com/ncp/payment/3WEM322C3CG5E" target="_blank" rel="noopener noreferrer">Donate</a> |{" "}
                     Monthly page visits: <span id="page-count"><PageCount /></span> |{" "}
                 </p>
@@ -36,7 +36,7 @@ export default function Footer({ showImageAttribution = false }) {
                         and are licensed under the{" "}
                         <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank">Creative Commons
                             Attribution-NonCommercial-ShareAlike 3.0 License</a>.
-                        © 2013-2024 Jagex Ltd. All rights reserved.
+                        © 2013-2026 Jagex Ltd. All rights reserved.
                     </p>
                 )}
             </footer>
