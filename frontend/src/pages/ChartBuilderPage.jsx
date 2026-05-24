@@ -1,4 +1,4 @@
-import Chart from "@/components/Chart.jsx";
+import Chart from "@/components/Chart";
 import ContextMenu from '@/components/ContextMenu.jsx';
 import SequenceForm from '@/components/SequenceForm';
 import Footer from '@/components/static/Footer.jsx';

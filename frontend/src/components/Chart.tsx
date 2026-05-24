@@ -1,6 +1,52 @@
 import { handleLevels, sanitizeId } from '@/utils/textSanitizers';
 import { questNameInitials } from '@/utils/questNameInitials';
 import React, { useMemo } from 'react';
+import Annotations, { type AnnotationData } from '@/components/Annotations';
+
+type MilestoneMetadata = Record<string, {
+  id?: number | string;
+  imgUrl: string;
+  wikiUrl: string;
+  type: string;
+}>;
+
+type ChartProps = {
+  milestoneSequence: string[][];
+  milestoneMetadata: MilestoneMetadata;
+  milestonesComplete?: Set<string>;
+  milestonesHidden?: Set<string>;
+  hide?: Record<string, boolean>;
+  handleNodeContextMenu: (event: React.MouseEvent<HTMLDivElement>, milestone: string) => void;
+  handleNodeTouchStart: (event: React.TouchEvent<HTMLDivElement>, milestone: string) => void;
+  handleNodeTouchEnd: React.TouchEventHandler<HTMLDivElement>;
+  handleNodeClick: (milestone: string) => void;
+  arrows?: boolean;
+  annotatedMilestone?: string;
+  annotations?: AnnotationData[];
+  onCloseAnnotations?: () => void;
+};
+
+type NodeProps = {
+  milestone: string;
+  milestoneMetadata: MilestoneMetadata;
+  milestoneComplete?: boolean;
+  milestoneHidden?: boolean;
+  onContextMenu: (event: React.MouseEvent<HTMLDivElement>, milestone: string) => void;
+  onTouchStart: (event: React.TouchEvent<HTMLDivElement>, milestone: string) => void;
+  onTouchEnd: React.TouchEventHandler<HTMLDivElement>;
+  onClick: (milestone: string) => void;
+};
+
+type NodeGroupProps = {
+  milestoneGroup: string[];
+  milestoneMetadata: MilestoneMetadata;
+  milestonesComplete?: Set<string>;
+  milestonesHidden?: Set<string>;
+  onContextMenu: NodeProps['onContextMenu'];
+  onTouchStart: NodeProps['onTouchStart'];
+  onTouchEnd: NodeProps['onTouchEnd'];
+  onClick: NodeProps['onClick'];
+};
 
 /**
  * Renders a node with milestone, behavior dependent on if type is skill or non-skill.
@@ -15,7 +61,7 @@ function Node({
   onClick,
   milestoneComplete,
   milestoneHidden
-}) {
+}: NodeProps) {
 
 
   let metadata = milestoneMetadata[handleLevels(milestone)];
@@ -112,7 +158,7 @@ function NodeGroup({
   onClick,
   milestonesComplete,
   milestonesHidden
-}) {
+}: NodeGroupProps) {
   return (
     <div className={"node-group"}>
       {
@@ -148,8 +194,11 @@ export default function Chart({
   handleNodeTouchStart,
   handleNodeTouchEnd,
   handleNodeClick,
-  arrows
-}) {
+  arrows,
+  annotatedMilestone,
+  annotations = [],
+  onCloseAnnotations
+}: ChartProps) {
   const visibleMilestoneSequence = useMemo(() => {
     return milestoneSequence
       .map(group =>
@@ -164,6 +213,10 @@ export default function Chart({
       ).filter(group => group.length > 0);
   }, [milestoneSequence, milestoneMetadata, milestonesHidden, hide])
 
+  const annotatedGroupIndex = annotatedMilestone
+    ? visibleMilestoneSequence.findIndex(group => group.includes(annotatedMilestone))
+    : -1;
+
   return (
     <div
       className={"chart"}
@@ -173,7 +226,6 @@ export default function Chart({
           (milestoneGroup, i) => (
             <React.Fragment key={i}>
               <NodeGroup
-                key={milestoneGroup}
                 milestoneGroup={milestoneGroup}
                 milestoneMetadata={milestoneMetadata}
                 milestonesComplete={milestonesComplete}
@@ -182,8 +234,16 @@ export default function Chart({
                 onTouchStart={handleNodeTouchStart}
                 onTouchEnd={handleNodeTouchEnd}
                 onClick={handleNodeClick}
-                hide={hide}
               />
+              {annotatedMilestone && i === annotatedGroupIndex && (
+                <div className="chart-mobile-annotations">
+                  <Annotations
+                    annotations={annotations}
+                    onCloseAnnotations={onCloseAnnotations}
+                    milestone={annotatedMilestone}
+                  />
+                </div>
+              )}
               {arrows && i < visibleMilestoneSequence.length - 1 && (
                 <div className='arrow'>→</div>
               )}

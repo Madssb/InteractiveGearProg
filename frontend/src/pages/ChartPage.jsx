@@ -1,4 +1,4 @@
-import Chart from "@/components/Chart.jsx";
+import Chart from "@/components/Chart";
 import ConfigMenu from "@/components/ConfigMenu";
 import ContextMenu from '@/components/ContextMenu.jsx';
 import Acknowledgements from '@/components/static/Acknowledgements.jsx';
@@ -259,6 +259,9 @@ export default function ChartPage(){
                     handleNodeTouchEnd={handleNodeTouchEnd}
                     handleNodeClick={handleNodeClick}
                     arrows={true}
+                    annotatedMilestone={annotatedMilestone}
+                    annotations={annotations}
+                    onCloseAnnotations={handleCloseAnnotations}
                 />
             )}
             {!showBareBones && (
@@ -273,6 +276,9 @@ export default function ChartPage(){
                     handleNodeTouchEnd={handleNodeTouchEnd}
                     handleNodeClick={handleNodeClick}
                     arrows={true}
+                    annotatedMilestone={annotatedMilestone}
+                    annotations={annotations}
+                    onCloseAnnotations={handleCloseAnnotations}
                 />
             )}
             {showRetirement && (
@@ -287,6 +293,9 @@ export default function ChartPage(){
                     handleNodeTouchEnd={handleNodeTouchEnd}
                     handleNodeClick={handleNodeClick}
                     arrows={false}
+                    annotatedMilestone={annotatedMilestone}
+                    annotations={annotations}
+                    onCloseAnnotations={handleCloseAnnotations}
                 />
             )}
             {milestonesHidden.size > 0 && (
@@ -298,11 +307,13 @@ export default function ChartPage(){
                 </button>
             )}
             {annotatedMilestone && (
-                <Annotations
-                    annotations={annotations}
-                    onCloseAnnotations={handleCloseAnnotations}
-                    milestone={annotatedMilestone}
-                />
+                <div className="chart-page-annotations">
+                    <Annotations
+                        annotations={annotations}
+                        onCloseAnnotations={handleCloseAnnotations}
+                        milestone={annotatedMilestone}
+                    />
+                </div>
             )}
             {menu.visible && (
                 <ContextMenu

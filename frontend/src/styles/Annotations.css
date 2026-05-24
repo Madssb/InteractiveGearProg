@@ -11,6 +11,14 @@
     /* border: 3px solid black; */
 }
 
+.chart-mobile-annotations {
+    display: none;
+}
+
+.chart-page-annotations {
+    display: block;
+}
+
 .annotations-header {
     display: flex;
     align-items: center;
@@ -72,4 +80,29 @@
 
 .annotation-footer-item:last-child {
     border-right: 0;
+}
+
+@media (max-width: 600px) {
+    .chart-mobile-annotations {
+        display: block;
+        width: min(100%, calc(100vw - 16px));
+        margin: 4px auto;
+    }
+
+    .chart-mobile-annotations .annotations {
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    .chart-page-annotations {
+        display: none;
+    }
+
+    .annotation-footer {
+        flex-wrap: wrap;
+    }
+
+    .annotation-footer-item {
+        flex: 1 1 auto;
+    }
 }
