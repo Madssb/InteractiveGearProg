@@ -5,9 +5,12 @@ import FaqPage from '@/pages/FaqPage.jsx';
 import PrivacyPage from '@/pages/PrivacyPage.jsx';
 import '@/styles/chart.css';
 import '@/styles/theme.css';
+import { applyThemePreference, getSavedThemePreference } from '@/utils/themePreference';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { HashRouter, Route, Routes } from 'react-router';
+
+applyThemePreference(getSavedThemePreference());
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

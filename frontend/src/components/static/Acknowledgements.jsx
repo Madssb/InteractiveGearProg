@@ -1,5 +1,3 @@
-import '@/styles/acknowledgements.css'
-
 export default function Acknowledgements(){
     return (
         <>

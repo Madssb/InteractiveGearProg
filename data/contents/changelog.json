@@ -1,4 +1,9 @@
 {
+  "1.8.2": [
+    "Light mode supported again",
+    "config menu touched up",
+    "added gap between retirement home and main chart"
+  ],
   "1.8.1": [
     "added community discord url in footer and annotations when empty.",
     "annotations now split the chart in half and show in the middle on mobile."

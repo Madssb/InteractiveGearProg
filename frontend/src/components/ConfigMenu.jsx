@@ -4,6 +4,7 @@ function ToggleButton({ id, value, label, icon, onToggle }) {
   return (
     <button
       id={id}
+      type="button"
       className={`toggle-btn ${value ? 'active' : ''}`}
       onClick={() => onToggle(!value)}
     >
@@ -18,12 +19,24 @@ export default function ConfigMenu({
   setShowRetirement,
   showBareBones,
   setShowBareBones,
+  themePreference,
+  setThemePreference,
   hide,
   setHide
 }) {
-  const styles = {"display": "flex", "justifyContent": "center"};
+  const nextThemePreference = {
+    system: 'light',
+    light: 'dark',
+    dark: 'system',
+  }[themePreference] ?? 'system';
+  const themeLabel = {
+    system: 'System',
+    light: 'Light',
+    dark: 'Dark',
+  }[themePreference] ?? 'System';
+
   return (
-    <div style={styles}>
+    <div className="config-menu-container">
       <div className="config-menu"> 
         <ToggleButton
           id="retirement-toggle"
@@ -59,6 +72,13 @@ export default function ConfigMenu({
           onToggle={v => setHide(prev => ({ ...prev, slayer: v }))}
           label="Hide slayer rewards"
           icon="https://oldschool.runescape.wiki/images/Slayer_icon.png"
+        />
+        <ToggleButton
+          id="theme-toggle"
+          value={themePreference !== 'system'}
+          onToggle={() => setThemePreference(nextThemePreference)}
+          label={`Theme: ${themeLabel}`}
+          icon="https://oldschool.runescape.wiki/images/Light_orb.png"
         />
       </div>
     </div>

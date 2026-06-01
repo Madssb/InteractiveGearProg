@@ -10,6 +10,7 @@ import migrateLegacySharedNodeStates from '@/utils/migrateState';
 import removeStarredItems from '@/utils/removeStarredItems.js';
 import updateSequenceLanceRule from '@/utils/sequenceRules.js';
 import { handleLevels } from '@/utils/textSanitizers';
+import { applyThemePreference, THEME_PREFERENCE_KEY } from '@/utils/themePreference';
 import { useLocalStorageSet, useLocalStorageState } from '@/utils/useLocalStorageState';
 import milestoneMetadata from '@data/generated/milestone-metadata.json';
 import milestoneSequenceBarebonesRaw from '@data/generated/milestone-sequence-barebones.json';
@@ -96,6 +97,7 @@ export default function ChartPage(){
     
     const [showRetirement, setShowRetirement] = useLocalStorageState('showRetirement', false);
     const [showBareBones, setShowBareBones] = useLocalStorageState('showBareBones', false);
+    const [themePreference, setThemePreference] = useLocalStorageState(THEME_PREFERENCE_KEY, 'system');
     const [showOptions, setShowOptions] = useState(false);
     const [progressSnapshotReady, setProgressSnapshotReady] = useState(false);
     const progressSnapshotAttempted = React.useRef(false);
@@ -207,6 +209,10 @@ export default function ChartPage(){
     }, [setMilestonesComplete]);
 
     React.useEffect(() => {
+        applyThemePreference(themePreference);
+    }, [themePreference]);
+
+    React.useEffect(() => {
         if (!progressSnapshotReady) return;
         if (progressSnapshotAttempted.current) return;
         progressSnapshotAttempted.current = true;
@@ -218,13 +224,11 @@ export default function ChartPage(){
         submitHiddenMilestonesSnapshot(milestonesHidden);
     }, [progressSnapshotReady, milestonesHidden]);
     
-    const style = {"justifyContent": "space-between", "display":"flex", "alignItems": "center"}
     return (
         <>
             
-            <div style={style}>
-                    <div />
-                    <div>
+            <div className="chart-page-header">
+                    <div className="chart-page-title">
                         <h1>Interactive Ironman Progression Chart</h1>
                         <span className="subtitle">Curated by the Ironscape community — made by Ladlor</span>
                     </div>
@@ -243,6 +247,8 @@ export default function ChartPage(){
                     setShowRetirement={setShowRetirement}
                     showBareBones={showBareBones}
                     setShowBareBones={setShowBareBones}
+                    themePreference={themePreference}
+                    setThemePreference={setThemePreference}
                     hide={hide}
                     setHide={setHide}
                 />
@@ -282,21 +288,26 @@ export default function ChartPage(){
                 />
             )}
             {showRetirement && (
-                <Chart
-                    milestoneSequence={milestoneSequenceRetirement}
-                    milestoneMetadata={milestoneMetadata}
-                    milestonesComplete={milestonesComplete}
-                    milestonesHidden={milestonesHidden}
-                    hide={hide}
-                    handleNodeContextMenu={handleNodeContextMenu}
-                    handleNodeTouchStart={handleNodeTouchStart}
-                    handleNodeTouchEnd={handleNodeTouchEnd}
-                    handleNodeClick={handleNodeClick}
-                    arrows={false}
-                    annotatedMilestone={annotatedMilestone}
-                    annotations={annotations}
-                    onCloseAnnotations={handleCloseAnnotations}
-                />
+                <>
+                    <div style={{ /*  */
+                        "height":"40px"
+                    }}/>
+                    <Chart
+                        milestoneSequence={milestoneSequenceRetirement}
+                        milestoneMetadata={milestoneMetadata}
+                        milestonesComplete={milestonesComplete}
+                        milestonesHidden={milestonesHidden}
+                        hide={hide}
+                        handleNodeContextMenu={handleNodeContextMenu}
+                        handleNodeTouchStart={handleNodeTouchStart}
+                        handleNodeTouchEnd={handleNodeTouchEnd}
+                        handleNodeClick={handleNodeClick}
+                        arrows={false}
+                        annotatedMilestone={annotatedMilestone}
+                        annotations={annotations}
+                        onCloseAnnotations={handleCloseAnnotations}
+                    />
+                </>
             )}
             {milestonesHidden.size > 0 && (
                 <button

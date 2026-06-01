@@ -126,7 +126,7 @@ function Node({
   return (
     <>
       <div
-        className={`node ${milestoneComplete && "complete"} ${milestoneHidden && "hidden"} ${type}`}
+        className={`node ${milestoneComplete ? "complete":""} ${milestoneHidden && "hidden"} ${type}`}
         title={milestone}
         id={id}
         data-wiki-url={wikiUrl}

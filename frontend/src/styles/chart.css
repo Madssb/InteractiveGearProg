@@ -1,18 +1,18 @@
 :root {
   /* Structure */
+  --chart-css: 1px;
   --node-size: 40px;
   --gap-sm: 5px;
   --gap-md: 10px;
   --border-width: 2px;
 
-  /* State tokens */
-  --state-incomplete-bg: transparent;
-  --state-complete-bg: #0e8f2b;
-  --state-skipped-bg: var(--state-complete-bg);
-  --state-skipped-triangle: yellow;
+  /* colors */
+  --complete-dark: #0e8f2b;
+  --complete-light: rgb(4, 128, 0);
+  --node-border-dark: #aaaaaa;
+  --node-border-light: #616161;
+  --show-button-color: gray;
 
-  /* Neutral border */
-  --node-border: hsl(0, 0%, 67%);
 }
 
 /* Container holding all groups */
@@ -58,7 +58,7 @@
   align-items: center;
   width: var(--node-size);
   height: var(--node-size);
-  border: var(--border-width) solid var(--node-border);
+  border: var(--border-width) solid light-dark(var(--node-border-light),var(--node-border-dark));
 }
 
 .node-group > .node > img {
@@ -84,13 +84,8 @@
 .node-group > .node > .skill > span {
   font-size: 0.8rem;
 }
-
-/* States: only semantics; colors via variables */
-.incomplete {
-  background-color: var(--state-incomplete-bg);
-}
 .complete {
-  background-color: var(--state-complete-bg);
+  background-color: light-dark(var(--complete-light),var(--complete-dark));
 }
 /* Arrow cell (→ between groups) */
 .chart > .arrow {
@@ -134,5 +129,5 @@
 #show-button {
   display: block; /* makes margin auto work */
   margin: 1em auto; /* top/bottom spacing optional */
-  background-color: gray;
+  background-color: var(--show-button-color);
 }

@@ -1,4 +1,4 @@
-MIT License
+# MIT License
 
 Copyright (c) 2025 Mads S. Balto
 
@@ -25,7 +25,7 @@ SOFTWARE.
 Note on Images
 
 This project dynamically references images hosted by the Old School RuneScape Wiki  
-(https://oldschool.runescape.wiki/). Those images are licensed under the  
+(<https://oldschool.runescape.wiki/>). Those images are licensed under the  
 Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License (CC BY-NC-SA 3.0).
 
 These images are not included in this repository and are not covered by the MIT License.

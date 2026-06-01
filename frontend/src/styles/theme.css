@@ -1,19 +1,31 @@
+/*theme.css*/
+/* Governs universal styling rules in common for all pages */
 :root {
-  --node-border: #aaaaaa;
+  --bg-dark: #2c2c2c;
+  --bg-light: white;
+  --fg-dark: #e0e0e0;
+  --fg-light: #404040;
+  --subtitle-dark: #aaa;
 
-  /* brand colors */
-  --state-complete-bg: #0e8f2b;
-  --state-skipped-bg: var(--state-complete-bg);
+  --link-dark: #66aaff;
+  --link-light: #0026FF;
+  --clicked-link-dark: #aa88ff;
+  --clicked-link-light: #B200FF;
+  color-scheme: light dark;
+}
 
-  /* optional dark/light */
-  --bg: #2c2c2c;
-  --fg: #e0e0e0;
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
 }
 
 /* Page theming */
 body {
-  background: var(--bg);
-  color: var(--fg);
+  background: light-dark(var(--bg-light), var(--bg-dark));
+  color: light-dark(var(--fg-light), var(--fg-dark));
 }
 
 /* Typography and links */
@@ -25,28 +37,46 @@ li {
   text-align: center;
 }
 a {
-  color: #66aaff;
+  color: light-dark(var(--link-light), var(--link-dark));
   text-decoration: underline;
 }
 a:visited {
-  color: #aa88ff;
+  color: light-dark(var(--clicked-link-light), var(--clicked-link-dark));
 }
 
 /* Extras */
 .subtitle {
   font-size: 0.85em;
   font-style: italic;
-  color: #aaa;
+  color: light-dark(var(--fg-light), var(--subtitle-dark));
   text-align: center;
   display: block;
   margin-top: -10px;
   margin-bottom: 30px;
 }
-/* Restore normal list behavior */
+
 ul,
 li {
   text-align: left;
-} /* stop centering list text */
+}
 li {
   display: list-item;
-} /* ensure bullets render */
+}
+
+/* acknowledgements: centered block with bullets */
+.acknowledgements {
+  text-align: center; /* center heading + paragraph text */
+  margin: 2rem auto;
+}
+
+.acknowledgements ul {
+  list-style-position: inside; /* bullets stay with text */
+  display: inline-block; /* shrink-wrap list so it can be centered */
+  text-align: left; /* bullet + text left aligned within block */
+  padding-left: 0; /* override browser padding */
+  margin: 1rem auto; /* center block horizontally */
+}
+
+.acknowledgements li {
+  margin: 0.5rem 0;
+}

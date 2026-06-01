@@ -1,10 +1,21 @@
+.config-menu-container {
+  display: flex;
+  justify-content: center;
+}
+
 .config-menu {
   display: inline-flex; /* shrink-wrap its contents */
   flex-direction: column;
   align-items: stretch; /* make children equal width */
   gap: 0;
-  border: 2px solid black;
   margin: 0 auto;
+  --menu-bg: gray;
+  --menu-bg-active: green;
+  --menu-fg: black;
+  --menu-border: #3f3f3f;
+  background-color: var(--menu-bg);
+  color: var(--menu-fg);
+  border: 2px solid var(--menu-bg);
 }
 
 .config-menu .toggle-btn {
@@ -14,8 +25,11 @@
   border-radius: 5px;
   flex: 1 0 auto; /* do not shrink unevenly */
   width: 100%; /* fill parent’s width */
+  background-color: var(--menu-bg);
+  color: var(--menu-fg);
 }
 
 .config-menu .toggle-btn.active {
-  background-color: green;
+  background-color: var(--menu-bg-active);
+  color: var(--menu-fg);
 }

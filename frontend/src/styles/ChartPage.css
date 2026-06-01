@@ -1,8 +1,28 @@
-#options-button {
+.chart-page-header {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) 40px;
+  align-items: center;
+}
+
+.chart-page-title {
+  grid-column: 2;
+}
+
+.chart-page-header .chart-page-options-button {
+  grid-column: 3;
+  justify-self: end;
+}
+
+.chart-page-options-button {
   background-color: gray;
   transition: background-color 0.1s;
 }
-#options-button.active,
-#options-button:active {
+
+.chart-page-options-button.active,
+.chart-page-options-button:active {
   background-color: #555; /* darker shade */
+}
+
+.chart-page-section-spacer {
+  height: 40px;
 }
