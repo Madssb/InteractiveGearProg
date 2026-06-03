@@ -1,4 +1,0 @@
-[Unit]
-Description=Ladlor Chart Builder Services
-Requires=ladlor-api.service ladlor-dps-api.service
-After=network.target
