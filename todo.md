@@ -10,10 +10,6 @@ It has been requested that the show hidden button merely shows hidden alternativ
 
 - confusion persists around theme.css
 
-## re-implement light-mode
-
-its been requested twice now and there is little reason not to, except its a little difficult ngl.
-
 ## 98 agi explanation page (deferred)
 
 - finish prayer pot section
