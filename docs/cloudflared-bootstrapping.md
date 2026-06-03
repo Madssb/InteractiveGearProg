@@ -1,15 +1,15 @@
-# Bootstrapping for Cloudflare Tunnel implementations
+# Cloudflared Bootstrapping
 
-This document describes bootstrapping Cloudflare Tunnel configuration files and credentials used by `cloudflared`.
+This document describes setting up a cloudflared tunnel with passing `CLOUDFLARED_TUNNEL_TOKEN` to the `cloudflare/cloudflared:latest` image used in `compose.yml`. This makes compose.yml bring the backend to `VITE_API_BASE_URL`.
 
-The static frontend requires an accessible backend. Cloudflare Tunnel uses `cloudflared` to establish an outbound connection to Cloudflare, preventing inbound connections to the host machine, which is preferable for personal security.
+1. from <dash.Cloudflare.com> click on "Zero Trust" under "Protect & Connect"
+2. click on "Networks" to show the dropdown menu and select "Connectors"
+3. click on create a tunnel, select "Cloudflared" as the tunnel type
+4. name the tunnel
+5. Select your device's operating system: Docker
+6. copy generated token (i.e. bit after `--token`) to `CLOUDFLARED_TUNNEL_TOKEN` in `.env`
+7. set the hostname. This is what `VITE_API_BASE_URL` must match.
+8. set the service as `HTTP://backend:8000`
+9. click "Complete setup" to complete the setup
 
-The following steps bootstrap a Cloudflare Tunnel, exposing the locally hosted backend at a hostname accessible by the frontend:
-
-- `cloudflared tunnel login` authenticates with Cloudflare and downloads credentials required for tunnel creation and DNS routing (`cert.pem`)
-
-- `cloudflared tunnel create <tunnel-name>` creates a named tunnel and generates its credentials file. In this project, these files are `prod.json` and `test.json` in `infra/cloudflared/`, for the tunnels `ladlorchart-api` and `ladlorchart-test`, respectively.
-
-- `cloudflared tunnel route dns <tunnel-id> <hostname>` creates a DNS record mapping the hostname to the tunnel. This project uses `api.ladlorchart.com` for `ladlorchart-api`, and `test.ladlorchart.com` for `ladlorchart-test`. IMPORTANT: prefer to use the id or else record may be created for the wrong tunnel.
-
-The `config.yaml` file defines how requests are routed from the tunnel to local services and is referenced when instantiating tunnels. In this project, these files are `config.local.yml`, `config.prod.yml`, and `config.test.yml` in `infra/cloudflared/`. Bootstrapping is a one-time setup; running the tunnel is described separately.
+Backend deloyment with `compose.yml` now makes the repo endpoints available at `VITE_API_BASE_URL`.
