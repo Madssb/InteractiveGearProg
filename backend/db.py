@@ -1,3 +1,5 @@
+"""PostgreSQL statements for ladlorchart api backend and botlor
+"""
 import json
 import os
 from functools import cache
@@ -6,6 +8,15 @@ import asyncpg
 from dotenv import load_dotenv
 from datetime import date
 from typing import Literal, TypedDict
+
+
+load_dotenv()
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise SystemExit("DATABASE_URL is not set")
+
+
+_pool: asyncpg.Pool | None = None
 
 
 class MilestoneAnnotationRow(TypedDict):
@@ -68,14 +79,6 @@ async def next_report_id(connection: asyncpg.Connection) -> int:
         """
     )
     return report_id
-
-
-load_dotenv()
-DATABASE_URL = os.getenv("DATABASE_URL")
-if not DATABASE_URL:
-    raise SystemExit("DATABASE_URL is not set")
-
-_pool: asyncpg.Pool | None = None
 
 
 @cache
