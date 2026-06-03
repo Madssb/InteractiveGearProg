@@ -1,12 +1,23 @@
+"""Backend API endpoints consumed by Ladlorchart frontend.
+"""
 # fastapi dev backend/main.py --port 8000
+import os
 import logging
 import math
 import secrets
 import threading
 import time
+from load_dotenv immport load_dotenv
 from collections import OrderedDict, defaultdict, deque
 from typing import Annotated, Dict, List, Tuple
 from datetime import date
+from pathlib import Path
+
+from dotenv import load_dotenv
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, conlist
 
 from db import (
     load_share,
@@ -16,11 +27,6 @@ from db import (
     save_share,
     update_endpoint_hits,
 )
-from fastapi import FastAPI, HTTPException, Request
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-from pydantic import BaseModel, conlist
-
 from osrs_milestone_metadata import (
     MilestoneMetadataQueryResult,
     MilestoneMetadataRecord,
@@ -29,25 +35,15 @@ from osrs_milestone_metadata import (
 from milestones import load_milestone_ids_by_name
 
 
-app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
+# constants
 
-ALLOWED_ORIGIN_REGEX = (
-    r"^(http://(localhost|127\.0\.0\.1):\d+"
-    r"|https://[a-z0-9-]+\.ladlorchart\.pages\.dev)$"
-)
+ROOT_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(ROOT_DIR / ".env")
+CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS")
+if not CORS_ALLOWED_ORIGINS:
+    raise SystemExit("CORS_ALLOWED_ORIGINS is not set")
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "https://ladlorchart.com",
-        "https://ladlorchart.pages.dev",
-    ],
-    allow_origin_regex=ALLOWED_ORIGIN_REGEX,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# types
 
 FlatSequenceType = Annotated[list[str], conlist(str, min_length=1, max_length=500)]
 NestedSequenceType = list[list[str]]
@@ -67,11 +63,9 @@ class ShareCreate(BaseModel):
     sequence: NestedSequenceType | None = None
 
 
-class ShareResponse(BaseModel):
-    sequence: NestedSequenceType
-
-
 class MilestoneAnnotationResponse(BaseModel):
+    """Schema for GET annotations/
+    """
     annotation_id: int
     up_count: int
     down_count: int
@@ -92,6 +86,23 @@ class LRU(OrderedDict):
         self[key] = value
         if len(self) > self.maxsize:
             self.popitem(last=False)
+
+app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
+
+# CORS
+
+allowed_origins = [
+    origin.strip()
+    for origin in CORS_ALLOWED_ORIGINS.split(",")
+    if origin.strip()
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 
 CACHE: Dict[str, MilestoneMetadataRecord] = LRU(maxsize=5000)
@@ -240,6 +251,9 @@ def LRU_cache(
     return cache_hits, cache_misses
 
 
+# endpoints
+
+
 @app.post("/fetch-milestone-metadata/")
 async def populate_milestone_metadata(request: Request, milestones: Milestones) -> MilestoneMetadataResponse:
     """
@@ -303,6 +317,7 @@ async def submit_hidden_milestones_snapshot(request: Request, milestones_hidden:
         return
     enforce_rate_limit(request, "/submit-hidden-milestones-snapshot")
     await milestones_hidden_snapshots(milestones_hidden)
+
 
 @app.get("/annotations", response_model=list[MilestoneAnnotationResponse])
 async def fetch_milestone_annotations(request: Request, milestone_id: int):
