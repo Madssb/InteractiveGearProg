@@ -7,6 +7,7 @@ import math
 import secrets
 import threading
 import time
+from load_dotenv import load_dotenv
 from collections import OrderedDict, defaultdict, deque
 from typing import Annotated, Dict, List, Tuple
 from datetime import date
