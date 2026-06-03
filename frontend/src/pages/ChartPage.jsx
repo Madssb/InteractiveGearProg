@@ -38,7 +38,8 @@ async function submitProgressSnapshot(milestonesComplete) {
     localStorage.setItem(PROGRESS_SNAPSHOT_DATE_KEY, today);
 
     try {
-        const response = await fetch(apiUrl("/submit-progress-snapshot"), {
+        const url = apiUrl("/submit-progress-snapshot");
+        const response = await fetch(url, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify([...milestonesComplete]),
@@ -62,7 +63,8 @@ async function submitHiddenMilestonesSnapshot(milestonesHidden) {
     localStorage.setItem(HIDDEN_MILESTONES_SNAPSHOT_DATE_KEY, today);
 
     try {
-        const response = await fetch(apiUrl("/submit-hidden-milestones-snapshot"), {
+        const url = apiUrl("/submit-hidden-milestones-snapshot");
+        const response = await fetch(url, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify([...milestonesHidden]),
