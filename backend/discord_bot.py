@@ -21,11 +21,32 @@ from db import user_report
 from milestones import load_main_milestone_groups, load_milestone_names_by_id
 
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
-MILESTONE_METADATA_PATH = REPO_ROOT / "data/generated/milestone-metadata.json"
-GUILD_ID_ENV = "GUILD_ID"
-SUBMITTED_ANNOTATIONS_CHANNEL_ID_ENV = "SUBMITTED_ANNOTATIONS_CHANNEL_ID"
-REPORT_LOGS_CHANNEL_ID_ENV = "REPORT_LOGS_CHANNEL_ID"
+ROOT_DIR = Path(__file__).resolve().parent.parent
+MILESTONE_METADATA_PATH = ROOT_DIR / "data/generated/milestone-metadata.json"
+
+
+# env variables
+
+load_dotenv(ROOT_DIR / ".env")
+BOTLOR_TOKEN = os.getenv("BOTLOR_TOKEN")
+if not BOTLOR_TOKEN:
+    raise SystemExit("BOTLOR_TOKEN is not set")
+
+GUILD_ID_ = os.getenv("GUILD_ID")
+if not GUILD_ID_:
+    raise SystemExit("GUILD_ID is not set")
+GUILD_ID = int(GUILD_ID_)
+
+SUBMITTED_ANNOTATIONS_CHANNEL_ID_ = os.getenv("SUBMITTED_ANNOTATIONS_CHANNEL_ID")
+if not SUBMITTED_ANNOTATIONS_CHANNEL_ID_:
+    raise SystemExit("SUBMITTED_ANNOTATIONS_CHANNEL_ID is not set")
+SUBMITTED_ANNOTATIONS_CHANNEL_ID = int(SUBMITTED_ANNOTATIONS_CHANNEL_ID_)
+
+REPORT_LOGS_CHANNEL_ID_ = os.getenv("REPORT_LOGS_CHANNEL_ID")
+if not REPORT_LOGS_CHANNEL_ID_:
+    raise SystemExit("REPORT_LOGS_CHANNEL_ID is not set")
+REPORT_LOGS_CHANNEL_ID = int(REPORT_LOGS_CHANNEL_ID_)
+
 logger = logging.getLogger(__name__)
 
 
@@ -36,6 +57,8 @@ def load_milestone_metadata() -> dict[str, dict[str, Any]]:
 
 
 class BotClient(discord.Client):
+    """Ladlorchart discord-bot client
+    """
     def __init__(
         self,
         guild: discord.Object,
@@ -170,33 +193,12 @@ class BotClient(discord.Client):
         )
 
 
-def get_required_int_env(name: str) -> int:
-    value = os.getenv(name)
-    if not value:
-        raise RuntimeError(f"{name} environment variable is not set")
-
-    try:
-        return int(value)
-    except ValueError as exc:
-        raise RuntimeError(f"{name} must be an integer") from exc
-
-
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    load_dotenv(REPO_ROOT / "backend/.env")
-    load_dotenv(REPO_ROOT / "discord_bot/.env")
-    token = os.getenv("BOTLOR_TOKEN")
-    if not token:
-        raise RuntimeError("BOTLOR_TOKEN environment variable is not set")
-    guild = discord.Object(id=get_required_int_env(GUILD_ID_ENV))
-    submitted_annotations_channel_id = get_required_int_env(
-        SUBMITTED_ANNOTATIONS_CHANNEL_ID_ENV
-    )
-    report_logs_channel_id = get_required_int_env(REPORT_LOGS_CHANNEL_ID_ENV)
-
+    guild = discord.Object(id=GUILD_ID)
     bot = BotClient(
         guild,
-        submitted_annotations_channel_id,
-        report_logs_channel_id,
+        SUBMITTED_ANNOTATIONS_CHANNEL_ID,
+        REPORT_LOGS_CHANNEL_ID,
     )
-    bot.run(token)
+    bot.run(BOTLOR_TOKEN)

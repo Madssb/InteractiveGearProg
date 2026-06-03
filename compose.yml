@@ -1,14 +1,17 @@
 services:
   backend:
-    image: ladlorapi-backend
+    image: ladlorchart-backend
     build:
-      context: ..
+      context: .
       dockerfile: backend/Dockerfile
     restart: unless-stopped
     ports:
-      - "8003:8000"
-    env_file:
-      - .env
+      - "127.0.0.1:8000:8000"
+    environment:
+      - DATABASE_URL=${DATATABASE_URL}
+      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     healthcheck:
       test:
         [
@@ -21,6 +24,7 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
+
   discord_bot:
     image: ladlorapi-backend
     build:
@@ -28,28 +32,33 @@ services:
       dockerfile: backend/Dockerfile
     command: ["uv", "run", "python", "discord_bot.py"]
     restart: unless-stopped
-    env_file:
-      - .env
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - BOTLOR_TOKEN=${BOTLOR_TOKEN}
+      - GUILD_ID=${GUILD_ID}
+      - SUBMITTED_ANNOTATIONS_CHANNEL_ID=${SUBMITTED_ANNOTATIONS_CHANNEL_ID}
+      - REPORT_LOGS_CHANNEL_ID=${REPORT_LOGS_CHANNEL_ID}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       backend:
         condition: service_healthy
+
   cloudflared:
     image: cloudflare/cloudflared:latest
-    command: tunnel --config /etc/cloudflared/config.test.yml run
-    volumes:
-      - ../infra/cloudflared:/etc/cloudflared
-    depends_on:
-      - backend
+    command: tunnel --no-autoupdate run
     restart: unless-stopped
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARED_TUNNEL_TOKEN:-}
+    depends_on:
+      backend:
+        condition: service_healthy
+
   healthcheck:
     image: curlimages/curl:8.16.0
-    env_file:
-      - .env
     environment:
-      API_HEALTHCHECK_URL: ${API_HEALTHCHECK_URL:-https://test.ladlorchart.com/health}
-      HEALTHCHECK_INTERVAL_SECONDS: ${HEALTHCHECK_INTERVAL_SECONDS:-900}
-      HEALTHCHECK_TIMEOUT_SECONDS: ${HEALTHCHECK_TIMEOUT_SECONDS:-10}
-      HEARTBEAT_TIMEOUT_SECONDS: ${HEARTBEAT_TIMEOUT_SECONDS:-10}
+      - HEARTBEAT_URL=${HEARTBEAT_URL}
+      - API_HEALTHCHECK_URL=${API_HEALTHCHECK_URL}
     command:
       - sh
       - -eu
@@ -58,13 +67,13 @@ services:
         : "$${HEARTBEAT_URL:?HEARTBEAT_URL is required}"
         while true; do
           if curl --fail --silent --show-error \
-            --max-time "$${HEALTHCHECK_TIMEOUT_SECONDS}" \
+            --max-time 10 \
             "$${API_HEALTHCHECK_URL}" > /dev/null; then
             curl --fail --silent --show-error \
-              --max-time "$${HEARTBEAT_TIMEOUT_SECONDS}" \
+              --max-time 10 \
               "$${HEARTBEAT_URL}" > /dev/null
           fi
-          sleep "$${HEALTHCHECK_INTERVAL_SECONDS}"
+          sleep 900
         done
     depends_on:
       backend:
