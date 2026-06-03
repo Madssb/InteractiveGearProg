@@ -38,10 +38,16 @@ from milestones import load_milestone_ids_by_name
 # constants
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
+
 load_dotenv(ROOT_DIR / ".env")
+
 CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS")
 if not CORS_ALLOWED_ORIGINS:
     raise SystemExit("CORS_ALLOWED_ORIGINS is not set")
+
+TRUSTED_HOSTS = os.getenv("TRUSTED_HOSTS")
+if not TRUSTED_HOSTS:
+    raise SystemExit("TRUSTED_HOSTS is not set")
 
 # types
 
@@ -112,12 +118,6 @@ RATE_LIMIT_PER_MINUTE = 20
 SEC_WINDOW_SECONDS = 1.0
 MIN_WINDOW_SECONDS = 60.0
 MAX_REQUEST_BODY_BYTES = 256 * 1024
-ALLOWED_HOSTS = {
-    "api.ladlorchart.com",
-    "test.ladlorchart.com",
-    "localhost",
-    "127.0.0.1",
-}
 RATE_LIMIT_LOCK = threading.Lock()
 RATE_LIMIT_SEC: Dict[str, deque] = defaultdict(deque)
 RATE_LIMIT_MIN: Dict[str, deque] = defaultdict(deque)
@@ -178,7 +178,7 @@ def enforce_rate_limit(request: Request, route_name: str) -> None:
 async def trusted_host_middleware(request: Request, call_next):
     host_header = request.headers.get("host", "")
     host = host_header.split(":")[0].strip().lower()
-    if host not in ALLOWED_HOSTS:
+    if host not in TRUSTED_HOSTS:
         return JSONResponse(status_code=400, content={"detail": "Invalid host header"})
     return await call_next(request)
 
