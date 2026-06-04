@@ -1,4 +1,23 @@
 services:
+  env_guard:
+    image: busybox:1.37
+    environment:
+      - APP_ENV=${APP_ENV}
+    command:
+      - sh
+      - -eu
+      - -c
+      - |
+        case "$${APP_ENV}" in
+          production|staging)
+            echo "APP_ENV=$${APP_ENV}"
+            ;;
+          *)
+            echo "APP_ENV must be production or staging for compose.yml. Got: $${APP_ENV:-unset}" >&2
+            exit 1
+            ;;
+        esac
+
   backend:
     image: ladlorchart-backend
     build:
@@ -8,11 +27,14 @@ services:
     ports:
       - "127.0.0.1:8000:8000"
     environment:
-      - DATABASE_URL=${DATATABASE_URL}
+      - DATABASE_URL=${DATABASE_URL}
       - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
       - TRUSTED_HOSTS=${TRUSTED_HOSTS}
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    depends_on:
+      env_guard:
+        condition: service_completed_successfully
     healthcheck:
       test:
         [
@@ -29,7 +51,7 @@ services:
   discord_bot:
     image: ladlorapi-backend
     build:
-      context: ..
+      context: .
       dockerfile: backend/Dockerfile
     command: ["uv", "run", "python", "discord_bot.py"]
     restart: unless-stopped
