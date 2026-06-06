@@ -24,8 +24,6 @@ services:
       context: .
       dockerfile: backend/Dockerfile
     restart: unless-stopped
-    ports:
-      - "127.0.0.1:8000:8000"
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
