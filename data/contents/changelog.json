@@ -1,4 +1,7 @@
 {
+  "1.8.3":[
+    "Removed greater challenge for pushing up against ancient shard bottleneck, and misallocation of slayer points"
+  ],
   "1.8.2": [
     "Light mode supported again",
     "config menu touched up",
