@@ -1,6 +1,6 @@
 {
   "1.8.3":[
-    "Removed greater challenge for pushing up against ancient shard bottleneck, and misallocation of slayer points"
+    "Removed Greater challenge from the chart because its not a wise point investment"
   ],
   "1.8.2": [
     "Light mode supported again",
