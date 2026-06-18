@@ -252,10 +252,15 @@ export default function ChartPage(){
     }, [progressSnapshotReady, milestonesHidden]);
 
     async function handleShareProgress() {
-        const encoded = encodeProgress(milestonesComplete, canonicalSequence);
-        if (!encoded) return;
         const base = window.location.origin + window.location.pathname;
-        const shareUrl = `${base}#/?progress=${encoded}`;
+        let shareUrl;
+        if (isProgressShareView) {
+            shareUrl = `${base}#/${location.search}`;
+        } else {
+            const encoded = encodeProgress(milestonesComplete, canonicalSequence);
+            if (!encoded) return;
+            shareUrl = `${base}#/?progress=${encoded}`;
+        }
         try {
             await navigator.clipboard.writeText(shareUrl);
             setShareStatus('copied');
@@ -279,7 +284,7 @@ export default function ChartPage(){
                     </div>
                     <button
                         onClick={handleShareProgress}
-                        disabled={milestonesComplete.size === 0 || shareStatus === 'copied'}
+                        disabled={displayedMilestonesComplete.size === 0 || shareStatus === 'copied'}
                         className="chart-page-share-button"
                         aria-label="Share progress"
                         title={shareStatus === 'copied' ? 'Link copied!' : 'Share your progress'}
