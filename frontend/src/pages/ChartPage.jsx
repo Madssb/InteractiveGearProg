@@ -98,10 +98,12 @@ const canonicalSequence = [
     ...removeStarredItems(milestoneSequenceMainRaw),
     ...milestoneSequenceRetirementRaw,
 ];
+const EMPTY_MILESTONES = new Set();
 
 export default function ChartPage(){
 
     const location = useLocation();
+    const isProgressShareView = new URLSearchParams(location.search).has("progress");
 
     const [showRetirement, setShowRetirement] = useLocalStorageState('showRetirement', false);
     const [showBareBones, setShowBareBones] = useLocalStorageState('showBareBones', false);
@@ -136,6 +138,7 @@ export default function ChartPage(){
     }
 
     function handleHideClick(milestone){
+        if (isProgressShareView) return;
         setMilestonesHidden(prev => {
             const next = new Set(prev);
             if (next.has(milestone)) next.delete(milestone);
@@ -144,9 +147,11 @@ export default function ChartPage(){
         });
     }
     function handleShowClick(){
+        if (isProgressShareView) return;
         setMilestonesHidden(new Set());
     }
     function handleNodeClick(milestone) {
+        if (isProgressShareView) return;
         setMilestonesComplete(prev => {
             const next = new Set(prev);
             if (next.has(milestone)) next.delete(milestone);
@@ -163,6 +168,7 @@ export default function ChartPage(){
     });
     function handleNodeContextMenu(e, milestone) {
         e.preventDefault();
+        if (isProgressShareView) return;
         const touch = e.touches?.[0] || e.changedTouches?.[0];
         const x = touch?.pageX ?? e.pageX;
         const y = touch?.pageY ?? e.pageY;
@@ -176,6 +182,7 @@ export default function ChartPage(){
 
     // long press behaves like right click
     function handleNodeTouchStart(e, milestone) {
+        if (isProgressShareView) return;
         e.persist?.(); // keep event for later
         const timeoutId = setTimeout(() => {
             handleNodeContextMenu(e, milestone); // trigger context menu
@@ -216,12 +223,11 @@ export default function ChartPage(){
     React.useEffect(() => {
         const params = new URLSearchParams(location.search);
         const progressParam = params.get("progress");
-        if (progressParam) {
-            const decoded = decodeProgress(progressParam, canonicalSequence);
-            if (decoded.size > 0) {
-                setSharedMilestones(decoded);
-            }
+        if (!progressParam) {
+            setSharedMilestones(null);
+            return;
         }
+        setSharedMilestones(decodeProgress(progressParam, canonicalSequence));
     }, [location.search]);
 
     React.useEffect(() => {
@@ -258,6 +264,10 @@ export default function ChartPage(){
         }
         setTimeout(() => setShareStatus(null), 2000);
     }
+
+    const displayedMilestonesComplete = isProgressShareView
+        ? sharedMilestones ?? EMPTY_MILESTONES
+        : milestonesComplete;
     
     return (
         <>
@@ -277,7 +287,7 @@ export default function ChartPage(){
                         {shareStatus === 'copied' ? '✓' : '🔗'}
                     </button>
                     <button
-                        className={showOptions ? "active": ""}
+                        className={`chart-page-options-button ${showOptions ? "active": ""}`}
                         onClick={() => setShowOptions(!showOptions)}
                         id="options-button"
                         aria-label="Show settings"
@@ -301,13 +311,14 @@ export default function ChartPage(){
                 <Chart
                     milestoneSequence={milestoneSequenceBarebonesFiltered}
                     milestoneMetadata={milestoneMetadata}
-                    milestonesComplete={sharedMilestones || milestonesComplete}
+                    milestonesComplete={displayedMilestonesComplete}
                     milestonesHidden={milestonesHidden}
                     hide={hide}
                     handleNodeContextMenu={handleNodeContextMenu}
                     handleNodeTouchStart={handleNodeTouchStart}
                     handleNodeTouchEnd={handleNodeTouchEnd}
                     handleNodeClick={handleNodeClick}
+                    readOnly={isProgressShareView}
                     arrows={true}
                     annotatedMilestone={annotatedMilestone}
                     annotations={annotations}
@@ -318,13 +329,14 @@ export default function ChartPage(){
                 <Chart
                     milestoneSequence={milestoneSequenceMainFiltered}
                     milestoneMetadata={milestoneMetadata}
-                    milestonesComplete={sharedMilestones || milestonesComplete}
+                    milestonesComplete={displayedMilestonesComplete}
                     milestonesHidden={milestonesHidden}
                     hide={hide}
                     handleNodeContextMenu={handleNodeContextMenu}
                     handleNodeTouchStart={handleNodeTouchStart}
                     handleNodeTouchEnd={handleNodeTouchEnd}
                     handleNodeClick={handleNodeClick}
+                    readOnly={isProgressShareView}
                     arrows={true}
                     annotatedMilestone={annotatedMilestone}
                     annotations={annotations}
@@ -339,13 +351,14 @@ export default function ChartPage(){
                     <Chart
                         milestoneSequence={milestoneSequenceRetirement}
                         milestoneMetadata={milestoneMetadata}
-                        milestonesComplete={sharedMilestones || milestonesComplete}
+                        milestonesComplete={displayedMilestonesComplete}
                         milestonesHidden={milestonesHidden}
                         hide={hide}
                         handleNodeContextMenu={handleNodeContextMenu}
                         handleNodeTouchStart={handleNodeTouchStart}
                         handleNodeTouchEnd={handleNodeTouchEnd}
                         handleNodeClick={handleNodeClick}
+                        readOnly={isProgressShareView}
                         arrows={false}
                         annotatedMilestone={annotatedMilestone}
                         annotations={annotations}
@@ -353,7 +366,7 @@ export default function ChartPage(){
                     />
                 </>
             )}
-            {milestonesHidden.size > 0 && (
+            {!isProgressShareView && milestonesHidden.size > 0 && (
                 <button
                     id="show-button"
                     onClick={handleShowClick}

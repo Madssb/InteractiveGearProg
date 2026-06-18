@@ -10,32 +10,41 @@
 }
 
 .chart-page-header .chart-page-options-button {
+  grid-column: 4;
+  justify-self: end;
+}
+
+.chart-page-header .chart-page-share-button {
   grid-column: 3;
   justify-self: end;
 }
 
-.chart-page-options-button {
-  background-color: gray;
-  transition: background-color 0.1s;
-}
-
-.chart-page-options-button.active,
-.chart-page-options-button:active {
-  background-color: #555; /* darker shade */
-}
-
+.chart-page-options-button,
 .chart-page-share-button {
-  justify-self: end;
   width: 40px;
   height: 40px;
   padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-size: 1.2rem;
   background-color: gray;
   transition: background-color 0.1s;
 }
 
+.chart-page-options-button img {
+  max-width: 30px;
+  max-height: 30px;
+}
+
+.chart-page-options-button.active,
+.chart-page-options-button:active,
+.chart-page-share-button:active {
+  background-color: #555;
+}
+
 .chart-page-share-button:disabled {
-  opacity: 0.5;
+  opacity: 0.65;
   cursor: not-allowed;
 }
 

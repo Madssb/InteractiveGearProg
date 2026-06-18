@@ -92,6 +92,8 @@ function extractSequence(milestoneSequence) {
     navigator.clipboard.writeText(json);
 }
 
+const EMPTY_NODES_COMPLETE = new Set();
+
 export default function ChartBuilderPage() {
     const [milestoneSequenceChartBuilder, setMilestoneSequenceChartBuilder] = useLocalStorageState(
         'milestoneSequenceChartBuilder',
@@ -100,11 +102,13 @@ export default function ChartBuilderPage() {
     );
     const [milestoneMetadata, setMilestoneMetadata] = useLocalStorageState('milestoneMetadata', false);
     const [nodesCompleteState, setNodesCompleteState] = useLocalStorageSet('nodesCompleteState', new Set());
+    const [sharedNodesComplete, setSharedNodesComplete] = useState(null);
     const [loadingLadlorChart, setLoadingLadlorChart] = useState(false);
     const [loadError, setLoadError] = useState("");
 
     // initialize from Share-URL
     const location = useLocation();
+    const isProgressShareView = new URLSearchParams(location.search).has("progress");
 
     React.useEffect(() => {
         const params = new URLSearchParams(location.search);
@@ -113,13 +117,14 @@ export default function ChartBuilderPage() {
             getShare(token, setMilestoneSequenceChartBuilder, milestoneMetadata, setMilestoneMetadata);
         }
         const progressParam = params.get("progress");
-        if (progressParam && milestoneSequenceChartBuilder) {
-            const decoded = decodeProgress(progressParam, milestoneSequenceChartBuilder);
-            if (decoded.size > 0) {
-                setNodesCompleteState(decoded);
-            }
+        if (!progressParam) {
+            setSharedNodesComplete(null);
+            return;
         }
-    }, [location.search, milestoneMetadata, milestoneSequenceChartBuilder, setMilestoneSequenceChartBuilder, setMilestoneMetadata, setNodesCompleteState]);
+        if (milestoneSequenceChartBuilder) {
+            setSharedNodesComplete(decodeProgress(progressParam, milestoneSequenceChartBuilder));
+        }
+    }, [location.search, milestoneMetadata, milestoneSequenceChartBuilder, setMilestoneSequenceChartBuilder, setMilestoneMetadata]);
 
 
     const [showInput, setShowInput] = useState(false);
@@ -149,6 +154,7 @@ export default function ChartBuilderPage() {
     }
 
     function handleNodeClick(milestone) {
+        if (isProgressShareView) return;
         setNodesCompleteState(prev => {
             const next = new Set(prev);
             if (next.has(milestone)) next.delete(milestone);
@@ -166,6 +172,7 @@ export default function ChartBuilderPage() {
     });
     function handleNodeContextMenu(e, milestone) {
         e.preventDefault();
+        if (isProgressShareView) return;
         const touch = e.touches?.[0] || e.changedTouches?.[0];
         const x = touch?.pageX ?? e.pageX;
         const y = touch?.pageY ?? e.pageY;
@@ -179,6 +186,7 @@ export default function ChartBuilderPage() {
 
     // long press behaves like right click
     function handleNodeTouchStart(e, milestone) {
+        if (isProgressShareView) return;
         e.persist?.(); // keep event for later
         const timeoutId = setTimeout(() => {
             handleNodeContextMenu(e, milestone); // trigger context menu
@@ -196,6 +204,7 @@ export default function ChartBuilderPage() {
     }
 
     function handleDelete(milestoneToDelete) {
+        if (isProgressShareView) return;
         setMilestoneSequenceChartBuilder(seq =>
             seq
                 .map(milestoneGroup => milestoneGroup.filter(milestone => milestone !== milestoneToDelete))
@@ -225,6 +234,10 @@ export default function ChartBuilderPage() {
             disabled: loadingLadlorChart
         }
     ];
+    const displayedNodesComplete = isProgressShareView
+        ? sharedNodesComplete ?? EMPTY_NODES_COMPLETE
+        : nodesCompleteState;
+
     return (
         <>
             <div id="titleBar" style={{ position: "relative", height: "80px" }}>
@@ -271,11 +284,12 @@ export default function ChartBuilderPage() {
                 <Chart
                     milestoneSequence={milestoneSequenceChartBuilder}
                     milestoneMetadata={milestoneMetadata}
-                    milestonesComplete={nodesCompleteState}
+                    milestonesComplete={displayedNodesComplete}
                     handleNodeContextMenu={handleNodeContextMenu}
                     handleNodeTouchStart={handleNodeTouchStart}
                     handleNodeTouchEnd={handleNodeTouchEnd}
                     handleNodeClick={handleNodeClick}
+                    readOnly={isProgressShareView}
                     arrows={true}
                 />
             )}

@@ -20,6 +20,7 @@ type ChartProps = {
   handleNodeTouchStart: (event: React.TouchEvent<HTMLDivElement>, milestone: string) => void;
   handleNodeTouchEnd: React.TouchEventHandler<HTMLDivElement>;
   handleNodeClick: (milestone: string) => void;
+  readOnly?: boolean;
   arrows?: boolean;
   annotatedMilestone?: string;
   annotations?: AnnotationData[];
@@ -35,6 +36,7 @@ type NodeProps = {
   onTouchStart: (event: React.TouchEvent<HTMLDivElement>, milestone: string) => void;
   onTouchEnd: React.TouchEventHandler<HTMLDivElement>;
   onClick: (milestone: string) => void;
+  readOnly?: boolean;
 };
 
 type NodeGroupProps = {
@@ -46,6 +48,7 @@ type NodeGroupProps = {
   onTouchStart: NodeProps['onTouchStart'];
   onTouchEnd: NodeProps['onTouchEnd'];
   onClick: NodeProps['onClick'];
+  readOnly?: boolean;
 };
 
 /**
@@ -59,6 +62,7 @@ function Node({
   onTouchStart,
   onTouchEnd,
   onClick,
+  readOnly,
   milestoneComplete,
   milestoneHidden
 }: NodeProps) {
@@ -80,10 +84,10 @@ function Node({
           id={id}
           data-wiki-url={wikiUrl}
           aria-label={milestone}
-          onContextMenu={(e) => onContextMenu(e, milestone)}
-          onTouchStart={(e) => onTouchStart(e, milestone)}
-          onTouchEnd={onTouchEnd}
-          onClick={() => onClick(milestone)}
+          onContextMenu={readOnly ? undefined : (e) => onContextMenu(e, milestone)}
+          onTouchStart={readOnly ? undefined : (e) => onTouchStart(e, milestone)}
+          onTouchEnd={readOnly ? undefined : onTouchEnd}
+          onClick={readOnly ? undefined : () => onClick(milestone)}
         >
           <div className='skill'>
             <img
@@ -106,10 +110,10 @@ function Node({
           title={milestone}
           id={id}
           data-wiki-url={wikiUrl}
-          onContextMenu={(e) => onContextMenu(e, milestone)}
-          onTouchStart={(e) => onTouchStart(e, milestone)}
-          onTouchEnd={onTouchEnd}
-          onClick={() => onClick(milestone)}
+          onContextMenu={readOnly ? undefined : (e) => onContextMenu(e, milestone)}
+          onTouchStart={readOnly ? undefined : (e) => onTouchStart(e, milestone)}
+          onTouchEnd={readOnly ? undefined : onTouchEnd}
+          onClick={readOnly ? undefined : () => onClick(milestone)}
         >
           <div className='skill'>
             <img
@@ -130,10 +134,10 @@ function Node({
         title={milestone}
         id={id}
         data-wiki-url={wikiUrl}
-        onContextMenu={(e) => onContextMenu(e, milestone)}
-        onTouchStart={(e) => onTouchStart(e, milestone)}
-        onTouchEnd={onTouchEnd}
-        onClick={() => onClick(milestone)}
+        onContextMenu={readOnly ? undefined : (e) => onContextMenu(e, milestone)}
+        onTouchStart={readOnly ? undefined : (e) => onTouchStart(e, milestone)}
+        onTouchEnd={readOnly ? undefined : onTouchEnd}
+        onClick={readOnly ? undefined : () => onClick(milestone)}
       >
         <img
           src={imgUrl}
@@ -156,6 +160,7 @@ function NodeGroup({
   onTouchStart,
   onTouchEnd,
   onClick,
+  readOnly,
   milestonesComplete,
   milestonesHidden
 }: NodeGroupProps) {
@@ -173,6 +178,7 @@ function NodeGroup({
             onTouchStart={onTouchStart}
             onTouchEnd={onTouchEnd}
             onClick={onClick}
+            readOnly={readOnly}
           />
         ))
       }
@@ -194,6 +200,7 @@ export default function Chart({
   handleNodeTouchStart,
   handleNodeTouchEnd,
   handleNodeClick,
+  readOnly = false,
   arrows,
   annotatedMilestone,
   annotations = [],
@@ -234,6 +241,7 @@ export default function Chart({
                 onTouchStart={handleNodeTouchStart}
                 onTouchEnd={handleNodeTouchEnd}
                 onClick={handleNodeClick}
+                readOnly={readOnly}
               />
               {annotatedMilestone && i === annotatedGroupIndex && (
                 <div className="chart-mobile-annotations">
