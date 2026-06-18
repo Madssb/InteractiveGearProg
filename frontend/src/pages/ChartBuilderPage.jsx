@@ -7,6 +7,7 @@ import removeStarredItems from '@/utils/removeStarredItems.js';
 import { handleLevels } from '@/utils/textSanitizers';
 import { useLocalStorageSet, useLocalStorageState } from '@/utils/useLocalStorageState';
 import milestoneSequenceMainRaw from '@data/logic/milestone-sequence-main.json';
+import { encodeProgress, decodeProgress } from '@/utils/progressEncoding';
 import React, { useState } from 'react';
 import { useLocation } from "react-router";
 
@@ -14,8 +15,8 @@ import { useLocation } from "react-router";
 Instantiate chartbuilder-share record.
 */
 // stores milestoneSequence in chartbuilder-share record
-async function postShare(milestoneSequence) {
-    
+async function postShare(milestoneSequence, nodesComplete) {
+
     if (!milestoneSequence) return;
 
     const url = apiUrl("/share/");
@@ -33,7 +34,11 @@ async function postShare(milestoneSequence) {
         const token = await response.json();
 
         // Use chartbuilder as canonical link; /customize is kept as alias.
-        const shareUrl = `${base}#/chartbuilder?token=${token}`;
+        let shareUrl = `${base}#/chartbuilder?token=${token}`;
+        if (nodesComplete && nodesComplete.size > 0) {
+            const encoded = encodeProgress(nodesComplete, milestoneSequence);
+            if (encoded) shareUrl += `&progress=${encoded}`;
+        }
         navigator.clipboard.writeText(shareUrl);
 
     } catch (err) {
@@ -107,7 +112,14 @@ export default function ChartBuilderPage() {
         if (token) {
             getShare(token, setMilestoneSequenceChartBuilder, milestoneMetadata, setMilestoneMetadata);
         }
-    }, [location.search, milestoneMetadata, setMilestoneSequenceChartBuilder, setMilestoneMetadata]);
+        const progressParam = params.get("progress");
+        if (progressParam && milestoneSequenceChartBuilder) {
+            const decoded = decodeProgress(progressParam, milestoneSequenceChartBuilder);
+            if (decoded.size > 0) {
+                setNodesCompleteState(decoded);
+            }
+        }
+    }, [location.search, milestoneMetadata, milestoneSequenceChartBuilder, setMilestoneSequenceChartBuilder, setMilestoneMetadata, setNodesCompleteState]);
 
 
     const [showInput, setShowInput] = useState(false);
@@ -203,7 +215,7 @@ export default function ChartBuilderPage() {
     const actions = [
         { handler: handleInputClick, label: "Show input" },
         {
-            handler: () => postShare(milestoneSequenceChartBuilder, milestoneMetadata),
+            handler: () => postShare(milestoneSequenceChartBuilder, nodesCompleteState),
             label: "Share"
         },
         { handler: () => extractSequence(milestoneSequenceChartBuilder), label: "Extract" },
