@@ -16,7 +16,9 @@ import milestoneMetadata from '@data/generated/milestone-metadata.json';
 import milestoneSequenceBarebonesRaw from '@data/generated/milestone-sequence-barebones.json';
 import milestoneSequenceRetirementRaw from '@data/logic/milestone-sequence-retirement.json';
 import milestoneSequenceMainRaw from '@data/logic/milestone-sequence-main.json';
+import { encodeProgress, decodeProgress } from '@/utils/progressEncoding';
 import React, { useState } from 'react';
+import { useLocation } from 'react-router';
 import Annotations from "../components/Annotations";
 
 const PROGRESS_SNAPSHOT_DATE_KEY = "progressSnapshotSubmittedDate";
@@ -92,15 +94,23 @@ async function getMilestoneAnnotations(milestone){
 }
 
 
+const canonicalSequence = [
+    ...removeStarredItems(milestoneSequenceMainRaw),
+    ...milestoneSequenceRetirementRaw,
+];
+
 export default function ChartPage(){
 
-    
+    const location = useLocation();
+
     const [showRetirement, setShowRetirement] = useLocalStorageState('showRetirement', false);
     const [showBareBones, setShowBareBones] = useLocalStorageState('showBareBones', false);
     const [themePreference, setThemePreference] = useLocalStorageState(THEME_PREFERENCE_KEY, 'system');
     const [showOptions, setShowOptions] = useState(false);
     const [progressSnapshotReady, setProgressSnapshotReady] = useState(false);
     const progressSnapshotAttempted = React.useRef(false);
+    const loadedFromShare = React.useRef(false);
+    const [shareStatus, setShareStatus] = useState(null);
 
     const [milestonesHidden, setMilestonesHidden] = useLocalStorageSet('milestonesHidden', new Set(), ['nodesHiddenState']);
     const [milestonesComplete, setMilestonesComplete] = useLocalStorageSet('milestonesComplete', new Set(), ['nodesCompleteState']);
@@ -204,6 +214,18 @@ export default function ChartPage(){
     }, [milestonesHidden])
     
     React.useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const progressParam = params.get("progress");
+        if (progressParam) {
+            const decoded = decodeProgress(progressParam, canonicalSequence);
+            if (decoded.size > 0) {
+                setMilestonesComplete(decoded);
+                loadedFromShare.current = true;
+            }
+        }
+    }, [location.search, setMilestonesComplete]);
+
+    React.useEffect(() => {
         migrateLegacySharedNodeStates(setMilestonesComplete);
         setProgressSnapshotReady(true);
     }, [setMilestonesComplete]);
@@ -215,14 +237,30 @@ export default function ChartPage(){
     React.useEffect(() => {
         if (!progressSnapshotReady) return;
         if (progressSnapshotAttempted.current) return;
+        if (loadedFromShare.current) return;
         progressSnapshotAttempted.current = true;
         submitProgressSnapshot(milestonesComplete);
     }, [progressSnapshotReady, milestonesComplete]);
 
     React.useEffect(() => {
         if (!progressSnapshotReady) return;
+        if (loadedFromShare.current) return;
         submitHiddenMilestonesSnapshot(milestonesHidden);
     }, [progressSnapshotReady, milestonesHidden]);
+
+    async function handleShareProgress() {
+        const encoded = encodeProgress(milestonesComplete, canonicalSequence);
+        if (!encoded) return;
+        const base = window.location.origin + window.location.pathname;
+        const shareUrl = `${base}#/?progress=${encoded}`;
+        try {
+            await navigator.clipboard.writeText(shareUrl);
+            setShareStatus('copied');
+        } catch {
+            setShareStatus('error');
+        }
+        setTimeout(() => setShareStatus(null), 2000);
+    }
     
     return (
         <>
@@ -232,6 +270,15 @@ export default function ChartPage(){
                         <h1>Interactive Ironman Progression Chart</h1>
                         <span className="subtitle">Curated by the Ironscape community — made by Ladlor</span>
                     </div>
+                    <button
+                        onClick={handleShareProgress}
+                        disabled={milestonesComplete.size === 0 || shareStatus === 'copied'}
+                        className="chart-page-share-button"
+                        aria-label="Share progress"
+                        title={shareStatus === 'copied' ? 'Link copied!' : 'Share your progress'}
+                    >
+                        {shareStatus === 'copied' ? '✓' : '🔗'}
+                    </button>
                     <button
                         className={showOptions ? "active": ""}
                         onClick={() => setShowOptions(!showOptions)}

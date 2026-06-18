@@ -1,7 +1,8 @@
 .chart-page-header {
   display: grid;
-  grid-template-columns: 40px minmax(0, 1fr) 40px;
+  grid-template-columns: 40px minmax(0, 1fr) 40px 40px;
   align-items: center;
+  column-gap: 4px;
 }
 
 .chart-page-title {
@@ -21,6 +22,21 @@
 .chart-page-options-button.active,
 .chart-page-options-button:active {
   background-color: #555; /* darker shade */
+}
+
+.chart-page-share-button {
+  justify-self: end;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  font-size: 1.2rem;
+  background-color: gray;
+  transition: background-color 0.1s;
+}
+
+.chart-page-share-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .chart-page-section-spacer {
