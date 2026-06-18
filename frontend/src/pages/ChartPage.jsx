@@ -109,7 +109,7 @@ export default function ChartPage(){
     const [showOptions, setShowOptions] = useState(false);
     const [progressSnapshotReady, setProgressSnapshotReady] = useState(false);
     const progressSnapshotAttempted = React.useRef(false);
-    const loadedFromShare = React.useRef(false);
+    const [sharedMilestones, setSharedMilestones] = useState(null);
     const [shareStatus, setShareStatus] = useState(null);
 
     const [milestonesHidden, setMilestonesHidden] = useLocalStorageSet('milestonesHidden', new Set(), ['nodesHiddenState']);
@@ -219,11 +219,10 @@ export default function ChartPage(){
         if (progressParam) {
             const decoded = decodeProgress(progressParam, canonicalSequence);
             if (decoded.size > 0) {
-                setMilestonesComplete(decoded);
-                loadedFromShare.current = true;
+                setSharedMilestones(decoded);
             }
         }
-    }, [location.search, setMilestonesComplete]);
+    }, [location.search]);
 
     React.useEffect(() => {
         migrateLegacySharedNodeStates(setMilestonesComplete);
@@ -237,14 +236,12 @@ export default function ChartPage(){
     React.useEffect(() => {
         if (!progressSnapshotReady) return;
         if (progressSnapshotAttempted.current) return;
-        if (loadedFromShare.current) return;
         progressSnapshotAttempted.current = true;
         submitProgressSnapshot(milestonesComplete);
     }, [progressSnapshotReady, milestonesComplete]);
 
     React.useEffect(() => {
         if (!progressSnapshotReady) return;
-        if (loadedFromShare.current) return;
         submitHiddenMilestonesSnapshot(milestonesHidden);
     }, [progressSnapshotReady, milestonesHidden]);
 
@@ -304,7 +301,7 @@ export default function ChartPage(){
                 <Chart
                     milestoneSequence={milestoneSequenceBarebonesFiltered}
                     milestoneMetadata={milestoneMetadata}
-                    milestonesComplete={milestonesComplete}
+                    milestonesComplete={sharedMilestones || milestonesComplete}
                     milestonesHidden={milestonesHidden}
                     hide={hide}
                     handleNodeContextMenu={handleNodeContextMenu}
@@ -321,7 +318,7 @@ export default function ChartPage(){
                 <Chart
                     milestoneSequence={milestoneSequenceMainFiltered}
                     milestoneMetadata={milestoneMetadata}
-                    milestonesComplete={milestonesComplete}
+                    milestonesComplete={sharedMilestones || milestonesComplete}
                     milestonesHidden={milestonesHidden}
                     hide={hide}
                     handleNodeContextMenu={handleNodeContextMenu}
@@ -342,7 +339,7 @@ export default function ChartPage(){
                     <Chart
                         milestoneSequence={milestoneSequenceRetirement}
                         milestoneMetadata={milestoneMetadata}
-                        milestonesComplete={milestonesComplete}
+                        milestonesComplete={sharedMilestones || milestonesComplete}
                         milestonesHidden={milestonesHidden}
                         hide={hide}
                         handleNodeContextMenu={handleNodeContextMenu}
