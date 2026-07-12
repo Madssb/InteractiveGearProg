@@ -1054,5 +1054,11 @@
     "imgUrl": "https://oldschool.runescape.wiki/images/Void_knight_robe.png",
     "type": "item",
     "id": 176
+  },
+  "Ghommal's hilt 3": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Ghommal's_hilt_3",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Ghommal's_hilt_3.png",
+    "type": "item",
+    "id": 177
   }
 }
