@@ -1060,5 +1060,101 @@
     "imgUrl": "https://oldschool.runescape.wiki/images/Ghommal's_hilt_3.png",
     "type": "item",
     "id": 177
+  },
+  "Bellator ring": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Bellator_ring",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Bellator_ring.png",
+    "type": "item",
+    "id": 178
+  },
+  "Dharok's helm": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Dharok's_helm",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Dharok's_helm.png",
+    "type": "item",
+    "id": 179
+  },
+  "Kodai wand": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Kodai_wand",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Kodai_wand.png",
+    "type": "item",
+    "id": 180
+  },
+  "Twisted buckler": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Twisted_buckler",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Twisted_buckler.png",
+    "type": "item",
+    "id": 181
+  },
+  "Dharok's greataxe": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Dharok's_greataxe",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Dharok's_greataxe.png",
+    "type": "item",
+    "id": 182
+  },
+  "Dinh's bulwark": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Dinh's_bulwark",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Dinh's_bulwark.png",
+    "type": "item",
+    "id": 183
+  },
+  "Crimson kisten": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Crimson_kisten",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Crimson_kisten.png",
+    "type": "item",
+    "id": 184
+  },
+  "Virtus mask": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Virtus_mask",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Virtus_mask.png",
+    "type": "item",
+    "id": 185
+  },
+  "Virtus robe bottom": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Virtus_robe_bottom",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Virtus_robe_bottom.png",
+    "type": "item",
+    "id": 186
+  },
+  "Virtus robe top": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Virtus_robe_top",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Virtus_robe_top.png",
+    "type": "item",
+    "id": 187
+  },
+  "Dharok's platelegs": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Dharok's_platelegs",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Dharok's_platelegs.png",
+    "type": "item",
+    "id": 188
+  },
+  "Dharok's platebody": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Dharok's_platebody",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Dharok's_platebody.png",
+    "type": "item",
+    "id": 189
+  },
+  "Necklace of rupture": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Necklace_of_rupture",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Necklace_of_rupture.png",
+    "type": "item",
+    "id": 190
+  },
+  "Venator ring": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Venator_ring",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Venator_ring.png",
+    "type": "item",
+    "id": 191
+  },
+  "Dragon hunter crossbow": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Dragon_hunter_crossbow",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Dragon_hunter_crossbow.png",
+    "type": "item",
+    "id": 192
+  },
+  "Soulreaper axe": {
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Soulreaper_axe",
+    "imgUrl": "https://oldschool.runescape.wiki/images/Soulreaper_axe.png",
+    "type": "item",
+    "id": 193
   }
 }

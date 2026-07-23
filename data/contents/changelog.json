@@ -1,15 +1,21 @@
 {
+  "1.9.0":[
+    "Added Necklace of rupture",
+    "Added to the retirement home: Virtus robes, SRA, DT2 rings (Bellator, Venator), Dragon hunter crossbow, Twisted buckler, Kodai wand, Dharok's equipment.",
+    "Removed from the retirement home: Treasonous ring, Tyrannical ring, Armadyl godsword, and Staff of the dead.",
+    "Moved from the main-chart to the retirement home: Saturated heart, Zaryte crossbow and Zaryte vambraces."
+  ],
   "1.8.3":[
     "Removed greater challenge for pushing up against ancient shard bottleneck, and misallocation of slayer points"
   ],
   "1.8.2": [
     "Light mode supported again",
     "config menu touched up",
-    "added gap between retirement home and main chart"
+    "Added gap between retirement home and main chart"
   ],
   "1.8.1": [
-    "added community discord url in footer and annotations when empty.",
-    "annotations now split the chart in half and show in the middle on mobile."
+    "Added community discord url in footer and annotations when empty.",
+    "Annotations now split the chart in half and show in the middle on mobile."
   ],
   "1.8.0": [
     "Implemented user submitted annotations for milestones. Submissions happen via botlor in the ladlorchart community discord made for this purpose aswell as general discussion."
@@ -17,7 +23,7 @@
   "1.7.0": [
     "Re-syncing early chart logic with BRUHSailer. Subsantial amount of milestones in chapter 2 and 3, i.e. early chart, affected.",
     "Moved Torva, venator bow, and ghommal's hilt from the main chart to the retirement home.",
-    "added zuk helm and max cape to the retirement home"
+    "Added zuk helm and max cape to the retirement home"
   ],
   "1.6.3": [
     "Added backend progress snapshots for completed milestones, used to improve future chart updates.",
