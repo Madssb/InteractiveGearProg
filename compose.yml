@@ -59,6 +59,7 @@ services:
       - GUILD_ID=${GUILD_ID}
       - SUBMITTED_ANNOTATIONS_CHANNEL_ID=${SUBMITTED_ANNOTATIONS_CHANNEL_ID}
       - REPORT_LOGS_CHANNEL_ID=${REPORT_LOGS_CHANNEL_ID}
+      - ANNOTATOR_ROLE_ID=${ANNOTATOR_ROLE_ID}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
