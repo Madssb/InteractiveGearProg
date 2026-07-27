@@ -1,8 +1,8 @@
 import asyncio
 import os
+import uuid
 from json import dumps as json_dumps
 from json import load as json_load
-import uuid
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
@@ -154,7 +154,9 @@ def test_invalid_host_header_returns_400():
         pytest.skip("Set RUN_LIVE_TESTS=1 to run live HTTP checks.")
 
     base_url = os.getenv("LIVE_API_BASE_URL", DEFAULT_LIVE_API_BASE_URL)
-    request = Request(f"{base_url}/health", headers={"Host": "evil.example"}, method="GET")
+    request = Request(
+        f"{base_url}/health", headers={"Host": "evil.example"}, method="GET"
+    )
 
     with pytest.raises(HTTPError) as exc:
         urlopen(request, timeout=10)

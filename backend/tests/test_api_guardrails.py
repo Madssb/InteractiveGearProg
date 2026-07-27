@@ -1,12 +1,16 @@
+import re
+
+import pytest
 from fastapi import HTTPException
 from fastapi.responses import JSONResponse
-import pytest
-import re
 from starlette.requests import Request
 
 
 def _request(path: str = "/health", headers: dict[str, str] | None = None) -> Request:
-    raw = [(k.lower().encode("latin-1"), v.encode("latin-1")) for k, v in (headers or {}).items()]
+    raw = [
+        (k.lower().encode("latin-1"), v.encode("latin-1"))
+        for k, v in (headers or {}).items()
+    ]
     scope = {"type": "http", "method": "GET", "path": path, "headers": raw}
 
     async def receive():
@@ -25,7 +29,9 @@ async def _ok_call_next(_request):
 
 def test_get_client_id_prefers_cloudflare_header(app_module):
     """Client identity should prioritize Cloudflare header over forwarded-for fallback."""
-    req = _request(headers={"cf-connecting-ip": "203.0.113.7", "x-forwarded-for": "198.51.100.4"})
+    req = _request(
+        headers={"cf-connecting-ip": "203.0.113.7", "x-forwarded-for": "198.51.100.4"}
+    )
     assert app_module.get_client_id(req) == "203.0.113.7"
 
 
@@ -54,7 +60,9 @@ async def test_trusted_host_rejects_invalid_header(app_module):
 @pytest.mark.anyio
 async def test_request_size_rejects_oversized_content_length(app_module):
     """Oversized payloads should be blocked before route handling (413)."""
-    req = _request(headers={"content-length": str(app_module.MAX_REQUEST_BODY_BYTES + 1)})
+    req = _request(
+        headers={"content-length": str(app_module.MAX_REQUEST_BODY_BYTES + 1)}
+    )
     resp = await app_module.request_size_limit_middleware(req, _ok_call_next)
     assert resp.status_code == 413
     assert resp.body == b'{"detail":"Request body too large"}'

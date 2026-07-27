@@ -6,7 +6,10 @@ from starlette.requests import Request
 
 
 def _request(path: str, headers: dict[str, str] | None = None) -> Request:
-    raw_headers = [(k.lower().encode("latin-1"), v.encode("latin-1")) for k, v in (headers or {}).items()]
+    raw_headers = [
+        (k.lower().encode("latin-1"), v.encode("latin-1"))
+        for k, v in (headers or {}).items()
+    ]
     scope = {"type": "http", "method": "POST", "path": path, "headers": raw_headers}
 
     async def receive():
@@ -21,7 +24,9 @@ def test_health_route_returns_ok(app_module):
 
 
 @pytest.mark.anyio
-async def test_milestone_metadata_route_accepts_metadata_record_values(app_module, monkeypatch):
+async def test_milestone_metadata_route_accepts_metadata_record_values(
+    app_module, monkeypatch
+):
     """Metadata route should accept resolver metadata record values."""
     monkeypatch.setattr(app_module, "enforce_rate_limit", lambda request, route: None)
 
@@ -38,7 +43,9 @@ async def test_milestone_metadata_route_accepts_metadata_record_values(app_modul
             unresolvedMilestones=[],
         )
 
-    monkeypatch.setattr(app_module, "query_milestone_metadata", fake_query_milestone_metadata)
+    monkeypatch.setattr(
+        app_module, "query_milestone_metadata", fake_query_milestone_metadata
+    )
 
     req = _request("/fetch-milestone-metadata/", headers={"host": "localhost"})
     response = await app_module.populate_milestone_metadata(req, ["dragon scimitar"])
@@ -49,7 +56,9 @@ async def test_milestone_metadata_route_accepts_metadata_record_values(app_modul
 
 
 @pytest.mark.anyio
-async def test_milestone_metadata_route_returns_expected_shape_with_mocked_resolver(app_module, monkeypatch):
+async def test_milestone_metadata_route_returns_expected_shape_with_mocked_resolver(
+    app_module, monkeypatch
+):
     """Metadata route should return typed item payload shape when resolver succeeds."""
     monkeypatch.setattr(app_module, "enforce_rate_limit", lambda request, route: None)
 
@@ -66,7 +75,9 @@ async def test_milestone_metadata_route_returns_expected_shape_with_mocked_resol
             unresolvedMilestones=[],
         )
 
-    monkeypatch.setattr(app_module, "query_milestone_metadata", fake_query_milestone_metadata)
+    monkeypatch.setattr(
+        app_module, "query_milestone_metadata", fake_query_milestone_metadata
+    )
 
     req = _request("/fetch-milestone-metadata/", headers={"host": "localhost"})
     response = await app_module.populate_milestone_metadata(req, ["Amulet of strength"])
@@ -97,7 +108,9 @@ async def test_milestone_metadata_route_returns_cache_hits(app_module, monkeypat
             unresolvedMilestones=[],
         )
 
-    monkeypatch.setattr(app_module, "query_milestone_metadata", fake_query_milestone_metadata)
+    monkeypatch.setattr(
+        app_module, "query_milestone_metadata", fake_query_milestone_metadata
+    )
 
     req = _request("/fetch-milestone-metadata/", headers={"host": "localhost"})
     response = await app_module.populate_milestone_metadata(req, ["Amulet of strength"])
@@ -133,6 +146,7 @@ async def test_share_create_route_returns_token_and_calls_save(app_module, monke
 @pytest.mark.anyio
 async def test_share_load_route_success_and_not_found(app_module, monkeypatch):
     """Share loader should return payload for known token and 404 when missing."""
+
     async def fake_load_share_success(token):
         assert token == "abc123"
         return [["Amulet of strength"]]
@@ -151,7 +165,9 @@ async def test_share_load_route_success_and_not_found(app_module, monkeypatch):
 
 
 @pytest.mark.anyio
-async def test_submit_progress_snapshot_enforces_rate_limit_and_persists(app_module, monkeypatch):
+async def test_submit_progress_snapshot_enforces_rate_limit_and_persists(
+    app_module, monkeypatch
+):
     """Progress snapshots should be rate-limited and persisted as completed milestones."""
     calls = {}
 
@@ -202,7 +218,9 @@ async def test_submit_progress_snapshot_ignores_empty_payload(app_module, monkey
 
 
 @pytest.mark.anyio
-async def test_submit_hidden_milestones_snapshot_enforces_rate_limit_and_persists(app_module, monkeypatch):
+async def test_submit_hidden_milestones_snapshot_enforces_rate_limit_and_persists(
+    app_module, monkeypatch
+):
     """Hidden milestone snapshots should be rate-limited and persisted."""
     calls = {}
 
@@ -229,7 +247,9 @@ async def test_submit_hidden_milestones_snapshot_enforces_rate_limit_and_persist
 
 
 @pytest.mark.anyio
-async def test_submit_hidden_milestones_snapshot_ignores_empty_payload(app_module, monkeypatch):
+async def test_submit_hidden_milestones_snapshot_ignores_empty_payload(
+    app_module, monkeypatch
+):
     """Empty hidden milestone snapshots should not create analytics rows."""
     calls = {"rate_limit": 0, "persist": 0}
 
