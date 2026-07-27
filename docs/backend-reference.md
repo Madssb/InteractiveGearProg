@@ -43,12 +43,17 @@ When a client exceeds either window, the API returns:
 
 ### Trusted Hosts
 
-The backend rejects requests whose `Host` header is not one of:
+`TRUSTED_HOSTS` is a comma-separated list of bare hostnames. Do not include
+schemes, paths, or ports.
 
-- `api.ladlorchart.com`
-- `test.ladlorchart.com`
-- `localhost`
-- `127.0.0.1`
+Example:
+
+```env
+TRUSTED_HOSTS=api.ladlorchart.com,127.0.0.1,localhost
+```
+
+The backend strips any port from the incoming `Host` header, lowercases the
+hostname, and rejects requests whose host is not in `TRUSTED_HOSTS`.
 
 Invalid hosts receive HTTP `400`.
 

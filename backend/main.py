@@ -44,8 +44,12 @@ CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS")
 if not CORS_ALLOWED_ORIGINS:
     raise SystemExit("CORS_ALLOWED_ORIGINS is not set")
 
-TRUSTED_HOST = os.getenv("TRUSTED_HOSTS", "").strip().lower()
-if not TRUSTED_HOST:
+def parse_trusted_hosts(raw: str) -> set[str]:
+    return {host.strip().lower() for host in raw.split(",") if host.strip()}
+
+
+TRUSTED_HOSTS = parse_trusted_hosts(os.getenv("TRUSTED_HOSTS", ""))
+if not TRUSTED_HOSTS:
     raise SystemExit("TRUSTED_HOSTS is not set")
 
 # types
@@ -175,7 +179,7 @@ def enforce_rate_limit(request: Request, route_name: str) -> None:
 async def trusted_host_middleware(request: Request, call_next):
     host_header = request.headers.get("host", "")
     host = host_header.split(":")[0].strip().lower()
-    if host != TRUSTED_HOST:
+    if host not in TRUSTED_HOSTS:
         return JSONResponse(status_code=400, content={"detail": "Invalid host header"})
     return await call_next(request)
 

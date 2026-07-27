@@ -1,5 +1,3 @@
-import re
-
 import pytest
 from fastapi import HTTPException
 from fastapi.responses import JSONResponse
@@ -35,22 +33,44 @@ def test_get_client_id_prefers_cloudflare_header(app_module):
     assert app_module.get_client_id(req) == "203.0.113.7"
 
 
-def test_cors_origin_regex_allows_cloudflare_pages_previews(app_module):
-    """Cloudflare Pages preview deployments should be valid browser origins."""
-    assert re.fullmatch(
-        app_module.ALLOWED_ORIGIN_REGEX,
-        "https://9f50a61d.ladlorchart.pages.dev",
-    )
-    assert re.fullmatch(app_module.ALLOWED_ORIGIN_REGEX, "http://localhost:4173")
-    assert not re.fullmatch(
-        app_module.ALLOWED_ORIGIN_REGEX,
-        "https://evil-project.pages.dev",
-    )
+def test_cors_allowed_origins_are_parsed_from_env(app_module):
+    """CORS allowed origins should be parsed as comma-separated browser origins."""
+    assert app_module.allowed_origins
+    assert all(origin == origin.strip() for origin in app_module.allowed_origins)
+
+
+def test_trusted_hosts_parses_comma_separated_values(app_module, monkeypatch):
+    assert app_module.parse_trusted_hosts(
+        " api.ladlorchart.com,127.0.0.1, LOCALHOST ,,"
+    ) == {
+        "api.ladlorchart.com",
+        "127.0.0.1",
+        "localhost",
+    }
 
 
 @pytest.mark.anyio
-async def test_trusted_host_rejects_invalid_header(app_module):
+async def test_trusted_host_allows_configured_host_without_port(app_module, monkeypatch):
+    """Trusted hosts should allow external hosts and ignore request port."""
+    monkeypatch.setattr(
+        app_module,
+        "TRUSTED_HOSTS",
+        {"api.ladlorchart.com", "127.0.0.1", "localhost"},
+    )
+    req = _request(headers={"host": "api.ladlorchart.com:443"})
+    resp = await app_module.trusted_host_middleware(req, _ok_call_next)
+    assert resp.status_code == 200
+    assert resp.body == b'{"ok":true}'
+
+
+@pytest.mark.anyio
+async def test_trusted_host_rejects_invalid_header(app_module, monkeypatch):
     """Requests with non-allowlisted Host headers should be rejected early (400)."""
+    monkeypatch.setattr(
+        app_module,
+        "TRUSTED_HOSTS",
+        {"api.ladlorchart.com", "127.0.0.1", "localhost"},
+    )
     req = _request(headers={"host": "evil.example"})
     resp = await app_module.trusted_host_middleware(req, _ok_call_next)
     assert resp.status_code == 400
