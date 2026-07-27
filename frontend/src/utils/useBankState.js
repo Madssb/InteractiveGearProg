@@ -7,6 +7,8 @@ export default function useBankState(fallbackBank) {
     const [error, setError] = useState("");
 
     useEffect(() => {
+        if (!BANK_API_URL) return undefined;
+
         let cancelled = false;
 
         async function fetchBankState() {

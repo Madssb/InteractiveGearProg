@@ -14,6 +14,8 @@ async function getItems(
     setOutputItemsState
 ){
     const url = apiUrl("/fetch-milestone-metadata/");
+    if (!url) return;
+
     const flat = sequenceArray.flat().map(handleLevels);
     const keySet = new Set(Object.keys(outputItemsState));
     const payload = [...new Set(flat.filter(item => !keySet.has(item)))];

@@ -20,6 +20,7 @@ async function postShare(milestoneSequence, nodesComplete) {
     if (!milestoneSequence) return;
 
     const url = apiUrl("/share/");
+    if (!url) return;
     const base = window.location.origin + window.location.pathname;
 
     try {
@@ -50,6 +51,7 @@ async function postShare(milestoneSequence, nodesComplete) {
 async function getShare(token, setMilestoneSequence, milestoneMetadata, setMilestoneMetadata) {
     if (!token) return;
     const url = apiUrl(`/share/?token=${token}`);
+    if (!url) return;
 
     try {
         const response = await fetch(url);
@@ -64,6 +66,7 @@ async function getShare(token, setMilestoneSequence, milestoneMetadata, setMiles
 
 async function fetchMissingMilestoneMetadata(milestoneSequence, milestoneMetadata, setMilestoneMetadata) {
     const url = apiUrl("/fetch-milestone-metadata/");
+    if (!url) return;
     const milestoneSequenceProcessed = (milestoneSequence || [])
         .flat(Infinity)
         .filter(milestone => typeof milestone === "string")

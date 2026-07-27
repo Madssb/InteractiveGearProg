@@ -32,14 +32,15 @@ function localDateKey(date = new Date()) {
 }
 
 async function submitProgressSnapshot(milestonesComplete) {
+    const url = apiUrl("/submit-progress-snapshot");
+    if (!url) return;
+
     const today = localDateKey();
     if (localStorage.getItem(PROGRESS_SNAPSHOT_DATE_KEY) === today) return;
 
     localStorage.setItem(PROGRESS_SNAPSHOT_DATE_KEY, today);
 
     try {
-        const url = apiUrl("/submit-progress-snapshot");
-        console.log(url);
         const response = await fetch(url, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -57,6 +58,8 @@ async function submitProgressSnapshot(milestonesComplete) {
 
 async function submitHiddenMilestonesSnapshot(milestonesHidden) {
     if (!milestonesHidden.size) return;
+    const url = apiUrl("/submit-hidden-milestones-snapshot");
+    if (!url) return;
 
     const today = localDateKey();
     if (localStorage.getItem(HIDDEN_MILESTONES_SNAPSHOT_DATE_KEY) === today) return;
@@ -64,7 +67,6 @@ async function submitHiddenMilestonesSnapshot(milestonesHidden) {
     localStorage.setItem(HIDDEN_MILESTONES_SNAPSHOT_DATE_KEY, today);
 
     try {
-        const url = apiUrl("/submit-hidden-milestones-snapshot");
         const response = await fetch(url, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -85,6 +87,7 @@ async function getMilestoneAnnotations(milestone){
     const milestoneId = milestoneMetadata[handleLevels(milestone)]?.id;
     if (!milestoneId) return [];
     const url = apiUrl(`/annotations?milestone_id=${milestoneId}`)
+    if (!url) return [];
     try {
         const response = await fetch(url);
         if (!response.ok) throw new Error(`Response status: ${response.status}`);
