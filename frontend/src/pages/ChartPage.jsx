@@ -39,6 +39,7 @@ async function submitProgressSnapshot(milestonesComplete) {
 
     try {
         const url = apiUrl("/submit-progress-snapshot");
+        console.log(url);
         const response = await fetch(url, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
