@@ -1,4 +1,9 @@
-const API_ENV_NAME = "VITE_API_BASE_URL";
+const API_BASE_URL_BY_FRONTEND_HOST = {
+    "127.0.0.1": "http://127.0.0.1:8000",
+    localhost: "http://127.0.0.1:8000",
+    "::1": "http://127.0.0.1:8000",
+    "ladlorchart.com": "https://api.ladlorchart.com",
+};
 
 function warnApiDisabled(message, error) {
     if (!import.meta.env.DEV) return;
@@ -9,36 +14,24 @@ function warnApiDisabled(message, error) {
     console.warn(`API disabled: ${message}`);
 }
 
-function optionalApiBaseUrl() {
-    const raw = import.meta.env[API_ENV_NAME];
-
-    if (typeof raw !== "string" || raw.trim() === "") {
-        warnApiDisabled(`set ${API_ENV_NAME} to enable API-backed features.`);
+function derivedApiBaseUrl() {
+    if (typeof window === "undefined") {
+        warnApiDisabled("window.location is unavailable.");
         return null;
     }
 
-    let parsed;
-    try {
-        parsed = new URL(raw);
-    } catch (error) {
-        warnApiDisabled(`API base URL must be a valid absolute URL. Received: ${raw}`, error);
+    const frontendHost = window.location.hostname.toLowerCase();
+    const apiBaseUrl = API_BASE_URL_BY_FRONTEND_HOST[frontendHost];
+
+    if (!apiBaseUrl) {
+        warnApiDisabled(`no API mapping exists for frontend host ${frontendHost}.`);
         return null;
     }
 
-    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
-        warnApiDisabled(`API base URL must start with http:// or https://. Received: ${raw}`);
-        return null;
-    }
-
-    if (parsed.search || parsed.hash) {
-        warnApiDisabled(`API base URL must not include a query string or hash. Received: ${raw}`);
-        return null;
-    }
-
-    return raw.trim().replace(/\/+$/, "");
+    return apiBaseUrl;
 }
 
-export const API_BASE_URL = optionalApiBaseUrl();
+export const API_BASE_URL = derivedApiBaseUrl();
 export const API_CONFIGURED = Boolean(API_BASE_URL);
 
 export function apiUrl(path) {

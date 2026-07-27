@@ -44,7 +44,7 @@ docker rm ladlor-test
 
 ## Docker Compose
 
-This section describes using Docker Compose to make the repo backend api endpoitns available at `VITE_API_BASE_URL`
+This section describes using Docker Compose to make the repo backend API endpoints available at `https://api.ladlorchart.com`.
 
 ```bash
 docker compose up -d
