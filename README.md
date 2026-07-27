@@ -3,6 +3,36 @@
 An interactive chart for Old School RuneScape Ironman progression, as well as web-UI based tooling for building charts.
 Developed with the Ironscape Discord community to help players plan milestones such as gear and skill unlocks in a clear, trackable order.
 
+## quickstart
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### backend
+
+```bash
+cd backend
+uv sync
+uv run uvicorn main:app --host 127.0.0.1 --port 8000
+```
+
+Requires `cp .env.example .env` with `DATABASE_URL` targeting a database with tables as specified in `backend/schemas.sql`. (See [postgresql-bootstrapping](docs/postgresql-bootstrapping.md))
+
+### discord bot
+
+```bash
+cd backend
+uv sync
+uv run python discord_bot.py
+```
+
+Same requirements as backend.
+
 ## Features
 
 - **Interactive Tracking**: Click items or skills to mark them as acquired.
@@ -40,7 +70,6 @@ For a **minimal, ready-to-fork template** (without site extras like changelog, F
 | `tools/` | Utility scripts for generating or refreshing project data. |
 | `osrs_milestone_metadata/` | Supporting package for resolving item image and wiki metadata. |
 | `docs/` | Project documentation, deployment notes, and reference material. |
-| `infra/` | Infrastructure-related files such as systemd units and cloudflared configs. |
 | `.github/` | GitHub Actions workflows and repository automation. |
 
 ## Acknowledgments

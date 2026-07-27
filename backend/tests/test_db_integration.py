@@ -20,6 +20,7 @@ def test_database_connectivity_smoke():
             return await conn.fetchval("SELECT 1")
         finally:
             await conn.close()
+
     assert asyncio.run(asyncio.wait_for(_check(), timeout=12)) == 1
 
 

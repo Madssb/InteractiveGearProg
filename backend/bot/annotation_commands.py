@@ -1,5 +1,6 @@
 """Commands for annotation submissions."""
 import logging
+import os
 
 import discord
 from discord import app_commands
@@ -15,8 +16,14 @@ from db import (
 
 
 logger = logging.getLogger(__name__)
-ANNOTATE_REQUIRED_ROLE_ID = 1507645289509552250
 VOTE_EMOJIS = {"👍", "👎"}
+
+
+
+ANNOTATOR_ROLE_ID = os.getenv("ANNOTATOR_ROLE_ID")
+if not ANNOTATOR_ROLE_ID:
+    raise SystemExit("ANNOTATOR_ROLE_ID is not set")
+ANNOTATOR_ROLE_ID = int(ANNOTATOR_ROLE_ID)
 
 
 async def fetch_or_get_channel(
@@ -162,7 +169,7 @@ def register_annotation_commands(
         milestone_id="ID for the milestone this annotation is for. You can copy this by right clicking the milestone on the chart.",
         contents="The annotation contents to submit",
     )
-    @app_commands.checks.has_role(ANNOTATE_REQUIRED_ROLE_ID)
+    @app_commands.checks.has_role(ANNOTATOR_ROLE_ID)
     async def submit_annotation(
         interaction: discord.Interaction,
         milestone_id: int,

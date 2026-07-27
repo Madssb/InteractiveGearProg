@@ -1,12 +1,17 @@
+"""Backend API endpoints consumed by Ladlorchart frontend."""
+
 # fastapi dev backend/main.py --port 8000
 import logging
 import math
+import os
 import secrets
 import threading
 import time
 from collections import OrderedDict, defaultdict, deque
-from typing import Annotated, Dict, List, Tuple
+from collections.abc import Mapping
 from datetime import date
+from pathlib import Path
+from typing import Annotated
 
 from db import (
     load_share,
@@ -16,9 +21,11 @@ from db import (
     save_share,
     update_endpoint_hits,
 )
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from milestones import load_milestone_ids_by_name
 from pydantic import BaseModel, conlist
 
 from osrs_milestone_metadata import (
@@ -26,28 +33,22 @@ from osrs_milestone_metadata import (
     MilestoneMetadataRecord,
     query_milestone_metadata,
 )
-from milestones import load_milestone_ids_by_name
 
+# constants
 
-app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
+ROOT_DIR = Path(__file__).resolve().parent.parent
 
-ALLOWED_ORIGIN_REGEX = (
-    r"^(http://(localhost|127\.0\.0\.1):\d+"
-    r"|https://[a-z0-9-]+\.ladlorchart\.pages\.dev)$"
-)
+load_dotenv(ROOT_DIR / ".env")
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "https://ladlorchart.com",
-        "https://ladlorchart.pages.dev",
-    ],
-    allow_origin_regex=ALLOWED_ORIGIN_REGEX,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS")
+if not CORS_ALLOWED_ORIGINS:
+    raise SystemExit("CORS_ALLOWED_ORIGINS is not set")
+
+TRUSTED_HOST = os.getenv("TRUSTED_HOSTS", "").strip().lower()
+if not TRUSTED_HOST:
+    raise SystemExit("TRUSTED_HOSTS is not set")
+
+# types
 
 FlatSequenceType = Annotated[list[str], conlist(str, min_length=1, max_length=500)]
 NestedSequenceType = list[list[str]]
@@ -67,11 +68,9 @@ class ShareCreate(BaseModel):
     sequence: NestedSequenceType | None = None
 
 
-class ShareResponse(BaseModel):
-    sequence: NestedSequenceType
-
-
 class MilestoneAnnotationResponse(BaseModel):
+    """Schema for GET annotations/"""
+
     annotation_id: int
     up_count: int
     down_count: int
@@ -81,12 +80,12 @@ class MilestoneAnnotationResponse(BaseModel):
     created_at: date
 
 
-class LRU(OrderedDict):
+class LRU[K, V](OrderedDict[K, V]):
     def __init__(self, maxsize: int):
         super().__init__()
         self.maxsize = maxsize
 
-    def put(self, key, value):
+    def put(self, key: K, value: V) -> None:
         if key in self:
             self.move_to_end(key)
         self[key] = value
@@ -94,22 +93,31 @@ class LRU(OrderedDict):
             self.popitem(last=False)
 
 
-CACHE: Dict[str, MilestoneMetadataRecord] = LRU(maxsize=5000)
+app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
+
+# CORS
+
+allowed_origins = [
+    origin.strip() for origin in CORS_ALLOWED_ORIGINS.split(",") if origin.strip()
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+CACHE: LRU[str, MilestoneMetadataRecord] = LRU(maxsize=5000)
 MILESTONE_IDS_BY_NAME = load_milestone_ids_by_name()
 RATE_LIMIT_PER_SECOND = 3
 RATE_LIMIT_PER_MINUTE = 20
 SEC_WINDOW_SECONDS = 1.0
 MIN_WINDOW_SECONDS = 60.0
 MAX_REQUEST_BODY_BYTES = 256 * 1024
-ALLOWED_HOSTS = {
-    "api.ladlorchart.com",
-    "test.ladlorchart.com",
-    "localhost",
-    "127.0.0.1",
-}
 RATE_LIMIT_LOCK = threading.Lock()
-RATE_LIMIT_SEC: Dict[str, deque] = defaultdict(deque)
-RATE_LIMIT_MIN: Dict[str, deque] = defaultdict(deque)
+RATE_LIMIT_SEC: dict[str, deque] = defaultdict(deque)
+RATE_LIMIT_MIN: dict[str, deque] = defaultdict(deque)
 logger = logging.getLogger("backend.rate_limit")
 request_logger = logging.getLogger("backend.request")
 analytics_logger = logging.getLogger("backend.analytics")
@@ -167,7 +175,7 @@ def enforce_rate_limit(request: Request, route_name: str) -> None:
 async def trusted_host_middleware(request: Request, call_next):
     host_header = request.headers.get("host", "")
     host = host_header.split(":")[0].strip().lower()
-    if host not in ALLOWED_HOSTS:
+    if host != TRUSTED_HOST:
         return JSONResponse(status_code=400, content={"detail": "Invalid host header"})
     return await call_next(request)
 
@@ -228,10 +236,10 @@ async def request_logging_middleware(request: Request, call_next):
 
 
 def LRU_cache(
-    payload: List[str], cache: Dict[str, MilestoneMetadataRecord]
-) -> Tuple[List[str], List[str]]:
-    cache_hits: List[str] = []
-    cache_misses: List[str] = []
+    payload: list[str], cache: Mapping[str, MilestoneMetadataRecord]
+) -> tuple[list[str], list[str]]:
+    cache_hits: list[str] = []
+    cache_misses: list[str] = []
     for entity in payload:
         if entity not in cache:
             cache_misses.append(entity)
@@ -240,19 +248,23 @@ def LRU_cache(
     return cache_hits, cache_misses
 
 
+# endpoints
+
+
 @app.post("/fetch-milestone-metadata/")
-async def populate_milestone_metadata(request: Request, milestones: Milestones) -> MilestoneMetadataResponse:
-    """
-    """
+async def populate_milestone_metadata(
+    request: Request, milestones: Milestones
+) -> MilestoneMetadataResponse:
+    """Metadata for chartbuilder"""
     enforce_rate_limit(request, "/sequence/")
-    out: Dict[str, MilestoneMetadataRecord] = {}
+    out: dict[str, MilestoneMetadataRecord] = {}
     cache_hits, cache_misses = LRU_cache(milestones, CACHE)
     try:
         results = query_milestone_metadata(cache_misses)
     except Exception:
+        logger.exception("Milestone metadata query failed")
         results = MilestoneMetadataQueryResult(
-            milestoneMetadata={},
-            unresolvedMilestones=[]
+            milestoneMetadata={}, unresolvedMilestones=[]
         )
     for milestone, metadata in results.milestoneMetadata.items():
         CACHE.put(milestone, metadata)
@@ -266,8 +278,7 @@ async def populate_milestone_metadata(request: Request, milestones: Milestones) 
 
 @app.post("/share/")
 async def create_share(request: Request, milestone_sequence: MilestoneSequence) -> str:
-    """Instantiate chartbuilder-share record
-    """
+    """Instantiate chartbuilder-share record"""
     enforce_rate_limit(request, "/share/")
     if milestone_sequence is None:
         raise HTTPException(status_code=422, detail="Missing milestone sequence")
@@ -278,8 +289,7 @@ async def create_share(request: Request, milestone_sequence: MilestoneSequence) 
 
 @app.get("/share/")
 async def load_share_endpoint(token: str) -> MilestoneSequence:
-    """Retrieve `sequence` from chartbuilder-share record
-    """
+    """Retrieve `sequence` from chartbuilder-share record"""
     milestone_sequence = await load_share(token)
     if milestone_sequence is None:
         raise HTTPException(status_code=404, detail="Token Not found")
@@ -288,32 +298,32 @@ async def load_share_endpoint(token: str) -> MilestoneSequence:
 
 @app.post("/submit-progress-snapshot")
 async def submit_progress_snapshot(request: Request, milestones_completed: Milestones):
-    """Retrieve completed milestones from ChartPage on load.
-    """
+    """Retrieve completed milestones from ChartPage on load."""
     if not milestones_completed:
-        return 
+        return
     enforce_rate_limit(request, "/submit-progress-snapshot")
     await milestones_completed_snapshots(milestones_completed)
 
 
 @app.post("/submit-hidden-milestones-snapshot")
-async def submit_hidden_milestones_snapshot(request: Request, milestones_hidden: Milestones):
+async def submit_hidden_milestones_snapshot(
+    request: Request, milestones_hidden: Milestones
+):
     """Retrieve hidden milestones from ChartPage on load."""
     if not milestones_hidden:
         return
     enforce_rate_limit(request, "/submit-hidden-milestones-snapshot")
     await milestones_hidden_snapshots(milestones_hidden)
 
+
 @app.get("/annotations", response_model=list[MilestoneAnnotationResponse])
 async def fetch_milestone_annotations(request: Request, milestone_id: int):
-    """Fetch annotations for milestone. omit annotations with ongoing reports.
-    """
+    """Fetch annotations for milestone. omit annotations with ongoing reports."""
     enforce_rate_limit(request, "/annotations")
     return await milestone_annotations_lookup(milestone_id)
 
 
 @app.get("/health")
 def health():
-    """Healthcheck
-    """
+    """Healthcheck"""
     return {"status": "ok"}
