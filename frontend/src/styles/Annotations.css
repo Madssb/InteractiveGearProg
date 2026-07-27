@@ -61,6 +61,17 @@
     width: 100%;
 }
 
+.annotations-status {
+    margin: 0;
+    padding: 10px 12px;
+    background-color: #363636;
+    border: 1px solid black;
+}
+
+.annotations-error {
+    color: #ffb3b3;
+}
+
 .annotation-text {
     border-bottom: 1px solid black;
     padding: 10px 12px;

@@ -83,19 +83,19 @@ async function submitHiddenMilestonesSnapshot(milestonesHidden) {
 }
 
 async function getMilestoneAnnotations(milestone){
-    if (!milestone) return [];
+    if (!milestone) return { annotations: [], status: 'idle' };
     const milestoneId = milestoneMetadata[handleLevels(milestone)]?.id;
-    if (!milestoneId) return [];
+    if (!milestoneId) return { annotations: [], status: 'loaded' };
     const url = apiUrl(`/annotations?milestone_id=${milestoneId}`)
-    if (!url) return [];
+    if (!url) return { annotations: [], status: 'unavailable' };
     try {
         const response = await fetch(url);
         if (!response.ok) throw new Error(`Response status: ${response.status}`);
         const annotations = await response.json();
-        return annotations;
+        return { annotations, status: 'loaded' };
     } catch (err) {
         console.error(err);
-        return [];
+        return { annotations: [], status: 'error' };
     }
 }
 
@@ -132,14 +132,20 @@ export default function ChartPage(){
     });
 
     const [annotations, setAnnotations] = useState([]);
+    const [annotationStatus, setAnnotationStatus] = useState('idle');
     const [annotatedMilestone, setAnnotatedMilestone] = useState();
 
     async function handleShowAnnotations(milestone){
-        setAnnotations(await getMilestoneAnnotations(milestone));
         setAnnotatedMilestone(milestone);
+        setAnnotations([]);
+        setAnnotationStatus('loading');
+        const result = await getMilestoneAnnotations(milestone);
+        setAnnotations(result.annotations);
+        setAnnotationStatus(result.status);
     }
     async function handleCloseAnnotations(){
         setAnnotations([]);
+        setAnnotationStatus('idle');
         setAnnotatedMilestone();
     }
 
@@ -333,6 +339,7 @@ export default function ChartPage(){
                     arrows={true}
                     annotatedMilestone={annotatedMilestone}
                     annotations={annotations}
+                    annotationStatus={annotationStatus}
                     onCloseAnnotations={handleCloseAnnotations}
                 />
             )}
@@ -351,6 +358,7 @@ export default function ChartPage(){
                     arrows={true}
                     annotatedMilestone={annotatedMilestone}
                     annotations={annotations}
+                    annotationStatus={annotationStatus}
                     onCloseAnnotations={handleCloseAnnotations}
                 />
             )}
@@ -373,6 +381,7 @@ export default function ChartPage(){
                         arrows={false}
                         annotatedMilestone={annotatedMilestone}
                         annotations={annotations}
+                        annotationStatus={annotationStatus}
                         onCloseAnnotations={handleCloseAnnotations}
                     />
                 </>
@@ -389,6 +398,7 @@ export default function ChartPage(){
                 <div className="chart-page-annotations">
                     <Annotations
                         annotations={annotations}
+                        status={annotationStatus}
                         onCloseAnnotations={handleCloseAnnotations}
                         milestone={annotatedMilestone}
                     />

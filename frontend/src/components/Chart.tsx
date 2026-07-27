@@ -24,6 +24,7 @@ type ChartProps = {
   arrows?: boolean;
   annotatedMilestone?: string;
   annotations?: AnnotationData[];
+  annotationStatus?: 'idle' | 'loading' | 'loaded' | 'unavailable' | 'error';
   onCloseAnnotations?: () => void;
 };
 
@@ -204,6 +205,7 @@ export default function Chart({
   arrows,
   annotatedMilestone,
   annotations = [],
+  annotationStatus = 'idle',
   onCloseAnnotations
 }: ChartProps) {
   const visibleMilestoneSequence = useMemo(() => {
@@ -247,6 +249,7 @@ export default function Chart({
                 <div className="chart-mobile-annotations">
                   <Annotations
                     annotations={annotations}
+                    status={annotationStatus}
                     onCloseAnnotations={onCloseAnnotations}
                     milestone={annotatedMilestone}
                   />
