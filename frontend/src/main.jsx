@@ -4,6 +4,7 @@ import ChartPage from '@/pages/ChartPage.jsx';
 import FaqPage from '@/pages/FaqPage.jsx';
 import PrivacyPage from '@/pages/PrivacyPage.jsx';
 import ComplectionPctPage from './pages/CompletionPctPage';
+import SkipPctPage from './pages/SkipPctPage';
 import '@/styles/chart.css';
 import '@/styles/theme.css';
 import { applyThemePreference, getSavedThemePreference } from '@/utils/themePreference';
@@ -26,6 +27,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/chartbuilder" element={<ChartBuilderPage />} />
         <Route path="/customize" element={<ChartBuilderPage />} />
         <Route path="/completion-pct" element={<ComplectionPctPage />} />
+        <Route path="/skip-pct" element={<SkipPctPage />} />
       </Routes>
     </HashRouter>
   </StrictMode>

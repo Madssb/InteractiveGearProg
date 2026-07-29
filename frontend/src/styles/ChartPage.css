@@ -83,6 +83,10 @@
   background: linear-gradient(to bottom, hsl(120 70% 50%), hsl(0 70% 50%));
 }
 
+.skip-pct-colorbar-gradient {
+  background: linear-gradient(to bottom, hsl(0 70% 50%), hsl(120 70% 50%));
+}
+
 .completion-pct-colorbar-label {
   white-space: nowrap;
 }

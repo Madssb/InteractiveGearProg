@@ -270,3 +270,50 @@ async def test_submit_hidden_milestones_snapshot_ignores_empty_payload(
     assert await app_module.submit_hidden_milestones_snapshot(req, []) is None
 
     assert calls == {"rate_limit": 0, "persist": 0}
+
+
+@pytest.mark.anyio
+async def test_fetch_skip_pcts_caches_bulk_skip_rates(app_module, monkeypatch):
+    calls = {"skip_rates": 0}
+
+    def fake_enforce_rate_limit(request, route):
+        calls["path"] = request.url.path
+        calls["route"] = route
+
+    def fake_main_sequence_skip_contexts():
+        return {"A": (["B", "C"], 1)}
+
+    async def fake_milestone_skip_rates(contexts, start_time, stop_time):
+        calls["skip_rates"] += 1
+        calls["contexts"] = contexts
+        assert start_time < stop_time
+        return {
+            "A": {
+                "skipped_count": 1,
+                "eligible_count": 2,
+                "skip_rate": 0.5,
+            },
+        }
+
+    monkeypatch.setattr(app_module, "enforce_rate_limit", fake_enforce_rate_limit)
+    monkeypatch.setattr(
+        app_module,
+        "main_sequence_skip_contexts",
+        fake_main_sequence_skip_contexts,
+    )
+    monkeypatch.setattr(
+        app_module,
+        "milestone_skip_rates",
+        fake_milestone_skip_rates,
+    )
+    app_module.SKIP_PCTS["data"] = None
+
+    req = _request("/skip-pcts", headers={"host": "localhost"})
+    first = await app_module.fetch_skip_pcts(req)
+    second = await app_module.fetch_skip_pcts(req)
+
+    assert calls["path"] == "/skip-pcts"
+    assert calls["route"] == "/skip-pcts"
+    assert calls["contexts"] == {"A": (["B", "C"], 1)}
+    assert calls["skip_rates"] == 1
+    assert first == second

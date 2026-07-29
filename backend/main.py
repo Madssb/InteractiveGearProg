@@ -20,6 +20,7 @@ from db import (
     load_share,
     milestone_annotations_lookup,
     milestone_completion_rates,
+    milestone_skip_rates,
     milestones_completed_snapshots,
     milestones_hidden_snapshots,
     save_share,
@@ -29,7 +30,12 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from milestones import load_milestone_ids_by_name
+from milestones import (
+    load_main_milestone_groups,
+    load_milestone_ids_by_name,
+    milestone_context_from_groups,
+    skip_threshold,
+)
 from pydantic import BaseModel, conlist
 
 from osrs_milestone_metadata import (
@@ -51,8 +57,16 @@ with MAIN_SEQUENCE_PATH.open() as r:
 with RETIREMENT_SEQUENCE_PATH.open() as r:
     RETIREMENT_SEQUENCE = json.load(r)
 
-MAIN_SEQUENCE_FLAT = list(chain.from_iterable(MAIN_SEQUENCE))
-RETIREMENT_SEQUENCE_FLAT = list(chain.from_iterable(RETIREMENT_SEQUENCE))
+MAIN_SEQUENCE_GROUPS = load_main_milestone_groups()
+RETIREMENT_SEQUENCE_GROUPS = [
+    [
+        milestone.removeprefix("*")
+        for milestone in group
+    ]
+    for group in RETIREMENT_SEQUENCE
+]
+MAIN_SEQUENCE_FLAT = list(chain.from_iterable(MAIN_SEQUENCE_GROUPS))
+RETIREMENT_SEQUENCE_FLAT = list(chain.from_iterable(RETIREMENT_SEQUENCE_GROUPS))
 COMBINED_SEQUENCE_FLAT = MAIN_SEQUENCE_FLAT + RETIREMENT_SEQUENCE_FLAT
 
 load_dotenv(ROOT_DIR / ".env")
@@ -142,6 +156,10 @@ RATE_LIMIT_SEC: dict[str, deque] = defaultdict(deque)
 RATE_LIMIT_MIN: dict[str, deque] = defaultdict(deque)
 OSLO = ZoneInfo("Europe/Oslo")
 COMPLETION_PCTS = {
+    "data": None,
+    "date": datetime.now(OSLO).date(),
+}
+SKIP_PCTS = {
     "data": None,
     "date": datetime.now(OSLO).date(),
 }
@@ -275,6 +293,23 @@ def LRU_cache(
     return cache_hits, cache_misses
 
 
+def main_sequence_skip_contexts() -> dict[str, tuple[list[str], int]]:
+    contexts: dict[str, tuple[list[str], int]] = {}
+    for milestone_name in MAIN_SEQUENCE_FLAT:
+        milestone_context = milestone_context_from_groups(
+            milestone_name,
+            MAIN_SEQUENCE_GROUPS,
+        )
+        if milestone_context is None:
+            continue
+        snapshot_milestone_name, subsequent_milestone_names = milestone_context
+        contexts[snapshot_milestone_name] = (
+            subsequent_milestone_names,
+            skip_threshold(len(subsequent_milestone_names)),
+        )
+    return contexts
+
+
 # endpoints
 
 
@@ -363,6 +398,20 @@ async def fetch_completion_pcts(request: Request):
             COMBINED_SEQUENCE_FLAT, now - timedelta(days=7), now
         )
     return COMPLETION_PCTS["data"]
+
+
+@app.get("/skip-pcts")
+async def fetch_skip_pcts(request: Request):
+    enforce_rate_limit(request, "/skip-pcts")
+    if not SKIP_PCTS["data"] or datetime.now(OSLO).date() > SKIP_PCTS["date"]:
+        SKIP_PCTS["date"] = datetime.now(OSLO).date()
+        now = datetime.now(OSLO)
+        SKIP_PCTS["data"] = await milestone_skip_rates(
+            main_sequence_skip_contexts(),
+            now - timedelta(days=7),
+            now,
+        )
+    return SKIP_PCTS["data"]
 
 
 @app.get("/health")

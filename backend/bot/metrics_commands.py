@@ -1,38 +1,10 @@
 """Commands for public chart metrics."""
-import math
 
 import discord
 from discord import app_commands
 
 from db import milestone_completion_rate, milestone_skip_rate
-
-
-def skip_threshold(remaining_milestone_count: int) -> int:
-    return math.floor(min(5, max(remaining_milestone_count / 10, 1)))
-
-
-def metric_name(milestone_name: str) -> str:
-    parts = milestone_name.split(maxsplit=1)
-    if len(parts) == 2 and parts[0].isdigit():
-        return parts[1]
-    return milestone_name
-
-
-def milestone_context_from_groups(
-    milestone_name: str,
-    milestone_groups: list[list[str]],
-) -> tuple[str, list[str]] | None:
-    for group_index, group in enumerate(milestone_groups):
-        for candidate_name in group:
-            if milestone_name not in {candidate_name, metric_name(candidate_name)}:
-                continue
-            later_milestone_names = [
-                later_milestone_name
-                for later_group in milestone_groups[group_index + 1:]
-                for later_milestone_name in later_group
-            ]
-            return candidate_name, later_milestone_names
-    return None
+from milestones import milestone_context_from_groups, skip_threshold
 
 
 def register_metrics_commands(

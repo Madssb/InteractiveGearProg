@@ -133,3 +133,65 @@ def test_milestone_completion_rates_rejects_empty_or_reversed_window():
                 datetime(2026, 1, 1, tzinfo=UTC),
             )
         )
+
+
+def test_milestone_skip_rates_computes_bulk_rates_from_snapshot_json(monkeypatch):
+    class SkipRatePool:
+        def __init__(self):
+            self.start_time = None
+            self.stop_time = None
+
+        async def fetch(self, _query, start_time, stop_time):
+            self.start_time = start_time
+            self.stop_time = stop_time
+            return [
+                {"milestones_completed": '["B", "C"]'},
+                {"milestones_completed": ["A", "B"]},
+                {"milestones_completed": ["D"]},
+            ]
+
+    pool = SkipRatePool()
+
+    async def fake_get_pool():
+        return pool
+
+    monkeypatch.setattr(db, "get_pool", fake_get_pool)
+    start_time = datetime(2026, 1, 1, tzinfo=UTC)
+    stop_time = datetime(2026, 2, 1, tzinfo=UTC)
+
+    result = asyncio.run(
+        db.milestone_skip_rates(
+            {
+                "A": (["B", "C"], 1),
+                "B": (["C", "D"], 2),
+            },
+            start_time,
+            stop_time,
+        )
+    )
+
+    assert pool.start_time == start_time
+    assert pool.stop_time == stop_time
+    assert result == {
+        "A": {
+            "skipped_count": 1,
+            "eligible_count": 2,
+            "skip_rate": 0.5,
+        },
+        "B": {
+            "skipped_count": 0,
+            "eligible_count": 0,
+            "skip_rate": None,
+        },
+    }
+
+
+def test_milestone_skip_rates_rejects_future_stop_time():
+    with pytest.raises(ValueError, match="stop_time cannot be in the future"):
+        asyncio.run(
+            db.milestone_skip_rates(
+                {"Dragon scimitar": (["Barrows gloves"], 1)},
+                datetime.now(UTC),
+                datetime.now(UTC) + timedelta(seconds=1),
+            )
+        )

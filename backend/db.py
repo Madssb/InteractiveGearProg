@@ -4,7 +4,7 @@ import json
 import os
 from datetime import date, datetime, timezone
 from functools import cache
-from typing import Literal, TypedDict
+from typing import Any, Literal, TypedDict
 
 import asyncpg
 from dotenv import load_dotenv
@@ -269,6 +269,80 @@ async def milestone_completion_rates(
         }
 
     return completion_rates
+
+
+def _snapshot_completed_set(snapshot: Any) -> set[str]:
+    if isinstance(snapshot, str):
+        snapshot = json.loads(snapshot)
+    return set(snapshot)
+
+
+def _has_skip_eligible_progress(
+    completed_milestones: set[str],
+    subsequent_milestone_names: list[str],
+    skip_threshold: int,
+) -> bool:
+    subsequent_completed_count = 0
+    for milestone_name in subsequent_milestone_names:
+        if milestone_name not in completed_milestones:
+            continue
+        subsequent_completed_count += 1
+        if subsequent_completed_count >= skip_threshold:
+            return True
+    return False
+
+
+async def milestone_skip_rates(
+    milestone_contexts: dict[str, tuple[list[str], int]],
+    start_time: datetime,
+    stop_time: datetime,
+) -> dict[str, MilestoneSkipRate]:
+    validate_milestone_completion_rate_window(start_time, stop_time)
+
+    pool = await get_pool()
+    rows = await pool.fetch(
+        """
+        SELECT milestones_completed
+        FROM milestones_completed_snapshots
+        WHERE created_at >= $1
+            AND created_at < $2
+        """,
+        start_time,
+        stop_time,
+    )
+    snapshot_sets = [
+        _snapshot_completed_set(row["milestones_completed"])
+        for row in rows
+    ]
+
+    skip_rates: dict[str, MilestoneSkipRate] = {}
+    for milestone_name, (subsequent_milestone_names, threshold) in (
+        milestone_contexts.items()
+    ):
+        eligible_count = 0
+        skipped_count = 0
+        for completed_milestones in snapshot_sets:
+            if not _has_skip_eligible_progress(
+                completed_milestones,
+                subsequent_milestone_names,
+                threshold,
+            ):
+                continue
+            eligible_count += 1
+            if milestone_name not in completed_milestones:
+                skipped_count += 1
+
+        skip_rate = None
+        if eligible_count:
+            skip_rate = skipped_count / eligible_count
+
+        skip_rates[milestone_name] = {
+            "skipped_count": skipped_count,
+            "eligible_count": eligible_count,
+            "skip_rate": skip_rate,
+        }
+
+    return skip_rates
 
 
 async def milestone_skip_rate(
