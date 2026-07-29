@@ -202,7 +202,7 @@ export default function Chart({
   handleNodeTouchEnd,
   handleNodeClick,
   readOnly = false,
-  arrows,
+  arrows = true,
   annotatedMilestone,
   annotations = [],
   annotationStatus = 'idle',

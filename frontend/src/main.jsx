@@ -3,6 +3,7 @@ import ChartBuilderPage from '@/pages/ChartBuilderPage.jsx';
 import ChartPage from '@/pages/ChartPage.jsx';
 import FaqPage from '@/pages/FaqPage.jsx';
 import PrivacyPage from '@/pages/PrivacyPage.jsx';
+import ComplectionPctPage from './pages/CompletionPctPage';
 import '@/styles/chart.css';
 import '@/styles/theme.css';
 import { applyThemePreference, getSavedThemePreference } from '@/utils/themePreference';
@@ -24,6 +25,7 @@ createRoot(document.getElementById('root')).render(
         {/* <Route path="/bank" element={<BankPage />} /> */}
         <Route path="/chartbuilder" element={<ChartBuilderPage />} />
         <Route path="/customize" element={<ChartBuilderPage />} />
+        <Route path="/completion-pct" element={<ComplectionPctPage />} />
       </Routes>
     </HashRouter>
   </StrictMode>

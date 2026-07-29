@@ -52,3 +52,53 @@
 .chart-page-section-spacer {
   height: 40px;
 }
+
+.completion-pct-chart-layout {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 14px;
+}
+
+.completion-pct-chart-layout > .chart {
+  flex: 1 1 auto;
+  margin-top: 0;
+}
+
+.completion-pct-colorbar {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-rows: auto minmax(180px, 42vh) auto;
+  justify-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.completion-pct-colorbar-gradient {
+  width: 12px;
+  min-height: 180px;
+  border: 1px solid light-dark(var(--node-border-light), var(--node-border-dark));
+  background: linear-gradient(to bottom, hsl(120 70% 50%), hsl(0 70% 50%));
+}
+
+.completion-pct-colorbar-label {
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .completion-pct-chart-layout {
+    align-items: center;
+    gap: 10px;
+  }
+
+  .completion-pct-colorbar {
+    grid-template-rows: auto minmax(140px, 34vh) auto;
+    font-size: 0.75rem;
+  }
+
+  .completion-pct-colorbar-gradient {
+    min-height: 140px;
+  }
+}
