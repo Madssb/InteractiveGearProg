@@ -31,7 +31,7 @@ function Colorbar() {
 }
 
 async function getCompletionPcts(setCompletionPcts: (completionPcts: CompletionRates) => void){
-    const url = apiUrl("/completion-pcts/");
+    const url = apiUrl("/completion-pcts");
     if (!url) return;
     try {
         const response = await fetch(url);
