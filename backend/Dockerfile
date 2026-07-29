@@ -14,8 +14,7 @@ COPY backend/pyproject.toml backend/uv.lock /app/backend/
 COPY osrs_milestone_metadata /app/osrs_milestone_metadata
 COPY data/contents/changelog.json /app/data/contents/changelog.json
 COPY data/generated/milestone-metadata.json /app/data/generated/milestone-metadata.json
-COPY data/logic/milestone-ids.json /app/data/logic/milestone-ids.json
-COPY data/logic/milestone-sequence-main.json /app/data/logic/milestone-sequence-main.json
+COPY data/logic/*.json /app/data/logic/
 WORKDIR /app/backend
 
 RUN --mount=type=cache,target=/root/.cache/uv \
