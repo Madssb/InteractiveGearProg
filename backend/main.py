@@ -1,6 +1,7 @@
 """Backend API endpoints consumed by Ladlorchart frontend."""
 
 # fastapi dev backend/main.py --port 8000
+import json
 import logging
 import math
 import os
@@ -9,13 +10,16 @@ import threading
 import time
 from collections import OrderedDict, defaultdict, deque
 from collections.abc import Mapping
-from datetime import date
+from datetime import date, datetime, timedelta
+from itertools import chain
 from pathlib import Path
 from typing import Annotated
+from zoneinfo import ZoneInfo
 
 from db import (
     load_share,
     milestone_annotations_lookup,
+    milestone_completion_rates,
     milestones_completed_snapshots,
     milestones_hidden_snapshots,
     save_share,
@@ -38,11 +42,25 @@ from osrs_milestone_metadata import (
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 
+MAIN_SEQUENCE_PATH = Path(ROOT_DIR / "data/logic/milestone-sequence-main.json")
+RETIREMENT_SEQUENCE_PATH = Path(
+    ROOT_DIR / "data/logic/milestone-sequence-retirement.json"
+)
+with MAIN_SEQUENCE_PATH.open() as r:
+    MAIN_SEQUENCE = json.load(r)
+with RETIREMENT_SEQUENCE_PATH.open() as r:
+    RETIREMENT_SEQUENCE = json.load(r)
+
+MAIN_SEQUENCE_FLAT = list(chain.from_iterable(MAIN_SEQUENCE))
+RETIREMENT_SEQUENCE_FLAT = list(chain.from_iterable(RETIREMENT_SEQUENCE))
+COMBINED_SEQUENCE_FLAT = MAIN_SEQUENCE_FLAT + RETIREMENT_SEQUENCE_FLAT
+
 load_dotenv(ROOT_DIR / ".env")
 
 CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS")
 if not CORS_ALLOWED_ORIGINS:
     raise SystemExit("CORS_ALLOWED_ORIGINS is not set")
+
 
 def parse_trusted_hosts(raw: str) -> set[str]:
     return {host.strip().lower() for host in raw.split(",") if host.strip()}
@@ -122,6 +140,11 @@ MAX_REQUEST_BODY_BYTES = 256 * 1024
 RATE_LIMIT_LOCK = threading.Lock()
 RATE_LIMIT_SEC: dict[str, deque] = defaultdict(deque)
 RATE_LIMIT_MIN: dict[str, deque] = defaultdict(deque)
+OSLO = ZoneInfo("Europe/Oslo")
+COMPLETION_PCTS = {
+    "data": None,
+    "date": datetime.now(OSLO).date(),
+}
 logger = logging.getLogger("backend.rate_limit")
 request_logger = logging.getLogger("backend.request")
 analytics_logger = logging.getLogger("backend.analytics")
@@ -325,6 +348,21 @@ async def fetch_milestone_annotations(request: Request, milestone_id: int):
     """Fetch annotations for milestone. omit annotations with ongoing reports."""
     enforce_rate_limit(request, "/annotations")
     return await milestone_annotations_lookup(milestone_id)
+
+
+@app.get("/completion-pcts")
+async def fetch_completion_pcts(request: Request):
+    enforce_rate_limit(request, "/completion-pcts")
+    if (
+        not COMPLETION_PCTS["data"]
+        or datetime.now(OSLO).date() > COMPLETION_PCTS["date"]
+    ):
+        COMPLETION_PCTS["date"] = datetime.now(OSLO).date()
+        now = datetime.now(OSLO)
+        COMPLETION_PCTS["data"] = await milestone_completion_rates(
+            COMBINED_SEQUENCE_FLAT, now - timedelta(days=7), now
+        )
+    return COMPLETION_PCTS["data"]
 
 
 @app.get("/health")

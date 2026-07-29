@@ -2,12 +2,12 @@
 """
 import json
 import os
+from datetime import date, datetime, timezone
 from functools import cache
+from typing import Literal, TypedDict
 
 import asyncpg
 from dotenv import load_dotenv
-from datetime import date
-from typing import Literal, TypedDict
 
 
 load_dotenv()
@@ -64,6 +64,23 @@ class MilestoneSkipRate(TypedDict):
     skipped_count: int
     eligible_count: int
     skip_rate: float | None
+
+
+def validate_milestone_completion_rate_window(
+    start_time: datetime,
+    stop_time: datetime,
+) -> None:
+    if start_time.tzinfo is None or start_time.utcoffset() is None:
+        raise ValueError("start_time must include timezone information")
+
+    if stop_time.tzinfo is None or stop_time.utcoffset() is None:
+        raise ValueError("stop_time must include timezone information")
+
+    if start_time >= stop_time:
+        raise ValueError("start_time must be before stop_time")
+
+    if stop_time > datetime.now(timezone.utc):
+        raise ValueError("stop_time cannot be in the future")
 
 
 async def next_report_id(connection: asyncpg.Connection) -> int:
@@ -195,6 +212,63 @@ async def milestone_completion_rate(milestone_name: str) -> MilestoneCompletionR
         "total_count": total_count,
         "completion_rate": completion_rate,
     }
+
+
+async def milestone_completion_rates(
+    milestone_names: list[str],
+    start_time: datetime,
+    stop_time: datetime,
+) -> dict[str, MilestoneCompletionRate]:
+    validate_milestone_completion_rate_window(start_time, stop_time)
+
+    pool = await get_pool()
+    rows = await pool.fetch(
+        """
+        WITH requested_milestones AS (
+            SELECT DISTINCT unnest($1::text[]) AS milestone_name
+        ),
+        snapshots AS (
+            SELECT id, milestones_completed
+            FROM milestones_completed_snapshots
+            WHERE created_at >= $2
+                AND created_at < $3
+        ),
+        snapshot_count AS (
+            SELECT COUNT(*) AS total_count
+            FROM snapshots
+        )
+        SELECT
+            requested_milestones.milestone_name,
+            snapshot_count.total_count,
+            COUNT(snapshots.id) FILTER (
+                WHERE snapshots.milestones_completed
+                    ? requested_milestones.milestone_name
+            ) AS completed_count
+        FROM requested_milestones
+        CROSS JOIN snapshot_count
+        LEFT JOIN snapshots ON true
+        GROUP BY requested_milestones.milestone_name, snapshot_count.total_count
+        """,
+        milestone_names,
+        start_time,
+        stop_time,
+    )
+
+    completion_rates: dict[str, MilestoneCompletionRate] = {}
+    for row in rows:
+        total_count = row["total_count"]
+        completed_count = row["completed_count"]
+        completion_rate = None
+        if total_count:
+            completion_rate = completed_count / total_count
+
+        completion_rates[row["milestone_name"]] = {
+            "completed_count": completed_count,
+            "total_count": total_count,
+            "completion_rate": completion_rate,
+        }
+
+    return completion_rates
 
 
 async def milestone_skip_rate(
