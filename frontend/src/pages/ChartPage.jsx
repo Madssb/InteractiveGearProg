@@ -82,6 +82,24 @@ async function submitHiddenMilestonesSnapshot(milestonesHidden) {
     }
 }
 
+async function submitAnnotationViewEvent(milestone) {
+    if (!milestone) return;
+    const url = apiUrl("/submit-annotation-view-event");
+    if (!url) return;
+
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ milestone_name: milestone }),
+        });
+
+        if (!response.ok) throw new Error(`Response status: ${response.status}`);
+    } catch (err) {
+        console.error("Failed to submit annotation view event", err);
+    }
+}
+
 async function getMilestoneAnnotations(milestone){
     if (!milestone) return { annotations: [], status: 'idle' };
     const milestoneId = milestoneMetadata[handleLevels(milestone)]?.id;
@@ -139,6 +157,7 @@ export default function ChartPage(){
         setAnnotatedMilestone(milestone);
         setAnnotations([]);
         setAnnotationStatus('loading');
+        submitAnnotationViewEvent(milestone);
         const result = await getMilestoneAnnotations(milestone);
         setAnnotations(result.annotations);
         setAnnotationStatus(result.status);

@@ -17,6 +17,7 @@ from typing import Annotated
 from zoneinfo import ZoneInfo
 
 from db import (
+    annotation_view_event,
     load_share,
     milestone_annotations_lookup,
     milestone_completion_rates,
@@ -102,6 +103,10 @@ class MilestoneMetadataResponse(BaseModel):
 class ShareCreate(BaseModel):
     milestoneSequence: NestedSequenceType | None = None
     sequence: NestedSequenceType | None = None
+
+
+class AnnotationViewEventCreate(BaseModel):
+    milestone_name: str
 
 
 class MilestoneAnnotationResponse(BaseModel):
@@ -376,6 +381,19 @@ async def submit_hidden_milestones_snapshot(
         return
     enforce_rate_limit(request, "/submit-hidden-milestones-snapshot")
     await milestones_hidden_snapshots(milestones_hidden)
+
+
+@app.post("/submit-annotation-view-event")
+async def submit_annotation_view_event(
+    request: Request,
+    event: AnnotationViewEventCreate,
+):
+    """Record that a user opened annotations for a milestone."""
+    milestone_name = event.milestone_name.strip()
+    if not milestone_name:
+        return
+    enforce_rate_limit(request, "/submit-annotation-view-event")
+    await annotation_view_event(milestone_name)
 
 
 @app.get("/annotations", response_model=list[MilestoneAnnotationResponse])

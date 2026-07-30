@@ -21,6 +21,15 @@ CREATE TABLE IF NOT EXISTS public.milestones_hidden_snapshots (
   created_at timestamptz NOT NULL DEFAULT now()
 );
 
+CREATE TABLE IF NOT EXISTS public.annotation_view_event (
+  id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  milestone_name text NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS annotation_view_event_created_milestone_idx
+  ON public.annotation_view_event (created_at, milestone_name);
+
 CREATE TABLE IF NOT EXISTS public.annotations (
   annotation_id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   message_id bigint UNIQUE,

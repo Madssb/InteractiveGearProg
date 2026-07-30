@@ -188,6 +188,18 @@ async def milestones_hidden_snapshots(milestones_hidden: list[str]):
     )
 
 
+async def annotation_view_event(milestone_name: str) -> None:
+    """Add annotation panel view record."""
+    pool = await get_pool()
+    await pool.execute(
+        """
+        INSERT INTO annotation_view_event (milestone_name)
+        VALUES ($1)
+        """,
+        milestone_name,
+    )
+
+
 async def milestone_completion_rate(milestone_name: str) -> MilestoneCompletionRate:
     pool = await get_pool()
     row = await pool.fetchrow(

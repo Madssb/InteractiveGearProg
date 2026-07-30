@@ -273,6 +273,63 @@ async def test_submit_hidden_milestones_snapshot_ignores_empty_payload(
 
 
 @pytest.mark.anyio
+async def test_submit_annotation_view_event_enforces_rate_limit_and_persists(
+    app_module, monkeypatch
+):
+    """Annotation views should be rate-limited and persisted by milestone name."""
+    calls = {}
+
+    def fake_enforce_rate_limit(request, route):
+        calls["path"] = request.url.path
+        calls["route"] = route
+
+    async def fake_annotation_view_event(milestone_name):
+        calls["milestone_name"] = milestone_name
+
+    monkeypatch.setattr(app_module, "enforce_rate_limit", fake_enforce_rate_limit)
+    monkeypatch.setattr(
+        app_module,
+        "annotation_view_event",
+        fake_annotation_view_event,
+    )
+
+    req = _request("/submit-annotation-view-event", headers={"host": "localhost"})
+    event = app_module.AnnotationViewEventCreate(milestone_name=" Dragon scimitar ")
+    await app_module.submit_annotation_view_event(req, event)
+
+    assert calls["path"] == "/submit-annotation-view-event"
+    assert calls["route"] == "/submit-annotation-view-event"
+    assert calls["milestone_name"] == "Dragon scimitar"
+
+
+@pytest.mark.anyio
+async def test_submit_annotation_view_event_ignores_blank_payload(
+    app_module, monkeypatch
+):
+    """Blank annotation view names should not create analytics rows."""
+    calls = {"rate_limit": 0, "persist": 0}
+
+    def fake_enforce_rate_limit(_request, _route):
+        calls["rate_limit"] += 1
+
+    async def fake_annotation_view_event(_milestone_name):
+        calls["persist"] += 1
+
+    monkeypatch.setattr(app_module, "enforce_rate_limit", fake_enforce_rate_limit)
+    monkeypatch.setattr(
+        app_module,
+        "annotation_view_event",
+        fake_annotation_view_event,
+    )
+
+    req = _request("/submit-annotation-view-event", headers={"host": "localhost"})
+    event = app_module.AnnotationViewEventCreate(milestone_name="   ")
+    assert await app_module.submit_annotation_view_event(req, event) is None
+
+    assert calls == {"rate_limit": 0, "persist": 0}
+
+
+@pytest.mark.anyio
 async def test_fetch_skip_pcts_caches_bulk_skip_rates(app_module, monkeypatch):
     calls = {"skip_rates": 0}
 

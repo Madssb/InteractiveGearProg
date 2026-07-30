@@ -195,3 +195,26 @@ def test_milestone_skip_rates_rejects_future_stop_time():
                 datetime.now(UTC) + timedelta(seconds=1),
             )
         )
+
+
+def test_annotation_view_event_inserts_milestone_name(monkeypatch):
+    class AnnotationViewEventPool:
+        def __init__(self):
+            self.query = None
+            self.milestone_name = None
+
+        async def execute(self, query, milestone_name):
+            self.query = query
+            self.milestone_name = milestone_name
+
+    pool = AnnotationViewEventPool()
+
+    async def fake_get_pool():
+        return pool
+
+    monkeypatch.setattr(db, "get_pool", fake_get_pool)
+
+    asyncio.run(db.annotation_view_event("Dragon scimitar"))
+
+    assert "INSERT INTO annotation_view_event" in pool.query
+    assert pool.milestone_name == "Dragon scimitar"

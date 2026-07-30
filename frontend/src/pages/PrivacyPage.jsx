@@ -33,14 +33,15 @@ export default function PrivacyPage(){
                 is used only to retrieve the saved chart data.</p>
 
             <p>The chart page may submit progress and hidden-milestone snapshots containing milestone names marked complete or
-                hidden in the browser. This is used to understand milestone completion and visibility patterns and improve the
-                chart.</p>
+                hidden in the browser. Opening annotations may also submit the milestone name for that annotation view. This is
+                used to understand milestone completion, visibility, and annotation usage patterns and improve the chart.</p>
 
             <p>Backend data is stored in PostgreSQL on infrastructure maintained for this service.</p>
 
             <h2>Data Minimization</h2>
             <p>We avoid collecting unnecessary personal data. Shared chart links store only the chart data needed to load the
-                shared chart. Progress and hidden-milestone snapshots store milestone names, not account profiles.</p>
+                shared chart. Progress, hidden-milestone, and annotation-view analytics store milestone names, not account
+                profiles.</p>
 
             <h2>Use of Local Storage</h2>
             <p>This website uses local storage to remember preferences, selected tabs, migration state, and milestone progress.
@@ -50,8 +51,9 @@ export default function PrivacyPage(){
                 to improve functionality and user experience.</p>
 
             <h2>Retention</h2>
-            <p>Shared chart data, endpoint usage records, progress snapshots, hidden-milestone snapshots, and operational logs
-                are currently kept indefinitely. This may change if a retention schedule is added later.</p>
+            <p>Shared chart data, endpoint usage records, progress snapshots, hidden-milestone snapshots, annotation view
+                events, and operational logs are currently kept indefinitely. This may change if a retention schedule is added
+                later.</p>
 
             <p>If you have privacy questions or want to request deletion of data associated with a shared chart link, contact
                 the maintainer through the project repository.</p>
