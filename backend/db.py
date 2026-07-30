@@ -70,6 +70,10 @@ class MilestoneAnnotationViewCount(TypedDict):
     view_count: int
 
 
+class MilestoneAnnotationStatus(TypedDict):
+    has_annotation: bool
+
+
 def validate_milestone_completion_rate_window(
     start_time: datetime,
     stop_time: datetime,
@@ -390,6 +394,39 @@ async def milestone_annotation_view_counts(
     )
     return {
         row["milestone_name"]: {"view_count": row["view_count"]}
+        for row in rows
+    }
+
+
+async def milestone_annotation_statuses(
+    milestones_by_name: dict[str, int],
+) -> dict[str, MilestoneAnnotationStatus]:
+    pool = await get_pool()
+    rows = await pool.fetch(
+        """
+        WITH requested_milestones AS (
+            SELECT *
+            FROM jsonb_each_text($1::jsonb)
+        )
+        SELECT
+            requested_milestones.key AS milestone_name,
+            EXISTS (
+                SELECT 1
+                FROM annotations AS a
+                WHERE a.milestone_id = requested_milestones.value::integer
+                    AND NOT EXISTS (
+                        SELECT 1
+                        FROM annotation_reports AS r
+                        WHERE r.annotation_id = a.annotation_id
+                            AND r.ongoing = true
+                    )
+            ) AS has_annotation
+        FROM requested_milestones
+        """,
+        json.dumps(milestones_by_name),
+    )
+    return {
+        row["milestone_name"]: {"has_annotation": row["has_annotation"]}
         for row in rows
     }
 

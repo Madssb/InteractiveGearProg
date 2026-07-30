@@ -19,6 +19,7 @@ from zoneinfo import ZoneInfo
 from db import (
     annotation_view_event,
     load_share,
+    milestone_annotation_statuses,
     milestone_annotation_view_counts,
     milestone_annotations_lookup,
     milestone_completion_rates,
@@ -442,6 +443,12 @@ async def fetch_annotation_view_counts(request: Request):
         now - timedelta(days=7),
         now,
     )
+
+
+@app.get("/annotation-statuses")
+async def fetch_annotation_statuses(request: Request):
+    enforce_rate_limit(request, "/annotation-statuses")
+    return await milestone_annotation_statuses(MILESTONE_IDS_BY_NAME)
 
 
 @app.get("/health")

@@ -421,3 +421,42 @@ async def test_fetch_annotation_view_counts_returns_live_bulk_counts(
     assert calls["milestone_names"] == ["Dragon scimitar"]
     assert calls["annotation_view_counts"] == 2
     assert first == second
+
+
+@pytest.mark.anyio
+async def test_fetch_annotation_statuses_enforces_rate_limit_and_returns_statuses(
+    app_module, monkeypatch
+):
+    calls = {}
+
+    def fake_enforce_rate_limit(request, route):
+        calls["path"] = request.url.path
+        calls["route"] = route
+
+    async def fake_milestone_annotation_statuses(milestones_by_name):
+        calls["milestones_by_name"] = milestones_by_name
+        return {
+            "Dragon scimitar": {
+                "has_annotation": True,
+            },
+        }
+
+    monkeypatch.setattr(app_module, "enforce_rate_limit", fake_enforce_rate_limit)
+    monkeypatch.setattr(
+        app_module,
+        "milestone_annotation_statuses",
+        fake_milestone_annotation_statuses,
+    )
+    monkeypatch.setattr(
+        app_module,
+        "MILESTONE_IDS_BY_NAME",
+        {"Dragon scimitar": 123},
+    )
+
+    req = _request("/annotation-statuses", headers={"host": "localhost"})
+    result = await app_module.fetch_annotation_statuses(req)
+
+    assert calls["path"] == "/annotation-statuses"
+    assert calls["route"] == "/annotation-statuses"
+    assert calls["milestones_by_name"] == {"Dragon scimitar": 123}
+    assert result == {"Dragon scimitar": {"has_annotation": True}}

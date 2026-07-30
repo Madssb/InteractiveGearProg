@@ -14,6 +14,12 @@ type AnnotationViewCountData = {
 
 type AnnotationViewCounts = Record<string, AnnotationViewCountData>;
 
+type AnnotationStatusData = {
+    has_annotation: boolean;
+};
+
+type AnnotationStatuses = Record<string, AnnotationStatusData>;
+
 type CountRange = {
     min: number;
     max: number;
@@ -73,10 +79,27 @@ async function getAnnotationViewCounts(
     }
 }
 
+async function getAnnotationStatuses(
+    setAnnotationStatuses: (annotationStatuses: AnnotationStatuses) => void,
+) {
+    const url = apiUrl("/annotation-statuses");
+    if (!url) return;
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Response status: ${response.status}`);
+        const annotationStatuses: AnnotationStatuses = await response.json();
+        setAnnotationStatuses(annotationStatuses);
+    } catch (err) {
+        console.error(err);
+    }
+}
+
 export default function AnnotationCountPage(){
     const [annotationViewCounts, setAnnotationViewCounts] = useState<AnnotationViewCounts>({});
+    const [annotationStatuses, setAnnotationStatuses] = useState<AnnotationStatuses>({});
     useEffect(() => {
         getAnnotationViewCounts(setAnnotationViewCounts);
+        getAnnotationStatuses(setAnnotationStatuses);
     }, []);
 
     const range = viewCountRange(annotationViewCounts);
@@ -89,11 +112,22 @@ export default function AnnotationCountPage(){
     const viewedMilestoneCount = topMilestones.length === 12
         ? Object.values(annotationViewCounts).filter(data => data.view_count > 0).length
         : topMilestones.length;
+    const missingAnnotationMilestoneCount = Object.entries(annotationViewCounts)
+        .filter(([milestoneName, data]) => {
+            return data.view_count > 0
+                && annotationStatuses[milestoneName]?.has_annotation === false;
+        })
+        .length;
     const rules = Object.entries(annotationViewCounts)
-        .map(([milestoneName, data]) => `
+        .map(([milestoneName, data]) => {
+            const hasAnnotation = annotationStatuses[milestoneName]?.has_annotation;
+            const missingQueriedAnnotation = data.view_count > 0 && hasAnnotation === false;
+            return `
     #${sanitizeId(milestoneName)} {
         background-color: ${countToColor(data.view_count, range)};
-    }`)
+        ${missingQueriedAnnotation ? "border-color: rgb(220 38 38);" : ""}
+    }`;
+        })
         .join("\n");
     let milestoneSequenceMain = removeStarredItems(milestoneSequenceMainRaw);
 
@@ -130,6 +164,10 @@ export default function AnnotationCountPage(){
                     <div className="annotation-count-metric">
                         <span>Max count</span>
                         <strong>{range.max}</strong>
+                    </div>
+                    <div className="annotation-count-metric">
+                        <span>Queried without annotation</span>
+                        <strong>{missingAnnotationMilestoneCount}</strong>
                     </div>
                     <ol className="annotation-count-top-list">
                         {topMilestones.map(([id, data]) => (

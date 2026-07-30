@@ -1,4 +1,5 @@
 import asyncio
+import json
 from datetime import UTC, datetime, timedelta
 
 import pytest
@@ -265,4 +266,48 @@ def test_milestone_annotation_view_counts_returns_counts_by_milestone(monkeypatc
     assert result == {
         "Dragon scimitar": {"view_count": 3},
         "Barrows gloves": {"view_count": 0},
+    }
+
+
+def test_milestone_annotation_statuses_returns_status_by_milestone(monkeypatch):
+    class AnnotationStatusPool:
+        def __init__(self):
+            self.milestones_by_name = None
+
+        async def fetch(self, _query, milestones_by_name):
+            self.milestones_by_name = milestones_by_name
+            return [
+                {
+                    "milestone_name": "Dragon scimitar",
+                    "has_annotation": True,
+                },
+                {
+                    "milestone_name": "Barrows gloves",
+                    "has_annotation": False,
+                },
+            ]
+
+    pool = AnnotationStatusPool()
+
+    async def fake_get_pool():
+        return pool
+
+    monkeypatch.setattr(db, "get_pool", fake_get_pool)
+
+    result = asyncio.run(
+        db.milestone_annotation_statuses(
+            {
+                "Dragon scimitar": 123,
+                "Barrows gloves": 456,
+            },
+        )
+    )
+
+    assert json.loads(pool.milestones_by_name) == {
+        "Dragon scimitar": 123,
+        "Barrows gloves": 456,
+    }
+    assert result == {
+        "Dragon scimitar": {"has_annotation": True},
+        "Barrows gloves": {"has_annotation": False},
     }
