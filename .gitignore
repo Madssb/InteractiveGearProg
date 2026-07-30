@@ -28,6 +28,7 @@ logs
 .venv/
 __pycache__/
 .pytest_cache/
+.ruff_cache
 
 
 # do not ocmmit the credentials file. very important
