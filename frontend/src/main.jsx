@@ -3,6 +3,7 @@ import ChartBuilderPage from '@/pages/ChartBuilderPage.jsx';
 import ChartPage from '@/pages/ChartPage.jsx';
 import FaqPage from '@/pages/FaqPage.jsx';
 import PrivacyPage from '@/pages/PrivacyPage.jsx';
+import AnnotationCountPage from './pages/AnnotationCountPage';
 import ComplectionPctPage from './pages/CompletionPctPage';
 import SkipPctPage from './pages/SkipPctPage';
 import '@/styles/chart.css';
@@ -26,6 +27,7 @@ createRoot(document.getElementById('root')).render(
         {/* <Route path="/bank" element={<BankPage />} /> */}
         <Route path="/chartbuilder" element={<ChartBuilderPage />} />
         <Route path="/customize" element={<ChartBuilderPage />} />
+        <Route path="/annotation-count" element={<AnnotationCountPage />} />
         <Route path="/completion-pct" element={<ComplectionPctPage />} />
         <Route path="/skip-pct" element={<SkipPctPage />} />
       </Routes>

@@ -218,3 +218,51 @@ def test_annotation_view_event_inserts_milestone_name(monkeypatch):
 
     assert "INSERT INTO annotation_view_event" in pool.query
     assert pool.milestone_name == "Dragon scimitar"
+
+
+def test_milestone_annotation_view_counts_returns_counts_by_milestone(monkeypatch):
+    class AnnotationViewCountPool:
+        def __init__(self):
+            self.milestone_names = None
+            self.start_time = None
+            self.stop_time = None
+
+        async def fetch(self, _query, milestone_names, start_time, stop_time):
+            self.milestone_names = milestone_names
+            self.start_time = start_time
+            self.stop_time = stop_time
+            return [
+                {
+                    "milestone_name": "Dragon scimitar",
+                    "view_count": 3,
+                },
+                {
+                    "milestone_name": "Barrows gloves",
+                    "view_count": 0,
+                },
+            ]
+
+    pool = AnnotationViewCountPool()
+
+    async def fake_get_pool():
+        return pool
+
+    monkeypatch.setattr(db, "get_pool", fake_get_pool)
+    start_time = datetime(2026, 1, 1, tzinfo=UTC)
+    stop_time = datetime(2026, 2, 1, tzinfo=UTC)
+
+    result = asyncio.run(
+        db.milestone_annotation_view_counts(
+            ["Dragon scimitar", "Barrows gloves"],
+            start_time,
+            stop_time,
+        )
+    )
+
+    assert pool.milestone_names == ["Dragon scimitar", "Barrows gloves"]
+    assert pool.start_time == start_time
+    assert pool.stop_time == stop_time
+    assert result == {
+        "Dragon scimitar": {"view_count": 3},
+        "Barrows gloves": {"view_count": 0},
+    }

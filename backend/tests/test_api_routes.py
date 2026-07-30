@@ -374,3 +374,50 @@ async def test_fetch_skip_pcts_caches_bulk_skip_rates(app_module, monkeypatch):
     assert calls["contexts"] == {"A": (["B", "C"], 1)}
     assert calls["skip_rates"] == 1
     assert first == second
+
+
+@pytest.mark.anyio
+async def test_fetch_annotation_view_counts_returns_live_bulk_counts(
+    app_module, monkeypatch
+):
+    calls = {"annotation_view_counts": 0}
+
+    def fake_enforce_rate_limit(request, route):
+        calls["path"] = request.url.path
+        calls["route"] = route
+
+    async def fake_milestone_annotation_view_counts(
+        milestone_names,
+        start_time,
+        stop_time,
+    ):
+        calls["annotation_view_counts"] += 1
+        calls["milestone_names"] = milestone_names
+        assert start_time < stop_time
+        return {
+            "Dragon scimitar": {
+                "view_count": 3,
+            },
+        }
+
+    monkeypatch.setattr(app_module, "enforce_rate_limit", fake_enforce_rate_limit)
+    monkeypatch.setattr(
+        app_module,
+        "milestone_annotation_view_counts",
+        fake_milestone_annotation_view_counts,
+    )
+    monkeypatch.setattr(
+        app_module,
+        "COMBINED_SEQUENCE_FLAT",
+        ["Dragon scimitar"],
+    )
+
+    req = _request("/annotation-view-counts", headers={"host": "localhost"})
+    first = await app_module.fetch_annotation_view_counts(req)
+    second = await app_module.fetch_annotation_view_counts(req)
+
+    assert calls["path"] == "/annotation-view-counts"
+    assert calls["route"] == "/annotation-view-counts"
+    assert calls["milestone_names"] == ["Dragon scimitar"]
+    assert calls["annotation_view_counts"] == 2
+    assert first == second

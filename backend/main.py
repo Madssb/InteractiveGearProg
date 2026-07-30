@@ -19,6 +19,7 @@ from zoneinfo import ZoneInfo
 from db import (
     annotation_view_event,
     load_share,
+    milestone_annotation_view_counts,
     milestone_annotations_lookup,
     milestone_completion_rates,
     milestone_skip_rates,
@@ -430,6 +431,17 @@ async def fetch_skip_pcts(request: Request):
             now,
         )
     return SKIP_PCTS["data"]
+
+
+@app.get("/annotation-view-counts")
+async def fetch_annotation_view_counts(request: Request):
+    enforce_rate_limit(request, "/annotation-view-counts")
+    now = datetime.now(OSLO)
+    return await milestone_annotation_view_counts(
+        COMBINED_SEQUENCE_FLAT,
+        now - timedelta(days=7),
+        now,
+    )
 
 
 @app.get("/health")

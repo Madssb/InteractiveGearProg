@@ -87,8 +87,63 @@
   background: linear-gradient(to bottom, hsl(0 70% 50%), hsl(120 70% 50%));
 }
 
+.annotation-count-colorbar-gradient {
+  background: linear-gradient(to bottom, rgb(219 66 72), rgb(232 239 247));
+}
+
 .completion-pct-colorbar-label {
   white-space: nowrap;
+}
+
+.annotation-count-layout {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) minmax(180px, 240px);
+  align-items: flex-start;
+}
+
+.annotation-count-overview {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.annotation-count-metric {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid light-dark(var(--node-border-light), var(--node-border-dark));
+  padding-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.annotation-count-metric strong {
+  font-size: 1.2rem;
+}
+
+.annotation-count-top-list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 22px;
+  font-size: 0.85rem;
+}
+
+.annotation-count-top-list li {
+  padding-left: 2px;
+}
+
+.annotation-count-top-list li::marker {
+  color: light-dark(var(--node-border-light), var(--node-border-dark));
+}
+
+.annotation-count-top-list span {
+  overflow-wrap: anywhere;
+}
+
+.annotation-count-top-list strong {
+  float: right;
+  margin-left: 10px;
 }
 
 @media (max-width: 600px) {
@@ -104,5 +159,15 @@
 
   .completion-pct-colorbar-gradient {
     min-height: 140px;
+  }
+
+  .annotation-count-layout {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .annotation-count-overview {
+    grid-column: 1 / -1;
+    width: min(100%, 320px);
+    margin: 8px auto 0;
   }
 }

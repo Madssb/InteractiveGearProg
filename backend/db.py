@@ -66,6 +66,10 @@ class MilestoneSkipRate(TypedDict):
     skip_rate: float | None
 
 
+class MilestoneAnnotationViewCount(TypedDict):
+    view_count: int
+
+
 def validate_milestone_completion_rate_window(
     start_time: datetime,
     stop_time: datetime,
@@ -355,6 +359,39 @@ async def milestone_skip_rates(
         }
 
     return skip_rates
+
+
+async def milestone_annotation_view_counts(
+    milestone_names: list[str],
+    start_time: datetime,
+    stop_time: datetime,
+) -> dict[str, MilestoneAnnotationViewCount]:
+    validate_milestone_completion_rate_window(start_time, stop_time)
+
+    pool = await get_pool()
+    rows = await pool.fetch(
+        """
+        WITH requested_milestones AS (
+            SELECT DISTINCT unnest($1::text[]) AS milestone_name
+        )
+        SELECT
+            requested_milestones.milestone_name,
+            COUNT(annotation_view_event.id) AS view_count
+        FROM requested_milestones
+        LEFT JOIN annotation_view_event
+            ON annotation_view_event.milestone_name = requested_milestones.milestone_name
+            AND annotation_view_event.created_at >= $2
+            AND annotation_view_event.created_at < $3
+        GROUP BY requested_milestones.milestone_name
+        """,
+        milestone_names,
+        start_time,
+        stop_time,
+    )
+    return {
+        row["milestone_name"]: {"view_count": row["view_count"]}
+        for row in rows
+    }
 
 
 async def milestone_skip_rate(
