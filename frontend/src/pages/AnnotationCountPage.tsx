@@ -103,21 +103,6 @@ export default function AnnotationCountPage(){
     }, []);
 
     const range = viewCountRange(annotationViewCounts);
-    const topMilestones = Object.entries(annotationViewCounts)
-        .filter(([, data]) => data.view_count > 0)
-        .sort((a, b) => b[1].view_count - a[1].view_count)
-        .slice(0, 12);
-    const totalViews = Object.values(annotationViewCounts)
-        .reduce((sum, data) => sum + data.view_count, 0);
-    const viewedMilestoneCount = topMilestones.length === 12
-        ? Object.values(annotationViewCounts).filter(data => data.view_count > 0).length
-        : topMilestones.length;
-    const missingAnnotationMilestoneCount = Object.entries(annotationViewCounts)
-        .filter(([milestoneName, data]) => {
-            return data.view_count > 0
-                && annotationStatuses[milestoneName]?.has_annotation === false;
-        })
-        .length;
     const rules = Object.entries(annotationViewCounts)
         .map(([milestoneName, data]) => {
             const hasAnnotation = annotationStatuses[milestoneName]?.has_annotation;
@@ -139,7 +124,6 @@ export default function AnnotationCountPage(){
             </div>
             <style>{rules}</style>
             <div className="completion-pct-chart-layout annotation-count-layout">
-                <AnnotationCountColorbar range={range} />
                 <Chart
                     milestoneSequence={milestoneSequenceMain}
                     milestoneMetadata={milestoneMetadata}
@@ -152,32 +136,7 @@ export default function AnnotationCountPage(){
                     handleNodeClick={() => {}}
                     readOnly
                 />
-                <aside className="annotation-count-overview">
-                    <div className="annotation-count-metric">
-                        <span>Total views</span>
-                        <strong>{totalViews}</strong>
-                    </div>
-                    <div className="annotation-count-metric">
-                        <span>Milestones viewed</span>
-                        <strong>{viewedMilestoneCount}</strong>
-                    </div>
-                    <div className="annotation-count-metric">
-                        <span>Max count</span>
-                        <strong>{range.max}</strong>
-                    </div>
-                    <div className="annotation-count-metric">
-                        <span>Queried without annotation</span>
-                        <strong>{missingAnnotationMilestoneCount}</strong>
-                    </div>
-                    <ol className="annotation-count-top-list">
-                        {topMilestones.map(([id, data]) => (
-                            <li key={id}>
-                                <span>{id}</span>
-                                <strong>{data.view_count}</strong>
-                            </li>
-                        ))}
-                    </ol>
-                </aside>
+                <AnnotationCountColorbar range={range} />
             </div>
         </>
     )
