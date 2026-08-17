@@ -13,7 +13,6 @@ curl http://127.0.0.1:8000/health
 From `backend/`:
 
 ```bash
-uv sync
 uv run pytest
 ```
 

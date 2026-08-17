@@ -17,7 +17,6 @@ npm run dev
 
 ```bash
 cd backend
-uv sync
 uv run uvicorn main:app --host 127.0.0.1 --port 8000
 ```
 
@@ -27,7 +26,6 @@ Requires `cp .env.example .env` with `DATABASE_URL` targeting a database with ta
 
 ```bash
 cd backend
-uv sync
 uv run python discord_bot.py
 ```
 

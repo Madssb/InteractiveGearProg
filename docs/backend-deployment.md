@@ -8,7 +8,6 @@ This section describes using `uv` to make the repo backend api endpoints availab
 
 ```bash
 cd backend
-uv sync
 uv run uvicorn main:app --host 127.0.0.1 --port 8000
 ```
 
