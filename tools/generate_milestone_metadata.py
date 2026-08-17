@@ -1,7 +1,7 @@
+import argparse
 import json
 import re
 from pathlib import Path
-from typing import List
 
 from pydantic import TypeAdapter, ValidationError
 
@@ -30,7 +30,7 @@ def sanitize_name_for_url(name: str) -> str:
     return name.strip().replace(" ", "_")
 
 
-def load_json(path: Path) -> List:
+def load_json(path: Path) -> list:
     if not path.exists():
         return {}
     with path.open("r", encoding="utf-8") as f:
@@ -68,7 +68,9 @@ def load_milestone_ids() -> dict[int, str]:
     if raw_milestone_ids == {}:
         return {}
     if not isinstance(raw_milestone_ids, dict):
-        raise ValueError(f"{MILESTONE_IDS_PATH} must contain an object of id-to-name pairs")
+        raise ValueError(
+            f"{MILESTONE_IDS_PATH} must contain an object of id-to-name pairs"
+        )
 
     milestone_ids: dict[int, str] = {}
     names_seen: set[str] = set()
@@ -76,15 +78,25 @@ def load_milestone_ids() -> dict[int, str]:
         try:
             milestone_id = int(raw_id)
         except ValueError as exc:
-            raise ValueError(f"{MILESTONE_IDS_PATH} contains a non-integer id: {raw_id}") from exc
+            raise ValueError(
+                f"{MILESTONE_IDS_PATH} contains a non-integer id: {raw_id}"
+            ) from exc
         if milestone_id < 1:
-            raise ValueError(f"{MILESTONE_IDS_PATH} contains a non-positive id: {milestone_id}")
+            raise ValueError(
+                f"{MILESTONE_IDS_PATH} contains a non-positive id: {milestone_id}"
+            )
         if not isinstance(milestone, str) or not milestone:
-            raise ValueError(f"{MILESTONE_IDS_PATH} id {milestone_id} must map to a milestone name")
+            raise ValueError(
+                f"{MILESTONE_IDS_PATH} id {milestone_id} must map to a milestone name"
+            )
         if milestone_id in milestone_ids:
-            raise ValueError(f"{MILESTONE_IDS_PATH} contains duplicate id: {milestone_id}")
+            raise ValueError(
+                f"{MILESTONE_IDS_PATH} contains duplicate id: {milestone_id}"
+            )
         if milestone in names_seen:
-            raise ValueError(f"{MILESTONE_IDS_PATH} contains duplicate milestone name: {milestone}")
+            raise ValueError(
+                f"{MILESTONE_IDS_PATH} contains duplicate milestone name: {milestone}"
+            )
         milestone_ids[milestone_id] = milestone
         names_seen.add(milestone)
     return milestone_ids
@@ -110,7 +122,9 @@ def ensure_milestone_ids(milestones: list[str]) -> dict[str, int]:
     records keep a resolvable reference point.
     """
     milestone_ids = load_milestone_ids()
-    id_by_milestone = {milestone: milestone_id for milestone_id, milestone in milestone_ids.items()}
+    id_by_milestone = {
+        milestone: milestone_id for milestone_id, milestone in milestone_ids.items()
+    }
     next_id = max(milestone_ids.keys(), default=0) + 1
 
     for milestone in milestones:
@@ -125,8 +139,7 @@ def ensure_milestone_ids(milestones: list[str]) -> dict[str, int]:
 
 
 def load_milestones() -> list[str]:
-    """Load milestones ready for metadata querying
-    """
+    """Load milestones ready for metadata querying"""
     milestone_sequence_sources = [
         Path("data/logic/milestone-sequence-main.json"),
         Path("data/logic/milestone-sequence-retirement.json"),
@@ -165,18 +178,32 @@ def generate_milestone_sequence_bare_bones():
         json.dump(milestone_sequence_bare_bones, f, indent=2, ensure_ascii=False)
 
 
-def update_milestone_metadata():
+def update_milestone_metadata(update_all: bool = False):
     """Ensure `data/generated/milestone-metadata.json` stays up to date with
     `data/logic/milestone-sequence-*`
+
+    Args:
+        update_all: Query fresh metadata for every milestone instead of only
+            milestones that are missing from the generated metadata.
     """
     milestones = load_milestones()
     milestones_metadata = load_milestone_metadata()
-    milestones_not_in_metadata = set(milestones) - set(milestones_metadata.keys())
+    milestones_to_update = (
+        set(milestones)
+        if update_all
+        else set(milestones) - set(milestones_metadata.keys())
+    )
 
-    
-    res = query_milestone_metadata(milestones_not_in_metadata)
+    print(f"Refreshing metadata for {len(milestones_to_update)} milestone(s)...")
+    res = query_milestone_metadata(milestones_to_update)
     if len(res.unresolvedMilestones) > 0:
-        raise ValueError(f"One or more loaded milestones do not have valid metadata: {res.unresolvedMilestones}")
+        raise ValueError(
+            f"One or more loaded milestones do not have valid metadata: {res.unresolvedMilestones}"
+        )
+    changed_count = sum(
+        milestones_metadata.get(milestone) != record
+        for milestone, record in res.milestoneMetadata.items()
+    )
     milestones_metadata = milestones_metadata | res.milestoneMetadata
     milestone_ids = ensure_milestone_ids(list(milestones_metadata.keys()))
 
@@ -188,8 +215,20 @@ def update_milestone_metadata():
     out.parent.mkdir(parents=True, exist_ok=True)
     with out.open("w", encoding="utf-8") as f:
         json.dump(serializable_metadata, f, indent=2, ensure_ascii=False)
+    print(
+        f"Refreshed {len(res.milestoneMetadata)} milestone(s); "
+        f"{changed_count} changed. Wrote {out}."
+    )
 
 
 if __name__ == "__main__":
-    update_milestone_metadata()
+    parser = argparse.ArgumentParser(description="Generate milestone metadata files.")
+    parser.add_argument(
+        "--all",
+        action="store_true",
+        help="refresh metadata for all milestones, including existing entries",
+    )
+    args = parser.parse_args()
+
+    update_milestone_metadata(update_all=args.all)
     generate_milestone_sequence_bare_bones()
