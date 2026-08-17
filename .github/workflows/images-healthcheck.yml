@@ -1,0 +1,23 @@
+name: Images Healthcheck
+
+on:
+  schedule:
+    - cron: "22 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+    contents: read
+
+jobs:
+  check-images:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Run healthcheck
+        run: uv run --project tools python tools/healthcheck.py --sequence-only
