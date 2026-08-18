@@ -1,5 +1,5 @@
-"""PostgreSQL statements for ladlorchart api backend and botlor
-"""
+"""PostgreSQL statements for ladlorchart api backend and botlor"""
+
 import json
 import os
 from datetime import date, datetime, timezone
@@ -8,7 +8,6 @@ from typing import Any, Literal, TypedDict
 
 import asyncpg
 from dotenv import load_dotenv
-
 
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -127,10 +126,10 @@ async def get_pool() -> asyncpg.Pool:
 
 
 async def save_share(
-    token: str, milestone_sequence: list[list[str]],
+    token: str,
+    milestone_sequence: list[list[str]],
 ) -> None:
-    """Add chartbuilder-save record to shares table
-    """
+    """Add chartbuilder-save record to shares table"""
     pool = await get_pool()
     await pool.execute(
         """
@@ -144,6 +143,12 @@ async def save_share(
 
 async def load_share(token: str) -> list[list[str]] | None:
     """Retrieve chartbuilder-save record from shares table
+
+    Args:
+        token: Chartbuilder-token.
+
+    Returns:
+        Milestone sequence if exists or None.
     """
     pool = await get_pool()
     row = await pool.fetchrow(
@@ -151,7 +156,7 @@ async def load_share(token: str) -> list[list[str]] | None:
         SELECT milestone_sequence FROM shares
         WHERE token = $1
         """,
-        token
+        token,
     )
     if row is None:
         return None
@@ -160,6 +165,9 @@ async def load_share(token: str) -> list[list[str]] | None:
 
 async def update_endpoint_hits(endpoint: str) -> None:
     """Add endpoint call record to endpoint_hits table
+
+    Args:
+        Name of the endpoint hit.
     """
     pool = await get_pool()
     await pool.execute(
@@ -167,12 +175,15 @@ async def update_endpoint_hits(endpoint: str) -> None:
         INSERT INTO endpoint_hits (endpoint)
         VALUES ($1)
         """,
-        endpoint
+        endpoint,
     )
 
 
-async def milestones_completed_snapshots(milestones_completed: list[str]):
+async def milestones_completed_snapshots(milestones_completed: list[str]) -> None:
     """Add completed-milestones record to milestones_completed_snapshots table.
+
+    Args:
+        milestones_completed: Milestones completed by user.
     """
     pool = await get_pool()
     await pool.execute(
@@ -180,24 +191,32 @@ async def milestones_completed_snapshots(milestones_completed: list[str]):
         INSERT INTO milestones_completed_snapshots (milestones_completed)
         VALUES ($1)
         """,
-        json.dumps(milestones_completed)
+        json.dumps(milestones_completed),
     )
 
 
-async def milestones_hidden_snapshots(milestones_hidden: list[str]):
-    """Add hidden-milestones record to milestones_hidden_snapshots table."""
+async def milestones_hidden_snapshots(milestones_hidden: list[str]) -> None:
+    """Add hidden-milestones record to milestones_hidden_snapshots table.
+
+    Args:
+        milestones_hidden: Milestones hidden by user.
+    """
     pool = await get_pool()
     await pool.execute(
         """
         INSERT INTO milestones_hidden_snapshots (milestones_hidden)
         VALUES ($1)
         """,
-        json.dumps(milestones_hidden)
+        json.dumps(milestones_hidden),
     )
 
 
 async def annotation_view_event(milestone_name: str) -> None:
-    """Add annotation panel view record."""
+    """Add annotation panel view record.
+
+    Args:
+        milestone_name: Name of milestone with annotation view event.
+    """
     pool = await get_pool()
     await pool.execute(
         """
@@ -239,6 +258,16 @@ async def milestone_completion_rates(
     start_time: datetime,
     stop_time: datetime,
 ) -> dict[str, MilestoneCompletionRate]:
+    """Retrieve MilestoneCompletionRate records for specified milestones in specified datetime period.
+
+    Args:
+        milestone_names: Name of milestones to get fetch completion rates for
+        start_time: Milestones after this datetime are included.
+        stop_time: Milestones afte this datetime are excluded.
+
+    Returns:
+        MilestoneCompletionRate records keyed by corresponding milestone names.
+    """
     validate_milestone_completion_rate_window(start_time, stop_time)
 
     pool = await get_pool()
@@ -331,14 +360,14 @@ async def milestone_skip_rates(
         stop_time,
     )
     snapshot_sets = [
-        _snapshot_completed_set(row["milestones_completed"])
-        for row in rows
+        _snapshot_completed_set(row["milestones_completed"]) for row in rows
     ]
 
     skip_rates: dict[str, MilestoneSkipRate] = {}
-    for milestone_name, (subsequent_milestone_names, threshold) in (
-        milestone_contexts.items()
-    ):
+    for milestone_name, (
+        subsequent_milestone_names,
+        threshold,
+    ) in milestone_contexts.items():
         eligible_count = 0
         skipped_count = 0
         for completed_milestones in snapshot_sets:
@@ -392,10 +421,7 @@ async def milestone_annotation_view_counts(
         start_time,
         stop_time,
     )
-    return {
-        row["milestone_name"]: {"view_count": row["view_count"]}
-        for row in rows
-    }
+    return {row["milestone_name"]: {"view_count": row["view_count"]} for row in rows}
 
 
 async def milestone_annotation_statuses(
@@ -426,8 +452,7 @@ async def milestone_annotation_statuses(
         json.dumps(milestones_by_name),
     )
     return {
-        row["milestone_name"]: {"has_annotation": row["has_annotation"]}
-        for row in rows
+        row["milestone_name"]: {"has_annotation": row["has_annotation"]} for row in rows
     }
 
 
@@ -436,6 +461,16 @@ async def milestone_skip_rate(
     subsequent_milestone_names: list[str],
     skip_threshold: int,
 ) -> MilestoneSkipRate:
+    """Retrieve MilestoneSkipRate records for specified milestones in specified datetime period.
+
+    Args:
+        milestone_names: Name of milestones to get fetch skip rates for
+        start_time: Milestones after this datetime are included.
+        stop_time: Milestones afte this datetime are excluded.
+
+    Returns:
+        MilestoneSkipRate records keyed by corresponding milestone names.
+    """
     pool = await get_pool()
     row = await pool.fetchrow(
         """
@@ -481,7 +516,7 @@ async def annotation_submission(
     milestone_id: int,
     user_id: int,
     user_display_name: str,
-    annotation_text: str
+    annotation_text: str,
 ) -> int:
     """
     Handle annotation submission.
@@ -506,17 +541,17 @@ async def annotation_submission(
         user_id,
         user_display_name,
         chart_version,
-        annotation_text
+        annotation_text,
     )
     return annotation_id
+
 
 async def annotation_vote(
     message_id: int,
     up_count: int,
     down_count: int,
 ) -> None:
-    """Register annotation vote
-    """
+    """Register annotation vote"""
     pool = await get_pool()
     await pool.execute(
         """
@@ -526,8 +561,9 @@ async def annotation_vote(
         """,
         up_count,
         down_count,
-        message_id
+        message_id,
     )
+
 
 async def annotation_report(
     annotation_id: int,
@@ -535,11 +571,10 @@ async def annotation_report(
     reason: str,
 ) -> int:
     pool = await get_pool()
-    async with pool.acquire() as connection:
-        async with connection.transaction():
-            report_id = await next_report_id(connection)
-            await connection.execute(
-                """
+    async with pool.acquire() as connection, connection.transaction():
+        report_id = await next_report_id(connection)
+        await connection.execute(
+            """
                 INSERT INTO annotation_reports (
                     report_id,
                     annotation_id,
@@ -549,12 +584,12 @@ async def annotation_report(
                 OVERRIDING SYSTEM VALUE
                 VALUES ($1, $2, $3, $4)
                 """,
-                report_id,
-                annotation_id,
-                reporter_user_id,
-                reason,
-            )
-            return report_id
+            report_id,
+            annotation_id,
+            reporter_user_id,
+            reason,
+        )
+        return report_id
 
 
 async def user_report(
@@ -563,11 +598,10 @@ async def user_report(
     reason: str,
 ) -> int:
     pool = await get_pool()
-    async with pool.acquire() as connection:
-        async with connection.transaction():
-            report_id = await next_report_id(connection)
-            await connection.execute(
-                """
+    async with pool.acquire() as connection, connection.transaction():
+        report_id = await next_report_id(connection)
+        await connection.execute(
+            """
                 INSERT INTO user_reports (
                     report_id,
                     reported_name,
@@ -577,79 +611,76 @@ async def user_report(
                 OVERRIDING SYSTEM VALUE
                 VALUES ($1, $2, $3, $4)
                 """,
-                report_id,
-                reported_name,
-                reporter_user_id,
-                reason,
-            )
-            return report_id
+            report_id,
+            reported_name,
+            reporter_user_id,
+            reason,
+        )
+        return report_id
 
 
 async def resolve_report(report_id: int, verdict: str) -> ResolveReportResult:
     pool = await get_pool()
-    async with pool.acquire() as connection:
-        async with connection.transaction():
-            annotation_report_id = await connection.fetchval(
-                """
+    async with pool.acquire() as connection, connection.transaction():
+        annotation_report_id = await connection.fetchval(
+            """
                 SELECT report_id
                 FROM annotation_reports
                 WHERE report_id = $1
                     AND ongoing = true
                 FOR UPDATE
                 """,
-                report_id,
-            )
-            user_report_id = await connection.fetchval(
-                """
+            report_id,
+        )
+        user_report_id = await connection.fetchval(
+            """
                 SELECT report_id
                 FROM user_reports
                 WHERE report_id = $1
                     AND ongoing = true
                 FOR UPDATE
                 """,
-                report_id,
-            )
+            report_id,
+        )
 
-            matches = [
-                ("annotation", annotation_report_id),
-                ("user", user_report_id),
-            ]
-            matches = [
-                (report_type, matched_id)
-                for report_type, matched_id in matches
-                if matched_id is not None
-            ]
+        matches = [
+            ("annotation", annotation_report_id),
+            ("user", user_report_id),
+        ]
+        matches = [
+            (report_type, matched_id)
+            for report_type, matched_id in matches
+            if matched_id is not None
+        ]
 
-            if not matches:
-                return {"status": "not_found", "resolved_report": None}
+        if not matches:
+            return {"status": "not_found", "resolved_report": None}
 
-            if len(matches) > 1:
-                return {"status": "ambiguous", "resolved_report": None}
+        if len(matches) > 1:
+            return {"status": "ambiguous", "resolved_report": None}
 
-            report_type, matched_id = matches[0]
-            table_name = (
-                "annotation_reports"
-                if report_type == "annotation"
-                else "user_reports"
-            )
-            await connection.execute(
-                f"""
+        report_type, matched_id = matches[0]
+        table_name = (
+            "annotation_reports" if report_type == "annotation" else "user_reports"
+        )
+        await connection.execute(
+            f"""
                 UPDATE {table_name}
                 SET ongoing = false,
                     verdict = $1,
                     resolved_at = now()
                 WHERE report_id = $2
                 """,
-                verdict,
-                matched_id,
-            )
-            return {
-                "status": "resolved",
-                "resolved_report": {
-                    "report_type": report_type,
-                    "report_id": matched_id,
-                },
-            }
+            verdict,
+            matched_id,
+        )
+        return {
+            "status": "resolved",
+            "resolved_report": {
+                "report_type": report_type,
+                "report_id": matched_id,
+            },
+        }
 
 
 async def unresolved_reports() -> list[UnresolvedReport]:
@@ -672,7 +703,9 @@ async def unresolved_reports() -> list[UnresolvedReport]:
     return [dict(row) for row in rows]
 
 
-async def milestone_annotations_lookup(milestone_id: int) -> list[MilestoneAnnotationRow]:
+async def milestone_annotations_lookup(
+    milestone_id: int,
+) -> list[MilestoneAnnotationRow]:
     """
     Fetch annotations for milestones, exclude annotations with ongoing reports.
     """
