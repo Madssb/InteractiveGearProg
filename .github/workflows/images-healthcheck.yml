@@ -6,7 +6,7 @@ on:
   workflow_dispatch: {}
 
 permissions:
-    contents: read
+  contents: read
 
 jobs:
   check-images:
@@ -20,4 +20,4 @@ jobs:
         uses: astral-sh/setup-uv@v10.0.1
 
       - name: Run healthcheck
-        run: uv run --project tools python tools/healthcheck.py --sequence-only
+        run: uv run --project tools python tools/healthcheck.py
