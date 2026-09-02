@@ -1,11 +1,11 @@
 """
 Milestone to id lookup and vice versa
 """
+
 import json
 import math
 from functools import cache
 from pathlib import Path
-
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 MILESTONE_IDS_PATH = REPO_ROOT / "data/logic/milestone-ids.json"
@@ -35,11 +35,7 @@ def load_main_milestone_groups() -> list[list[str]]:
     with MILESTONE_SEQUENCE_MAIN_PATH.open("r", encoding="utf-8") as f:
         raw_groups = json.load(f)
     return [
-        [
-            milestone.removeprefix("*")
-            for milestone in group
-        ]
-        for group in raw_groups
+        [milestone.removeprefix("*") for milestone in group] for group in raw_groups
     ]
 
 
@@ -64,7 +60,7 @@ def milestone_context_from_groups(
                 continue
             later_milestone_names = [
                 later_milestone_name
-                for later_group in milestone_groups[group_index + 1:]
+                for later_group in milestone_groups[group_index + 1 :]
                 for later_milestone_name in later_group
             ]
             return candidate_name, later_milestone_names

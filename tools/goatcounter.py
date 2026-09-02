@@ -1,8 +1,9 @@
 import json
 import os
 import time
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import requests
 
@@ -22,6 +23,8 @@ ROOT_DIR = Path(__file__).parents[1]
 base = "https://ladlor0interactive0prog.goatcounter.com/api/v0/stats/total"
 headers = {"Authorization": f"Bearer {GOATCOUNTER_API_KEY}"}
 
+DATE_TODAY = datetime.now(ZoneInfo("Europe/Oslo")).date()
+
 
 def fetch_total(start: date, end: date):
     params = {"start": start.isoformat(), "end": end.isoformat()}
@@ -40,7 +43,7 @@ def fetch_with_retry(start: date, end: date, attempts: int = 3):
         except requests.exceptions.HTTPError as error:
             status_code = error.response.status_code if error.response else None
             # 404 can happen intermittently for date windows including "today".
-            if status_code == 404 and end == date.today():
+            if status_code == 404 and end == DATE_TODAY:
                 print(
                     "[goatcounter] got 404 for window including today; "
                     "retrying with end=yesterday"
@@ -62,7 +65,7 @@ def fetch_with_retry(start: date, end: date, attempts: int = 3):
     raise RuntimeError("Unexpected retry flow in goatcounter fetch")
 
 
-end = date.today() - timedelta(days=1)
+end = DATE_TODAY - timedelta(days=1)
 start = end - timedelta(days=31) - timedelta(days=1)
 monthly_viewcount = fetch_with_retry(start, end)
 print(f"[goatcounter] monthly total fetched: {monthly_viewcount}")

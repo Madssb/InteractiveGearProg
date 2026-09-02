@@ -2,6 +2,7 @@
 Botlor discord bot source code
 Currently supports making annotation submissions for the milestones.
 """
+
 import json
 import logging
 import os
@@ -9,17 +10,15 @@ from pathlib import Path
 from typing import Any
 
 import discord
-from dotenv import load_dotenv
-from discord import app_commands
-
 from bot.annotation_commands import log_reaction_change, register_annotation_commands
 from bot.metrics_commands import register_metrics_commands
 from bot.milestone_commands import register_milestone_commands
 from bot.moderation_commands import register_moderation_commands
 from bot.report_logs import send_report_log
 from db import user_report
+from discord import app_commands
+from dotenv import load_dotenv
 from milestones import load_main_milestone_groups, load_milestone_names_by_id
-
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 MILESTONE_METADATA_PATH = ROOT_DIR / "data/generated/milestone-metadata.json"
@@ -57,8 +56,8 @@ def load_milestone_metadata() -> dict[str, dict[str, Any]]:
 
 
 class BotClient(discord.Client):
-    """Ladlorchart discord-bot client
-    """
+    """Ladlorchart discord-bot client"""
+
     def __init__(
         self,
         guild: discord.Object,
@@ -76,14 +75,18 @@ class BotClient(discord.Client):
         self.milestone_ids = load_milestone_names_by_id()
         self.milestone_groups = load_main_milestone_groups()
 
-    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
+    async def on_raw_reaction_add(
+        self, payload: discord.RawReactionActionEvent
+    ) -> None:
         await log_reaction_change(
             self,
             payload,
             self.submitted_annotations_channel_id,
         )
 
-    async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent) -> None:
+    async def on_raw_reaction_remove(
+        self, payload: discord.RawReactionActionEvent
+    ) -> None:
         await log_reaction_change(
             self,
             payload,
@@ -120,7 +123,9 @@ class BotClient(discord.Client):
             self.milestone_groups,
         )
 
-        @self.tree.command(name="report_user", description="Report a user", guild=self.guild)
+        @self.tree.command(
+            name="report_user", description="Report a user", guild=self.guild
+        )
         @app_commands.describe(
             username="The username or display name of the user being reported",
             reason="Why this user should be reviewed",

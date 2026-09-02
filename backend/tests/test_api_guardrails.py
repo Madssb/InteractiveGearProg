@@ -50,7 +50,9 @@ def test_trusted_hosts_parses_comma_separated_values(app_module, monkeypatch):
 
 
 @pytest.mark.anyio
-async def test_trusted_host_allows_configured_host_without_port(app_module, monkeypatch):
+async def test_trusted_host_allows_configured_host_without_port(
+    app_module, monkeypatch
+):
     """Trusted hosts should allow external hosts and ignore request port."""
     monkeypatch.setattr(
         app_module,

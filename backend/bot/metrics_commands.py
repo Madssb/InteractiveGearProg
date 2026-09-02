@@ -1,9 +1,8 @@
 """Commands for public chart metrics."""
 
 import discord
-from discord import app_commands
-
 from db import milestone_completion_rate, milestone_skip_rate
+from discord import app_commands
 from milestones import milestone_context_from_groups, skip_threshold
 
 
@@ -39,9 +38,7 @@ def register_metrics_commands(
             milestone_groups,
         )
         snapshot_milestone_name = (
-            milestone_context[0]
-            if milestone_context is not None
-            else milestone_name
+            milestone_context[0] if milestone_context is not None else milestone_name
         )
 
         await interaction.response.defer(thinking=True)
@@ -55,7 +52,9 @@ def register_metrics_commands(
             embed.description = "No player milestone snapshots have been recorded yet."
         else:
             percentage = completion_rate_value * 100
-            embed.description = f"{percentage:.2f}% ({completed_count}/{total_count} snapshots)"
+            embed.description = (
+                f"{percentage:.2f}% ({completed_count}/{total_count} snapshots)"
+            )
 
         await interaction.followup.send(embed=embed)
 
@@ -106,9 +105,13 @@ def register_metrics_commands(
 
         embed = discord.Embed(title=f"Skip rate: {milestone_name}")
         if skip_rate_value is None:
-            embed.description = "No skip-eligible snapshots have been recorded for this milestone."
+            embed.description = (
+                "No skip-eligible snapshots have been recorded for this milestone."
+            )
         else:
             percentage = skip_rate_value * 100
-            embed.description = f"{percentage:.2f}% ({skipped_count}/{eligible_count} snapshots)"
+            embed.description = (
+                f"{percentage:.2f}% ({skipped_count}/{eligible_count} snapshots)"
+            )
 
         await interaction.followup.send(embed=embed)

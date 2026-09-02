@@ -12,13 +12,20 @@ Notes
 All other functions are internal helpers and may change without notice.
 """
 
-from .client import MilestoneMetadata, MilestoneMetadataRecord, MilestoneMetadataQueryResult, item_rs3, query_milestone_metadata_record, query_milestone_metadata
+from .client import (
+    MilestoneMetadata,
+    MilestoneMetadataQueryResult,
+    MilestoneMetadataRecord,
+    item_rs3,
+    query_milestone_metadata,
+    query_milestone_metadata_record,
+)
 
 __all__ = [
     "MilestoneMetadata",
-    "MilestoneMetadataRecord",
     "MilestoneMetadataQueryResult",
-    "query_milestone_metadata_record",
-    "query_milestone_metadata",
+    "MilestoneMetadataRecord",
     "item_rs3",
+    "query_milestone_metadata",
+    "query_milestone_metadata_record",
 ]

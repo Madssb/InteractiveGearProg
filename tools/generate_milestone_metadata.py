@@ -5,10 +5,7 @@ from pathlib import Path
 
 from pydantic import TypeAdapter, ValidationError
 
-from osrs_milestone_metadata import (
-    MilestoneMetadata,
-    query_milestone_metadata,
-)
+from osrs_milestone_metadata import MilestoneMetadata, query_milestone_metadata
 
 pat = re.compile(r"\d+ (\w+)")
 
@@ -68,7 +65,7 @@ def load_milestone_ids() -> dict[int, str]:
     if raw_milestone_ids == {}:
         return {}
     if not isinstance(raw_milestone_ids, dict):
-        raise ValueError(
+        raise ValueError(  # noqa: TRY004
             f"{MILESTONE_IDS_PATH} must contain an object of id-to-name pairs"
         )
 

@@ -2,6 +2,7 @@
 import os
 
 import pytest
+
 from osrs_milestone_metadata import (
     MilestoneMetadataQueryResult,
     query_milestone_metadata,
@@ -11,7 +12,9 @@ from osrs_milestone_metadata import (
 pytestmark = pytest.mark.integration
 
 if os.getenv("RUN_LIVE_TESTS") != "1":
-    pytest.skip("Set RUN_LIVE_TESTS=1 to run live integration tests.", allow_module_level=True)
+    pytest.skip(
+        "Set RUN_LIVE_TESTS=1 to run live integration tests.", allow_module_level=True
+    )
 
 
 # (name, wiki_url, image_url)

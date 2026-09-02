@@ -1,8 +1,8 @@
 """Shared report logging helpers."""
+
 import logging
 
 import discord
-
 
 logger = logging.getLogger(__name__)
 REPORT_PING_ROLE_ID = 1506719382213099610

@@ -25,3 +25,5 @@ packages = ["osrs_milestone_metadata"]
 dev = [
     "pytest>=9.0.3",
 ]
+
+[tool.ruff.lint]

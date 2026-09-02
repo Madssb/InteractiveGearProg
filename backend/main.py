@@ -62,10 +62,7 @@ with RETIREMENT_SEQUENCE_PATH.open() as r:
 
 MAIN_SEQUENCE_GROUPS = load_main_milestone_groups()
 RETIREMENT_SEQUENCE_GROUPS = [
-    [
-        milestone.removeprefix("*")
-        for milestone in group
-    ]
+    [milestone.removeprefix("*") for milestone in group]
     for group in RETIREMENT_SEQUENCE
 ]
 MAIN_SEQUENCE_FLAT = list(chain.from_iterable(MAIN_SEQUENCE_GROUPS))

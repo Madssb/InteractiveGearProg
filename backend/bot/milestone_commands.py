@@ -1,11 +1,10 @@
 """Commands for browsing milestone IDs."""
+
 import math
 
 import discord
-from discord import app_commands
-
 from db import annotated_milestone_ids, milestone_annotation_message_lookup
-
+from discord import app_commands
 
 MILESTONES_PER_PAGE = 20
 ANNOTATION_LINKS_PER_PAGE = 10
@@ -223,8 +222,10 @@ def register_milestone_commands(
         links = [
             (
                 row["annotation_id"],
-                "https://discord.com/channels/"
-                f"{guild.id}/{submitted_annotations_channel_id}/{row['message_id']}",
+                (
+                    "https://discord.com/channels/"
+                    f"{guild.id}/{submitted_annotations_channel_id}/{row['message_id']}"
+                ),
             )
             for row in annotation_messages
         ]

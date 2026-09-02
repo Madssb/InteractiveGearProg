@@ -7,7 +7,10 @@ OSRS milestone metadata resolver package used by this repository.
 Python:
 
 ```python
-from osrs_milestone_metadata import query_milestone_metadata_record, query_milestone_metadata
+from osrs_milestone_metadata import (
+    query_milestone_metadata_record,
+    query_milestone_metadata,
+)
 ```
 
 CLI:

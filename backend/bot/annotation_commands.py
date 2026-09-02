@@ -1,11 +1,9 @@
 """Commands for annotation submissions."""
+
 import logging
 import os
 
 import discord
-from discord import app_commands
-
-from bot.report_logs import send_report_log
 from db import (
     annotation_report,
     annotation_submission,
@@ -13,11 +11,12 @@ from db import (
     get_annotation_owner_and_message_ids,
     remove_annotation_record,
 )
+from discord import app_commands
 
+from bot.report_logs import send_report_log
 
 logger = logging.getLogger(__name__)
 VOTE_EMOJIS = {"👍", "👎"}
-
 
 
 ANNOTATOR_ROLE_ID = os.getenv("ANNOTATOR_ROLE_ID")
@@ -208,9 +207,7 @@ def register_annotation_commands(
         submitted_by = f"*submitted by* __*{display_name}*__\n"
         spacing = "\n"
         submission = f"> {contents}\n"
-        embed = discord.Embed(
-            description=header + submitted_by + spacing + submission
-        )
+        embed = discord.Embed(description=header + submitted_by + spacing + submission)
         embed.set_thumbnail(url=img)
         try:
             message = await channel.send(embed=embed)
@@ -290,19 +287,16 @@ def register_annotation_commands(
     @tree.command(
         name="remove_annotation",
         description="Remove the specified annotation if you're the author or hold sufficient privilidges.",
-        guild=guild
+        guild=guild,
     )
-    @app_commands.describe(
-        annotation_id="ID for annotation to remove."
-    )
+    @app_commands.describe(annotation_id="ID for annotation to remove.")
     async def remove_annotation(
-        interaction: discord.Interaction,
-        annotation_id: int
+        interaction: discord.Interaction, annotation_id: int
     ) -> None:
         """Handle annotation remove requests"""
-        
+
         admin_user_ids = [
-            163892364681674753 # madlor
+            163892364681674753  # madlor
         ]
         user_id = interaction.user.id
         annotation_ids = await get_annotation_owner_and_message_ids(annotation_id)
@@ -314,7 +308,7 @@ def register_annotation_commands(
             return
         annotation_author_user_id = annotation_ids["user_id"]
         message_id = annotation_ids["message_id"]
-        
+
         if user_id not in admin_user_ids and user_id != annotation_author_user_id:
             await interaction.response.send_message(
                 f"Insufficient privileges for deleting {annotation_id}. Must be moderator or author.",

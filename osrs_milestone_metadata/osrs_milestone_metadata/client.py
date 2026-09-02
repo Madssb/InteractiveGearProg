@@ -40,8 +40,8 @@ Internal Helpers (subject to change)
 from __future__ import annotations
 
 import time
+from collections.abc import Iterable
 from importlib.resources import files
-from typing import Dict, Iterable, List
 
 import backoff
 import pandas as pd
@@ -67,6 +67,7 @@ class MilestoneMetadataRecord(BaseModel):
 
 MilestoneMetadata = dict[str, MilestoneMetadataRecord]
 
+
 class MilestoneMetadataQueryResult(BaseModel):
     milestoneMetadata: MilestoneMetadata
     unresolvedMilestones: list[str]
@@ -74,7 +75,9 @@ class MilestoneMetadataQueryResult(BaseModel):
 
 s = requests.Session()
 s.headers.update(
-    {"user-agent": "Madlor (InteractiveGearProg) (https://github.com/Madssb/InteractiveGearProg)"}
+    {
+        "user-agent": "Madlor (InteractiveGearProg) (https://github.com/Madssb/InteractiveGearProg)"
+    }
 )
 
 SKILLS = [
@@ -134,13 +137,13 @@ def _raise_for_policy(resp: requests.Response) -> None:
     max_time=30,
     giveup=lambda e: isinstance(e, NonRetryableHTTPError),
 )
-def _get_with_backoff(params: Dict[str, str]) -> requests.Response:
+def _get_with_backoff(params: dict[str, str]) -> requests.Response:
     resp = s.get(API, params=params, timeout=TIMEOUT)
     _raise_for_policy(resp)
     return resp
 
 
-def _bucket_query(bucket_name: str, page_name: str) -> List[Dict[str, str]]:
+def _bucket_query(bucket_name: str, page_name: str) -> list[dict[str, str]]:
     """Fetch raw records from the OSRS Wiki bucket API.
 
     Selects 'page_name' and one media field based on the bucket:
@@ -428,9 +431,7 @@ def query_milestone_metadata_record(milestone: str) -> MilestoneMetadataRecord |
     return None
 
 
-def query_milestone_metadata(
-    milestones: Iterable[str]
-) -> MilestoneMetadataQueryResult:
+def query_milestone_metadata(milestones: Iterable[str]) -> MilestoneMetadataQueryResult:
     """Batch resolve milestones.
 
     Args:
@@ -448,12 +449,11 @@ def query_milestone_metadata(
         if res is not None:
             milestone_metadata[milestone] = res
     return MilestoneMetadataQueryResult(
-        milestoneMetadata=milestone_metadata,
-        unresolvedMilestones=unresolved_milestones
+        milestoneMetadata=milestone_metadata, unresolvedMilestones=unresolved_milestones
     )
 
 
-def item_rs3(item_name: str) -> Dict[str, str] | None:
+def item_rs3(item_name: str) -> dict[str, str] | None:
     """Resolve an item to its wiki page and image.
 
     Tries 'infobox_item' with default_version=true; falls back to 'infobox_item2'

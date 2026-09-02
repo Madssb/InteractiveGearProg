@@ -2,9 +2,8 @@ import asyncio
 import json
 from datetime import UTC, datetime, timedelta
 
-import pytest
-
 import db
+import pytest
 
 
 class FakePool:
