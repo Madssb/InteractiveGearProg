@@ -3,11 +3,11 @@ import ContextMenu from '@/components/ContextMenu.jsx';
 import SequenceForm from '@/components/SequenceForm';
 import Footer from '@/components/static/Footer.jsx';
 import { apiUrl } from '@/utils/apiConfig';
+import { decodeProgress, encodeProgress } from '@/utils/progressEncoding';
 import removeStarredItems from '@/utils/removeStarredItems.js';
 import { handleLevels } from '@/utils/textSanitizers';
 import { useLocalStorageSet, useLocalStorageState } from '@/utils/useLocalStorageState';
 import milestoneSequenceMainRaw from '@data/logic/milestone-sequence-main.json';
-import { encodeProgress, decodeProgress } from '@/utils/progressEncoding';
 import React, { useState } from 'react';
 import { useLocation } from "react-router";
 
@@ -253,6 +253,7 @@ export default function ChartBuilderPage() {
                 }}>
                     <h1>Chart Builder</h1>
                     <span className="subtitle">Made by Ladlor</span>
+                    <span className="subtitle">THE BACKEND IS DOWN FOR MAINTENANCE, ETA FOR FIX UNKNOWN</span>
                 </div>
                 <div style={{
                     position: "absolute",

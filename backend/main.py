@@ -44,7 +44,6 @@ from pydantic import BaseModel, conlist
 from osrs_milestone_metadata import (
     MilestoneMetadataQueryResult,
     MilestoneMetadataRecord,
-    query_milestone_metadata,
 )
 
 # constants
@@ -326,7 +325,8 @@ async def populate_milestone_metadata(
     out: dict[str, MilestoneMetadataRecord] = {}
     cache_hits, cache_misses = LRU_cache(milestones, CACHE)
     try:
-        results = query_milestone_metadata(cache_misses)
+        # results = query_milestone_metadata(cache_misses)
+        pass
     except Exception:
         logger.exception("Milestone metadata query failed")
         results = MilestoneMetadataQueryResult(
