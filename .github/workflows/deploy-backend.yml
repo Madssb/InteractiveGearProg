@@ -1,0 +1,30 @@
+name: Deploy backend
+
+on:
+  workflow_dispatch:
+
+    
+jobs:
+  deploy-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          audience: ${{ secrets.TS_AUDIENCE }}
+          tags: tag:ci
+
+      - name: Configure SSH key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add server host key
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan server >> ~/.ssh/known_hosts
+
+      - name: remote execution steps
+        run: ssh mads@server "cd InteractiveGearProg && git pull && docker compose up -d --build backend discord_bot"
