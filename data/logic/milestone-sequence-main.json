@@ -7,59 +7,46 @@
   ["Dragon defender", "Book of the dead", "Salve amulet(ei)", "Piety"],
   ["Mixed hide cape", "Mixed hide boots"],
   ["Ava's accumulator", "Imbued zamorak cape"],
-  ["Spirit tree (Construction)"],
+  ["Spirit tree"],
   ["Hallowed crystal shard"],
-  [    
-    "Infinity boots",
-    "Mage's book"],
-  [
-    "Dark altar (Construction)",
-    "Rejuvenation pool",
-    "Basic jewellery box"
-  ],
+  ["Infinity boots", "Mage's book"],
+  ["Dark altar", "Rejuvenation pool", "Basic jewellery box"],
   ["Arkan blade"],
   ["Black mask (i)", "Bonecrusher"],
   ["Pharaoh's sceptre"],
-  ["Arclight", "Broader Fletching", "Slayer helmet (i)", "Ice Barrage", "Bigger and Badder", "Ash sanctifier"],
+  [
+    "Arclight",
+    "Broader Fletching",
+    "Slayer helmet (i)",
+    "Ice Barrage",
+    "Bigger and Badder",
+    "Ash sanctifier"
+  ],
   ["69 slayer", "86 strength"],
   ["Karamja gloves 3"],
   ["Amulet of glory"],
   ["Ghommal's hilt 2"],
-  ["void knight top",
+  [
+    "void knight top",
     "void knight robe",
     "Void ranger helm",
     "Void knight gloves"
   ],
   ["Red chinchompa", "70 ranged"],
-  [
-    "Elite void top",
-    "Elite void robe",
-    "Crystal halberd"
-  ],
+  ["Elite void top", "Elite void robe", "Crystal halberd"],
   ["92 ranged"],
   ["Crystal body", "Crystal legs", "Crystal helm", "Bow of faerdhinen (c)"],
   ["Bloodbark body", "Bloodbark legs", "Bloodbark helm", "Ava's assembler"],
   ["Spellbook Swap"],
-  [
-    "Fire cape",
-    "Ancient icon",
-    "Dragon pickaxe",
-    "Wrath rune"
-  ],
+  ["Fire cape", "Ancient icon", "Dragon pickaxe", "Wrath rune"],
   [
     "Occult altar",
     "Ornate jewellery box",
-    "Fairy ring (Construction)",
+    "Fairy ring",
     "Ornate rejuvenation pool"
   ],
-  [
-    "Karamja gloves 4",
-    "Explorer's ring 4"
-  ],
-  [
-    "Warped sceptre",
-    "Reptile Got Ripped"
-  ],
+  ["Karamja gloves 4", "Explorer's ring 4"],
+  ["Warped sceptre", "Reptile Got Ripped"],
   ["Prescription goggles", "Alchemist's amulet"],
   ["Ghommal's hilt 3"],
   [
@@ -89,7 +76,7 @@
   ["Eye of ayak", "Confliction gauntlets"],
   ["Toxic blowpipe"],
   ["Osmumten's fang"],
-  ["Ferocious gloves", "*Dragon hunter lance", "Ghommal's hilt 4"],
+  ["Ferocious gloves", "Ghommal's hilt 4"],
   ["Rigour", "Augury"],
   ["Infernal cape"],
   ["Oathplate chest", "Oathplate legs", "Oathplate helm"],

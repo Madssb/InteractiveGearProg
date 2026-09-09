@@ -5,11 +5,8 @@ description = "Repo maintenance scripts for data generation"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
-    "osrs-milestone-metadata>=0.1.4",
     "python-dotenv>=1.2.1",
     "requests>=2.32.5",
-    "pydantic"
+    "pydantic",
+    "pandas>=3.0.5",
 ]
-
-[tool.uv.sources]
-osrs-milestone-metadata = { path = "../osrs_milestone_metadata", editable = true }
