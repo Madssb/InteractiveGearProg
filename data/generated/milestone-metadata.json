@@ -1,738 +1,926 @@
 {
   "Amulet of strength": {
     "imgUrl": "/images/item_icons/1725.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/amulet_of_strength"
+    "type": "",
+    "id": "1"
   },
   "Climbing boots": {
     "imgUrl": "/images/item_icons/3105.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/climbing_boots"
+    "type": "",
+    "id": "2"
   },
   "Rune pouch": {
     "imgUrl": "/images/item_icons/12791.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/rune_pouch"
+    "type": "",
+    "id": "3"
   },
   "Iban's staff (u)": {
     "imgUrl": "/images/item_icons/12658.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/iban's_staff_(u)"
+    "type": "",
+    "id": "4"
   },
   "Protect from Melee": {
     "imgUrl": "/images/prayer_icons/Protect_from_Melee.webp",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/protect_from_melee"
+    "type": "",
+    "id": "5"
   },
   "Ancient staff": {
     "imgUrl": "/images/item_icons/4675.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/ancient_staff"
+    "type": "",
+    "id": "6"
   },
   "Eagle Eye": {
     "imgUrl": "/images/prayer_icons/Eagle_Eye.webp",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/eagle_eye"
+    "type": "",
+    "id": "7"
   },
   "Fighter torso": {
     "imgUrl": "/images/item_icons/10551.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/fighter_torso"
+    "type": "",
+    "id": "8"
   },
   "Granite body": {
     "imgUrl": "/images/item_icons/10564.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/granite_body"
+    "type": "",
+    "id": "9"
   },
   "Dragon scimitar": {
     "imgUrl": "/images/item_icons/4587.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/dragon_scimitar"
+    "type": "",
+    "id": "10"
   },
   "Dragon dagger": {
     "imgUrl": "/images/item_icons/1215.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/dragon_dagger"
+    "type": "",
+    "id": "173"
   },
   "Berserker ring (i)": {
     "imgUrl": "/images/item_icons/11773.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/berserker_ring_(i)"
+    "type": "",
+    "id": "11"
   },
   "Helm of neitiznot": {
     "imgUrl": "/images/item_icons/10828.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/helm_of_neitiznot"
+    "type": "",
+    "id": "15"
   },
   "Barrows gloves": {
     "imgUrl": "/images/item_icons/7462.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/barrows_gloves"
+    "type": "",
+    "id": "14"
   },
   "gem bag": {
     "imgUrl": "/images/item_icons/766.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/gem_bag"
+    "type": "",
+    "id": "19"
   },
   "Herb sack": {
     "imgUrl": "/images/item_icons/13226.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/herb_sack"
+    "type": "",
+    "id": "12"
   },
   "Dragon defender": {
     "imgUrl": "/images/item_icons/12954.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/dragon_defender"
+    "type": "",
+    "id": "13"
   },
   "Book of the dead": {
     "imgUrl": "/images/item_icons/25818.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/book_of_the_dead"
+    "type": "",
+    "id": "16"
   },
   "Salve amulet(ei)": {
     "imgUrl": "/images/item_icons/12018.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/salve_amulet(ei)"
+    "type": "",
+    "id": "174"
   },
   "Piety": {
     "imgUrl": "/images/prayer_icons/Piety.webp",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/piety"
+    "type": "",
+    "id": "18"
   },
   "Mixed hide cape": {
     "imgUrl": "/images/item_icons/29289.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/mixed_hide_cape"
+    "type": "",
+    "id": "34"
   },
   "Mixed hide boots": {
     "imgUrl": "/images/item_icons/29286.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/mixed_hide_boots"
+    "type": "",
+    "id": "35"
   },
   "Ava's accumulator": {
     "imgUrl": "/images/item_icons/10499.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/ava's_accumulator"
+    "type": "",
+    "id": "17"
   },
   "Imbued zamorak cape": {
     "imgUrl": "/images/item_icons/21795.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/imbued_zamorak_cape"
+    "type": "",
+    "id": "27"
   },
   "Spirit tree": {
     "imgUrl": "/images/item_icons/6063.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/spirit_tree"
+    "type": "",
+    "id": "22"
   },
   "Hallowed crystal shard": {
     "imgUrl": "/images/item_icons/24709.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/hallowed_crystal_shard"
+    "type": "",
+    "id": "20"
   },
   "Infinity boots": {
     "imgUrl": "/images/item_icons/6920.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/infinity_boots"
+    "type": "",
+    "id": "32"
   },
   "Mage's book": {
     "imgUrl": "/images/item_icons/6889.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/mage's_book"
+    "type": "",
+    "id": "33"
   },
   "Dark altar": {
     "imgUrl": "/images/item_icons/20619.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/dark_altar"
+    "type": "",
+    "id": "21"
   },
   "Rejuvenation pool": {
     "imgUrl": "/images/item_icons/20641.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/rejuvenation_pool"
+    "type": "",
+    "id": "23"
   },
   "Basic jewellery box": {
     "imgUrl": "/images/item_icons/20626.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/basic_jewellery_box"
+    "type": "",
+    "id": "24"
   },
   "Arkan blade": {
     "imgUrl": "/images/item_icons/30955.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/arkan_blade"
+    "type": "",
+    "id": "25"
   },
   "Black mask (i)": {
     "imgUrl": "/images/item_icons/11784.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/black_mask_(i)"
+    "type": "",
+    "id": "26"
   },
   "Bonecrusher": {
     "imgUrl": "/images/item_icons/13116.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/bonecrusher"
+    "type": "",
+    "id": "28"
   },
   "Pharaoh's sceptre": {
     "imgUrl": "/images/item_icons/9044.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/pharaoh's_sceptre"
+    "type": "",
+    "id": "57"
   },
   "Arclight": {
     "imgUrl": "/images/item_icons/19675.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/arclight"
+    "type": "",
+    "id": "69"
   },
   "Broader Fletching": {
     "imgUrl": "/images/slayer_icons/Broader_Fletching.webp",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/broader_fletching"
+    "type": "slayer",
+    "id": "38"
   },
   "Slayer helmet (i)": {
     "imgUrl": "/images/item_icons/11865.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/slayer_helmet_(i)"
+    "type": "",
+    "id": "68"
   },
   "Ice Barrage": {
     "imgUrl": "/images/spell_icons/Ice_Barrage.webp",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/ice_barrage"
+    "type": "",
+    "id": "31"
   },
   "Bigger and Badder": {
     "imgUrl": "/images/slayer_icons/Bigger_and_Badder.webp",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/bigger_and_badder"
+    "type": "slayer",
+    "id": "30"
   },
   "Ash sanctifier": {
     "imgUrl": "/images/item_icons/25781.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/ash_sanctifier"
+    "type": "",
+    "id": "29"
   },
   "69 slayer": {
     "imgUrl": "/images/skill_icons/Slayer_icon.webp",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/69_slayer"
+    "type": "skill",
+    "id": "195",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/slayer"
   },
   "86 strength": {
     "imgUrl": "/images/skill_icons/Strength_icon.webp",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/86_strength"
+    "type": "skill",
+    "id": "196",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/strength"
   },
   "Karamja gloves 3": {
     "imgUrl": "/images/item_icons/11140.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/karamja_gloves_3"
+    "type": "",
+    "id": "55"
   },
   "Amulet of glory": {
     "imgUrl": "/images/item_icons/1704.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/amulet_of_glory"
+    "type": "",
+    "id": "56"
   },
   "Ghommal's hilt 2": {
     "imgUrl": "/images/item_icons/25928.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/ghommal's_hilt_2"
+    "type": "",
+    "id": "40"
   },
   "void knight top": {
     "imgUrl": "/images/item_icons/8839.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/void_knight_top"
+    "type": "",
+    "id": "175"
   },
   "void knight robe": {
     "imgUrl": "/images/item_icons/8840.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/void_knight_robe"
+    "type": "",
+    "id": "176"
   },
   "Void ranger helm": {
     "imgUrl": "/images/item_icons/11664.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/void_ranger_helm"
+    "type": "",
+    "id": "41"
   },
   "Void knight gloves": {
     "imgUrl": "/images/item_icons/8842.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/void_knight_gloves"
+    "type": "",
+    "id": "42"
   },
   "Red chinchompa": {
     "imgUrl": "/images/item_icons/9977.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/red_chinchompa"
+    "type": "",
+    "id": "36"
   },
   "70 ranged": {
     "imgUrl": "/images/skill_icons/Ranged_icon.webp",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/70_ranged"
+    "type": "skill",
+    "id": "198",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/ranged"
   },
   "Elite void top": {
     "imgUrl": "/images/item_icons/13072.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/elite_void_top"
+    "type": "",
+    "id": "43"
   },
   "Elite void robe": {
     "imgUrl": "/images/item_icons/13073.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/elite_void_robe"
+    "type": "",
+    "id": "44"
   },
   "Crystal halberd": {
     "imgUrl": "/images/item_icons/23987.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/crystal_halberd"
+    "type": "",
+    "id": "45"
   },
   "92 ranged": {
     "imgUrl": "/images/skill_icons/Ranged_icon.webp",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/92_ranged"
+    "type": "skill",
+    "id": "200",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/ranged"
   },
   "Crystal body": {
     "imgUrl": "/images/item_icons/23975.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/crystal_body"
+    "type": "",
+    "id": "49"
   },
   "Crystal legs": {
     "imgUrl": "/images/item_icons/23979.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/crystal_legs"
+    "type": "",
+    "id": "50"
   },
   "Crystal helm": {
     "imgUrl": "/images/item_icons/23971.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/crystal_helm"
+    "type": "",
+    "id": "47"
   },
   "Bow of faerdhinen (c)": {
     "imgUrl": "/images/item_icons/25867.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/bow_of_faerdhinen_(c)"
+    "type": "",
+    "id": "48"
   },
   "Bloodbark body": {
     "imgUrl": "/images/item_icons/25404.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/bloodbark_body"
+    "type": "",
+    "id": "65"
   },
   "Bloodbark legs": {
     "imgUrl": "/images/item_icons/25416.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/bloodbark_legs"
+    "type": "",
+    "id": "66"
   },
   "Bloodbark helm": {
     "imgUrl": "/images/item_icons/25413.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/bloodbark_helm"
+    "type": "",
+    "id": "64"
   },
   "Ava's assembler": {
     "imgUrl": "/images/item_icons/22109.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/ava's_assembler"
+    "type": "",
+    "id": "63"
   },
   "Spellbook Swap": {
     "imgUrl": "/images/spell_icons/Spellbook_Swap.webp",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/spellbook_swap"
+    "type": "",
+    "id": "51"
   },
   "Fire cape": {
     "imgUrl": "/images/item_icons/6570.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/fire_cape"
+    "type": "",
+    "id": "54"
   },
   "Ancient icon": {
     "imgUrl": "/images/item_icons/27627.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/ancient_icon"
+    "type": "",
+    "id": "67"
   },
   "Dragon pickaxe": {
     "imgUrl": "/images/item_icons/11920.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/dragon_pickaxe"
+    "type": "",
+    "id": "80"
   },
   "Wrath rune": {
     "imgUrl": "/images/item_icons/21880.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/wrath_rune"
+    "type": "",
+    "id": "53"
   },
   "Occult altar": {
     "imgUrl": "/images/item_icons/20620.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/occult_altar"
+    "type": "",
+    "id": "59"
   },
   "Ornate jewellery box": {
     "imgUrl": "/images/item_icons/20628.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/ornate_jewellery_box"
+    "type": "",
+    "id": "60"
   },
   "Fairy ring": {
     "imgUrl": "/images/item_icons/20636.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/fairy_ring"
+    "type": "",
+    "id": "61"
   },
   "Ornate rejuvenation pool": {
     "imgUrl": "/images/item_icons/20643.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/ornate_rejuvenation_pool"
+    "type": "",
+    "id": "62"
   },
   "Karamja gloves 4": {
     "imgUrl": "/images/item_icons/13103.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/karamja_gloves_4"
+    "type": "",
+    "id": "58"
   },
   "Explorer's ring 4": {
     "imgUrl": "/images/item_icons/13128.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/explorer's_ring_4"
+    "type": "",
+    "id": "52"
   },
   "Warped sceptre": {
     "imgUrl": "/images/item_icons/28585.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/warped_sceptre"
+    "type": "",
+    "id": "70"
   },
   "Reptile Got Ripped": {
     "imgUrl": "/images/slayer_icons/Reptile_Got_Ripped.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/reptile_got_ripped"
+    "type": "slayer",
+    "id": "71"
   },
   "Prescription goggles": {
     "imgUrl": "/images/item_icons/29974.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/prescription_goggles"
+    "type": "",
+    "id": "73"
   },
   "Alchemist's amulet": {
     "imgUrl": "/images/item_icons/29988.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/alchemist's_amulet"
+    "type": "",
+    "id": "74"
   },
   "Ghommal's hilt 3": {
     "imgUrl": "/images/item_icons/25930.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/ghommal's_hilt_3"
+    "type": "",
+    "id": "177"
   },
   "Amulet of torture": {
     "imgUrl": "/images/item_icons/19553.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/amulet_of_torture"
+    "type": "",
+    "id": "75"
   },
   "Necklace of anguish": {
     "imgUrl": "/images/item_icons/19547.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/necklace_of_anguish"
+    "type": "",
+    "id": "76"
   },
   "Zamorakian hasta": {
     "imgUrl": "/images/item_icons/11889.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/zamorakian_hasta"
+    "type": "",
+    "id": "77"
   },
   "Bandos godsword": {
     "imgUrl": "/images/item_icons/11804.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/bandos_godsword"
+    "type": "",
+    "id": "78"
   },
   "Voidwaker": {
     "imgUrl": "/images/item_icons/27690.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/voidwaker"
+    "type": "",
+    "id": "79"
   },
   "Deadeye": {
     "imgUrl": "/images/prayer_icons/Deadeye.webp",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/deadeye"
+    "type": "",
+    "id": "81"
   },
   "Mystic Vigour": {
     "imgUrl": "/images/prayer_icons/Mystic_Vigour.webp",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/mystic_vigour"
+    "type": "",
+    "id": "82"
   },
   "Necklace of rupture": {
     "imgUrl": "/images/item_icons/33639.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/necklace_of_rupture"
+    "type": "",
+    "id": "190"
   },
   "Thread of elidinis": {
     "imgUrl": "/images/item_icons/27279.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/thread_of_elidinis"
+    "type": "",
+    "id": "83"
   },
   "Lightbearer": {
     "imgUrl": "/images/item_icons/25975.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/lightbearer"
+    "type": "",
+    "id": "84"
   },
   "Abyssal whip": {
     "imgUrl": "/images/item_icons/4151.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/abyssal_whip"
+    "type": "",
+    "id": "86"
   },
   "Abyssal tentacle": {
     "imgUrl": "/images/item_icons/12006.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/abyssal_tentacle"
+    "type": "",
+    "id": "87"
   },
   "Dragon warhammer": {
     "imgUrl": "/images/item_icons/13576.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/dragon_warhammer"
+    "type": "",
+    "id": "88"
   },
   "Emberlight": {
     "imgUrl": "/images/item_icons/29589.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/emberlight"
+    "type": "",
+    "id": "89"
   },
   "Dragon boots": {
     "imgUrl": "/images/item_icons/11840.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/dragon_boots"
+    "type": "",
+    "id": "90"
   },
   "Scorching bow": {
     "imgUrl": "/images/item_icons/29591.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/scorching_bow"
+    "type": "",
+    "id": "91"
   },
   "Tormented bracelet": {
     "imgUrl": "/images/item_icons/19544.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/tormented_bracelet"
+    "type": "",
+    "id": "92"
   },
   "Burning claws": {
     "imgUrl": "/images/item_icons/29577.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/burning_claws"
+    "type": "",
+    "id": "93"
   },
   "Ring of suffering (i)": {
     "imgUrl": "/images/item_icons/19710.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/ring_of_suffering_(i)"
+    "type": "",
+    "id": "94"
   },
   "Avernic treads": {
     "imgUrl": "/images/item_icons/31088.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/avernic_treads"
+    "type": "",
+    "id": "95"
   },
   "Rite of vile transference": {
     "imgUrl": "/images/item_icons/30806.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/rite_of_vile_transference"
+    "type": "",
+    "id": "96"
   },
   "Desert amulet 4": {
     "imgUrl": "/images/item_icons/13136.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/desert_amulet_4"
+    "type": "",
+    "id": "97"
   },
   "Rada's blessing 4": {
     "imgUrl": "/images/item_icons/22947.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/rada's_blessing_4"
+    "type": "",
+    "id": "98"
   },
   "Primordial boots": {
     "imgUrl": "/images/item_icons/13239.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/primordial_boots"
+    "type": "",
+    "id": "99"
   },
   "Amulet of rancour": {
     "imgUrl": "/images/item_icons/29801.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/amulet_of_rancour"
+    "type": "",
+    "id": "100"
   },
   "Eternal boots": {
     "imgUrl": "/images/item_icons/13235.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/eternal_boots"
+    "type": "",
+    "id": "101"
   },
   "Occult necklace": {
     "imgUrl": "/images/item_icons/12002.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/occult_necklace"
+    "type": "",
+    "id": "102"
   },
   "Eye of ayak": {
     "imgUrl": "/images/item_icons/31113.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/eye_of_ayak"
+    "type": "",
+    "id": "103"
   },
   "Confliction gauntlets": {
     "imgUrl": "/images/item_icons/31106.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/confliction_gauntlets"
+    "type": "",
+    "id": "104"
   },
   "Toxic blowpipe": {
     "imgUrl": "/images/item_icons/12926.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/toxic_blowpipe"
+    "type": "",
+    "id": "105"
   },
   "Osmumten's fang": {
     "imgUrl": "/images/item_icons/26219.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/osmumten's_fang"
+    "type": "",
+    "id": "106"
   },
   "Ferocious gloves": {
     "imgUrl": "/images/item_icons/22981.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/ferocious_gloves"
+    "type": "",
+    "id": "107"
   },
   "Ghommal's hilt 4": {
     "imgUrl": "/images/item_icons/25932.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/ghommal's_hilt_4"
+    "type": "",
+    "id": "85"
   },
   "Rigour": {
     "imgUrl": "/images/prayer_icons/Rigour.webp",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/rigour"
+    "type": "",
+    "id": "108"
   },
   "Augury": {
     "imgUrl": "/images/prayer_icons/Augury.webp",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/augury"
+    "type": "",
+    "id": "109"
   },
   "Infernal cape": {
     "imgUrl": "/images/item_icons/21295.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/infernal_cape"
+    "type": "",
+    "id": "110"
   },
   "Oathplate chest": {
     "imgUrl": "/images/item_icons/30753.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/oathplate_chest"
+    "type": "",
+    "id": "111"
   },
   "Oathplate legs": {
     "imgUrl": "/images/item_icons/30756.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/oathplate_legs"
+    "type": "",
+    "id": "112"
   },
   "Oathplate helm": {
     "imgUrl": "/images/item_icons/30750.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/oathplate_helm"
+    "type": "",
+    "id": "113"
   },
   "Ultor ring": {
     "imgUrl": "/images/item_icons/28307.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/ultor_ring"
+    "type": "",
+    "id": "114"
   },
   "Dizana's quiver": {
     "imgUrl": "/images/item_icons/28951.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/dizana's_quiver"
+    "type": "",
+    "id": "115"
   },
   "Avernic defender": {
     "imgUrl": "/images/item_icons/22322.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/avernic_defender"
+    "type": "",
+    "id": "116"
   },
   "Scythe of vitur": {
     "imgUrl": "/images/item_icons/22325.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/scythe_of_vitur"
+    "type": "",
+    "id": "117"
   },
   "Tumeken's shadow": {
     "imgUrl": "/images/item_icons/27275.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/tumeken's_shadow"
+    "type": "",
+    "id": "118"
   },
   "Magus ring": {
     "imgUrl": "/images/item_icons/28313.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/magus_ring"
+    "type": "",
+    "id": "119"
   },
   "Twisted bow": {
     "imgUrl": "/images/item_icons/20997.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/twisted_bow"
+    "type": "",
+    "id": "120"
   },
   "Dragon claws": {
     "imgUrl": "/images/item_icons/13652.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/dragon_claws"
+    "type": "",
+    "id": "121"
   },
   "Ancestral robe top": {
     "imgUrl": "/images/item_icons/21021.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/ancestral_robe_top"
+    "type": "",
+    "id": "122"
   },
   "Ancestral robe bottom": {
     "imgUrl": "/images/item_icons/21024.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/ancestral_robe_bottom"
+    "type": "",
+    "id": "123"
   },
   "Ancestral hat": {
     "imgUrl": "/images/item_icons/21018.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/ancestral_hat"
+    "type": "",
+    "id": "124"
   },
   "Elder maul": {
     "imgUrl": "/images/item_icons/21003.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/elder_maul"
+    "type": "",
+    "id": "125"
   },
   "Masori body (f)": {
     "imgUrl": "/images/item_icons/27238.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/masori_body_(f)"
+    "type": "",
+    "id": "126"
   },
   "Masori chaps (f)": {
     "imgUrl": "/images/item_icons/27241.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/masori_chaps_(f)"
+    "type": "",
+    "id": "127"
   },
   "Masori mask (f)": {
     "imgUrl": "/images/item_icons/27235.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/masori_mask_(f)"
+    "type": "",
+    "id": "128"
   },
   "Elidinis' ward": {
     "imgUrl": "/images/item_icons/25985.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/elidinis'_ward"
+    "type": "",
+    "id": "129"
   },
   "Venator bow": {
     "imgUrl": "/images/item_icons/27610.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/venator_bow"
+    "type": "",
+    "id": "131"
   },
   "Ghommal's hilt 5": {
     "imgUrl": "/images/item_icons/25934.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/ghommal's_hilt_5"
+    "type": "",
+    "id": "132"
   },
   "Tzkal slayer helmet": {
     "imgUrl": "/images/item_icons/25910.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/tzkal_slayer_helmet"
+    "type": "",
+    "id": "172"
   },
   "Max cape": {
     "imgUrl": "/images/item_icons/13280.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/max_cape"
+    "type": "",
+    "id": "171"
   },
   "Torva platebody": {
     "imgUrl": "/images/item_icons/26384.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/torva_platebody"
+    "type": "",
+    "id": "133"
   },
   "Torva platelegs": {
     "imgUrl": "/images/item_icons/26386.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/torva_platelegs"
+    "type": "",
+    "id": "134"
   },
   "Torva full helm": {
     "imgUrl": "/images/item_icons/26382.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/torva_full_helm"
+    "type": "",
+    "id": "135"
   },
   "Inquisitor's hauberk": {
     "imgUrl": "/images/item_icons/24420.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/inquisitor's_hauberk"
+    "type": "",
+    "id": "142"
   },
   "Inquisitor's plateskirt": {
     "imgUrl": "/images/item_icons/24421.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/inquisitor's_plateskirt"
+    "type": "",
+    "id": "143"
   },
   "Inquisitor's great helm": {
     "imgUrl": "/images/item_icons/24419.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/inquisitor's_great_helm"
+    "type": "",
+    "id": "164"
   },
   "Inquisitor's mace": {
     "imgUrl": "/images/item_icons/24417.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/inquisitor's_mace"
+    "type": "",
+    "id": "141"
   },
   "Dharok's platebody": {
     "imgUrl": "/images/item_icons/4720.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/dharok's_platebody"
+    "type": "",
+    "id": "189"
   },
   "Dharok's platelegs": {
     "imgUrl": "/images/item_icons/4722.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/dharok's_platelegs"
+    "type": "",
+    "id": "188"
   },
   "Dharok's helm": {
     "imgUrl": "/images/item_icons/4716.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/dharok's_helm"
+    "type": "",
+    "id": "179"
   },
   "Dharok's greataxe": {
     "imgUrl": "/images/item_icons/4718.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/dharok's_greataxe"
+    "type": "",
+    "id": "182"
   },
   "Spectral spirit shield": {
     "imgUrl": "/images/item_icons/12821.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/spectral_spirit_shield"
+    "type": "",
+    "id": "138"
   },
   "Elidinis' ward (f)": {
     "imgUrl": "/images/item_icons/27251.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/elidinis'_ward_(f)"
+    "type": "",
+    "id": "166"
   },
   "Elysian spirit shield": {
     "imgUrl": "/images/item_icons/12817.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/elysian_spirit_shield"
+    "type": "",
+    "id": "140"
   },
   "Nightmare staff": {
     "imgUrl": "/images/item_icons/24422.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/nightmare_staff"
+    "type": "",
+    "id": "144"
   },
   "Eldritch orb": {
     "imgUrl": "/images/item_icons/24517.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/eldritch_orb"
+    "type": "",
+    "id": "145"
   },
   "Harmonised orb": {
     "imgUrl": "/images/item_icons/24511.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/harmonised_orb"
+    "type": "",
+    "id": "146"
   },
   "Volatile orb": {
     "imgUrl": "/images/item_icons/24514.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/volatile_orb"
+    "type": "",
+    "id": "147"
   },
   "Zamorak godsword": {
     "imgUrl": "/images/item_icons/11808.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/zamorak_godsword"
+    "type": "",
+    "id": "148"
   },
   "Saradomin godsword": {
     "imgUrl": "/images/item_icons/11806.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/saradomin_godsword"
+    "type": "",
+    "id": "149"
   },
   "Ancient godsword": {
     "imgUrl": "/images/item_icons/26233.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/ancient_godsword"
+    "type": "",
+    "id": "151"
   },
   "Soulflame horn": {
     "imgUrl": "/images/item_icons/30759.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/soulflame_horn"
+    "type": "",
+    "id": "153"
   },
   "Tonalztics of ralos": {
     "imgUrl": "/images/item_icons/28922.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/tonalztics_of_ralos"
+    "type": "",
+    "id": "154"
   },
   "Ring of the gods": {
     "imgUrl": "/images/item_icons/12601.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/ring_of_the_gods"
+    "type": "",
+    "id": "157"
   },
   "Venator ring": {
     "imgUrl": "/images/item_icons/25487.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/venator_ring"
+    "type": "",
+    "id": "191"
   },
   "Bellator ring": {
     "imgUrl": "/images/item_icons/25488.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/bellator_ring"
+    "type": "",
+    "id": "178"
   },
   "Soulreaper axe": {
     "imgUrl": "/images/item_icons/25484.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/soulreaper_axe"
+    "type": "",
+    "id": "193"
   },
   "Virtus mask": {
     "imgUrl": "/images/item_icons/26241.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/virtus_mask"
+    "type": "",
+    "id": "185"
   },
   "Virtus robe top": {
     "imgUrl": "/images/item_icons/26243.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/virtus_robe_top"
+    "type": "",
+    "id": "187"
   },
   "Virtus robe bottom": {
     "imgUrl": "/images/item_icons/26245.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/virtus_robe_bottom"
+    "type": "",
+    "id": "186"
   },
   "Twisted buckler": {
     "imgUrl": "/images/item_icons/21000.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/twisted_buckler"
+    "type": "",
+    "id": "181"
   },
   "Dinh's bulwark": {
     "imgUrl": "/images/item_icons/21015.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/dinh's_bulwark"
+    "type": "",
+    "id": "183"
   },
   "Kodai wand": {
     "imgUrl": "/images/item_icons/21006.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/kodai_wand"
+    "type": "",
+    "id": "180"
   },
   "Dragon hunter crossbow": {
     "imgUrl": "/images/item_icons/21012.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/dragon_hunter_crossbow"
+    "type": "",
+    "id": "192"
   },
   "Webweaver bow": {
     "imgUrl": "/images/item_icons/27655.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/webweaver_bow"
+    "type": "",
+    "id": "167"
   },
   "Accursed sceptre": {
     "imgUrl": "/images/item_icons/27665.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/accursed_sceptre"
+    "type": "",
+    "id": "168"
   },
   "Ursine chainmace": {
     "imgUrl": "/images/item_icons/27660.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/ursine_chainmace"
+    "type": "",
+    "id": "169"
   },
   "dragonfire shield": {
     "imgUrl": "/images/item_icons/11283.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/dragonfire_shield"
+    "type": "",
+    "id": "161"
   },
   "Dragonfire ward": {
     "imgUrl": "/images/item_icons/22002.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/dragonfire_ward"
+    "type": "",
+    "id": "162"
   },
   "Ancient wyvern shield": {
     "imgUrl": "/images/item_icons/21633.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/ancient_wyvern_shield"
+    "type": "",
+    "id": "163"
   },
   "Pegasian boots": {
     "imgUrl": "/images/item_icons/13237.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/pegasian_boots"
+    "type": "",
+    "id": "170"
   },
   "Crimson kisten": {
     "imgUrl": "/images/item_icons/33631.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/crimson_kisten"
+    "type": "",
+    "id": "184"
   },
   "Saturated heart": {
     "imgUrl": "/images/item_icons/27641.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/saturated_heart"
+    "type": "",
+    "id": "130"
   },
   "Zaryte crossbow": {
     "imgUrl": "/images/item_icons/26374.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/zaryte_crossbow"
+    "type": "",
+    "id": "136"
   },
   "Zaryte vambraces": {
     "imgUrl": "/images/item_icons/26235.png",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/zaryte_vambraces"
+    "type": "",
+    "id": "137"
   }
 }

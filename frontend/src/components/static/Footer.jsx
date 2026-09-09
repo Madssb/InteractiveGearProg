@@ -31,7 +31,7 @@ export default function Footer({ showImageAttribution = false }) {
                     Monthly page visits: <span id="page-count"><PageCount /></span> |{" "}
                 </p>
                 {showImageAttribution && (
-                    <p>All images used in this tool are sourced from the{" "}
+                    <p>Some images used in the config menu of this tool are sourced from the{" "}
                         <a href="https://oldschool.runescape.wiki/" target="_blank">Old School RuneScape Wiki</a>,
                         and are licensed under the{" "}
                         <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank">Creative Commons

@@ -14,6 +14,7 @@ SLAYER_KEYVALS = {
     "Broad_arrowheads_5.webp": "Broader Fletching",
     "Lizardmen_icon.png": "Reptile got Ripped",
 }
+BASE = "https://oldschool.runescape.wiki/w/"
 
 
 class ManualAsset:
@@ -30,6 +31,8 @@ class ManualAsset:
         if not isinstance(milestone, str):
             raise TypeError(f"Invalid type on milestone. Expected str, got {type}.")
         self.milestone = milestone
+        self.type = ""
+        self.wiki_url = None
         self._resolve_path()
 
     def _skill_icon_path(self) -> Path | None:
@@ -38,7 +41,10 @@ class ManualAsset:
         if match:
             for path in list(SKILL_ICONS_DIR.glob("*")):
                 template = path.with_suffix("").name.replace("_icon", "").lower()
-                if self.milestone.split(" ")[1].lower() == template:
+                skill = self.milestone.split(" ")[1].lower()
+                if skill == template:
+                    self.type = "skill"
+                    self.wiki_url = BASE + skill
                     return path
             raise ValueError(
                 f"Milestone matches level pattern without a valid skill: {self.milestone}"
@@ -63,6 +69,7 @@ class ManualAsset:
         for path in list(SLAYER_ICONS_DIR.glob("*")):
             template = path.with_suffix("").name.lower().replace("_", " ")
             if self.milestone.lower() == template:
+                self.type = "slayer"
                 return path
 
     def _resolve_path(self):

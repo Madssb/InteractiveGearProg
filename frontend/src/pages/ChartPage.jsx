@@ -304,7 +304,6 @@ export default function ChartPage(){
     const displayedMilestonesComplete = isProgressShareView
         ? sharedMilestones ?? EMPTY_MILESTONES
         : milestonesComplete;
-    
     return (
         <>
             

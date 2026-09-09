@@ -105,6 +105,8 @@ class IdAsset:
         self.path: Path = Path(
             ROOT_DIR / f"frontend/public/images/item_icons/{self.item_id}.png"
         )
+        self.type = ""
+        self.wiki_url = None
 
     def intelligent_resolver(self):
         """Get Ingame item id

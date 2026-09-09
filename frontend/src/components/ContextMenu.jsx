@@ -1,12 +1,11 @@
 
 import '@/styles/context-menu.css';
-import { handleLevels } from '@/utils/textSanitizers';
 import { useLayoutEffect, useRef, useState } from 'react';
 
 export default function ContextMenu({ milestone, onClose, onHide, onDelete, onShowAnnotations, milestoneMetadata, x, y}){
     
-    let wikiUrl = milestoneMetadata[handleLevels(milestone)]["wikiUrl"];
-    let milestoneId = milestoneMetadata[handleLevels(milestone)]["id"];
+    let wikiUrl = milestoneMetadata[milestone]["wikiUrl"];
+    let milestoneId = milestoneMetadata[milestone]["id"];
     // avoid menu screen clipping
     const ref = useRef(null);
     const [pos, setPos] = useState({ top: y, left: x });
