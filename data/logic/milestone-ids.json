@@ -19,8 +19,8 @@
   "18": "Piety",
   "19": "gem bag",
   "20": "Hallowed crystal shard",
-  "21": "Dark altar (Construction)",
-  "22": "Spirit tree (Construction)",
+  "21": "Dark altar",
+  "22": "Spirit tree",
   "23": "Rejuvenation pool",
   "24": "Basic jewellery box",
   "25": "Arkan blade",
@@ -59,7 +59,7 @@
   "58": "Karamja gloves 4",
   "59": "Occult altar",
   "60": "Ornate jewellery box",
-  "61": "Fairy ring (Construction)",
+  "61": "Fairy ring",
   "62": "Ornate rejuvenation pool",
   "63": "Ava's assembler",
   "64": "Bloodbark helm",
@@ -191,5 +191,9 @@
   "190": "Necklace of rupture",
   "191": "Venator ring",
   "192": "Dragon hunter crossbow",
-  "193": "Soulreaper axe"
+  "193": "Soulreaper axe",
+  "195": "69 slayer",
+  "196": "86 strength",
+  "198": "70 ranged",
+  "200": "92 ranged"
 }

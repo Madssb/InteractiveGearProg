@@ -1,18 +1,7 @@
 name: Validate milestone metadata
 
 on:
-  push:
-    paths:
-      - "data/logic/milestone-sequence-main.json"
-      - "data/logic/milestone-sequence-retirement.json"
-      - "data/logic/filter.json"
-      - "data/generated/milestone-metadata.json"
-      - "data/generated/milestone-sequence-barebones.json"
-      - "tools/generate_milestone_metadata.py"
-      - "tools/pyproject.toml"
-      - "tools/uv.lock"
-      - "osrs_milestone_metadata/**"
-      - ".github/workflows/validate_milestone_metadata.yml"
+  pull_request:
 
 permissions:
   contents: read
@@ -33,21 +22,8 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@v10.0.1
 
-      - name: Regenerate milestone metadata
-        run: uv run --project tools python tools/generate_milestone_metadata.py
+      - name: Check all milestone resolve to icon assets
+        run: cd tools && uv run asset_cli.py check-assets
 
-      - name: Reject stale generated files
-        run: |
-          set -eo pipefail
-
-          if git diff --quiet -- data/generated/milestone-metadata.json data/generated/milestone-sequence-barebones.json; then
-            echo "Generated milestone files are current."
-            exit 0
-          fi
-
-          echo "Generated milestone files are stale. Run:"
-          echo "  uv run --project tools python tools/generate_milestone_metadata.py"
-          echo
-          git diff --stat -- data/generated/milestone-metadata.json data/generated/milestone-sequence-barebones.json
-          git diff -- data/generated/milestone-metadata.json data/generated/milestone-sequence-barebones.json
-          exit 1
+      - name: Check set of milestones is subset of metadata keys
+        run: cd tools && uv run asset_cli.py check-metadata

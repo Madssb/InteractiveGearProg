@@ -1,4 +1,4 @@
-import { handleLevels, sanitizeId } from '@/utils/textSanitizers';
+import { sanitizeId } from '@/utils/textSanitizers';
 import { questNameInitials } from '@/utils/questNameInitials';
 import React, { useMemo } from 'react';
 import Annotations, { type AnnotationData } from '@/components/Annotations';
@@ -69,7 +69,7 @@ function Node({
 }: NodeProps) {
 
 
-  let metadata = milestoneMetadata[handleLevels(milestone)];
+  let metadata = milestoneMetadata[milestone];
   let imgUrl = metadata.imgUrl;
   let wikiUrl = metadata.wikiUrl;
   let id = sanitizeId(milestone)
@@ -80,7 +80,7 @@ function Node({
     return (
       <>
         <div
-          className={`node ${milestoneComplete && "complete"}`}
+          className={`node ${milestoneComplete ? "complete":""} ${milestoneHidden && "hidden"} ${type}`}
           title={milestone}
           id={id}
           data-wiki-url={wikiUrl}
@@ -214,7 +214,7 @@ export default function Chart({
         group.filter(milestone => {
           if (milestonesHidden?.has(milestone)) return false;
 
-          const metadata = milestoneMetadata[handleLevels(milestone)]
+          const metadata = milestoneMetadata[milestone]
           if (!metadata) return false;
           if (hide && hide[metadata.type]) return false;
           return true;

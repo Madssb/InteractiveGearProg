@@ -1,4 +1,4 @@
-import '@/styles/config-menu.css';
+import '@/styles/config-menu.css'; 
 
 function ToggleButton({ id, value, label, icon, onToggle }) {
   return (
@@ -43,42 +43,35 @@ export default function ConfigMenu({
           value={showRetirement}
           onToggle={setShowRetirement}
           label="Enable retirement home items"
-          icon="https://oldschool.runescape.wiki/images/Collection_log.png"
+          icon="/images/misc_icons/Collection_log.png"
         />
         <ToggleButton
           id="bare-bones-toggle"
           value={showBareBones}
           onToggle={setShowBareBones}
           label="Enable bare bones mode"
-          icon="https://oldschool.runescape.wiki/images/Bones.png"
+          icon="/images/misc_icons/Bones.png"
         />
         <ToggleButton
           id="hide-skill"
           value={hide.skill}
           onToggle={v => setHide(prev => ({ ...prev, skill: v }))}
           label="Hide levels"
-          icon="https://oldschool.runescape.wiki/images/Stats_icon.png"
-        />
-        <ToggleButton
-          id="hide-construction"
-          value={hide.construction}
-          onToggle={v => setHide(prev => ({ ...prev, construction: v }))}
-          label="Hide Construction milestones"
-          icon="https://oldschool.runescape.wiki/images/Construction_icon.png"
+          icon="/images/misc_icons/Stats_icon.png"
         />
         <ToggleButton
           id="hide-slayer"
           value={hide.slayer}
           onToggle={v => setHide(prev => ({ ...prev, slayer: v }))}
           label="Hide slayer rewards"
-          icon="https://oldschool.runescape.wiki/images/Slayer_icon.png"
+          icon="/images/skill_icons/Slayer_icon.webp"
         />
         <ToggleButton
           id="theme-toggle"
           value={themePreference !== 'system'}
           onToggle={() => setThemePreference(nextThemePreference)}
           label={`Theme: ${themeLabel}`}
-          icon="https://oldschool.runescape.wiki/images/Light_orb.png"
+          icon="/images/misc_icons/Light_orb.png"
         />
       </div>
     </div>
