@@ -17,7 +17,12 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 NAMES_PATH = Path(ROOT_DIR / "data/cache/names.json")
 NOTES_PATH = Path(ROOT_DIR / "data/cache/notes.json")
 NAMES_VETTED_PATH = Path(ROOT_DIR / "data/cache/named_wiki_vetted.json")
-OVERRIDES = {"Ultor ring": "28307", "Magus ring": "28313"}
+OVERRIDES = {
+    "Ultor ring": "28307",
+    "Magus ring": "28313",
+    "Venator ring": 28310,
+    "Bellator ring": 28316,
+}
 
 s = requests.Session()
 s.headers.update(
