@@ -1,4 +1,10 @@
 {
+  "1.9.1":[
+    "Replaced hotlinking osrs wiki assets with locally hosted assets pulled from static runelite repo. (The chart does look a bit different as a result).",
+    "Chartbuilder is more or less deactivated until further notice.",
+    "Fixed bug where skilling milestones were not annotatable.",
+    "'Hide construction' alternative in config has been removed."
+  ],
   "1.9.0":[
     "Added Necklace of rupture",
     "Added to the retirement home: Virtus robes, SRA, DT2 rings (Bellator, Venator), Dragon hunter crossbow, Twisted buckler, Kodai wand, Dharok's equipment.",
@@ -6,7 +12,7 @@
     "Moved from the main-chart to the retirement home: Saturated heart, Zaryte crossbow and Zaryte vambraces."
   ],
   "1.8.3":[
-    "Removed Greater challenge from the chart because its not a wise point investment"
+    "Removed Greater challenge from the chart because its not a wise point investment."
   ],
   "1.8.2": [
     "Light mode supported again",
