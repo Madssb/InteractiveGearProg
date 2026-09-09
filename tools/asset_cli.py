@@ -238,6 +238,7 @@ def main():
         "check-assets": check_assets,
         "unresolved": unresolved_milestones,
         "build-metadata": build_metadata,
+        "check-metadata": check_metadata,
         "check-ids": check_ids,
         "build-ids": build_ids,
     }
