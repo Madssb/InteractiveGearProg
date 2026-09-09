@@ -18,6 +18,7 @@ from bot.report_logs import send_report_log
 logger = logging.getLogger(__name__)
 VOTE_EMOJIS = {"👍", "👎"}
 
+BASE = "https://ladlorchart.com"
 
 ANNOTATOR_ROLE_ID = os.getenv("ANNOTATOR_ROLE_ID")
 if not ANNOTATOR_ROLE_ID:
@@ -190,7 +191,7 @@ def register_annotation_commands(
                 ephemeral=True,
             )
             return
-        img = metadata["imgUrl"]
+        img = BASE + metadata["imgUrl"]
 
         channel = interaction.client.get_channel(submitted_annotations_channel_id)
         if not isinstance(channel, discord.abc.Messageable):

@@ -9,7 +9,6 @@ import { apiUrl } from '@/utils/apiConfig';
 import migrateLegacySharedNodeStates from '@/utils/migrateState';
 import removeStarredItems from '@/utils/removeStarredItems.js';
 import updateSequenceLanceRule from '@/utils/sequenceRules.js';
-import { handleLevels } from '@/utils/textSanitizers';
 import { applyThemePreference, THEME_PREFERENCE_KEY } from '@/utils/themePreference';
 import { useLocalStorageSet, useLocalStorageState } from '@/utils/useLocalStorageState';
 import milestoneMetadata from '@data/generated/milestone-metadata.json';
@@ -102,7 +101,7 @@ async function submitAnnotationViewEvent(milestone) {
 
 async function getMilestoneAnnotations(milestone){
     if (!milestone) return { annotations: [], status: 'idle' };
-    const milestoneId = milestoneMetadata[handleLevels(milestone)]?.id;
+    const milestoneId = milestoneMetadata[milestone]?.id;
     if (!milestoneId) return { annotations: [], status: 'loaded' };
     const url = apiUrl(`/annotations?milestone_id=${milestoneId}`)
     if (!url) return { annotations: [], status: 'unavailable' };
