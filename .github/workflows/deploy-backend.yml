@@ -3,6 +3,8 @@ name: Deploy backend
 on:
   workflow_dispatch:
 
+permissions:
+  id-token: write
     
 jobs:
   deploy-backend:
