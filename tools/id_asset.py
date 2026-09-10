@@ -20,8 +20,9 @@ NAMES_VETTED_PATH = Path(ROOT_DIR / "data/cache/named_wiki_vetted.json")
 OVERRIDES = {
     "Ultor ring": "28307",
     "Magus ring": "28313",
-    "Venator ring": 28310,
-    "Bellator ring": 28316,
+    "Venator ring": "28310",
+    "Bellator ring": "28316",
+    "Soulreaper axe": "28338",
 }
 
 s = requests.Session()
