@@ -204,6 +204,8 @@ def build_metadata():
         # lvl milestones deviate in intended wiki url behavior.
         if ms.wiki_url is not None:
             row["wikiUrl"] = ms.wiki_url
+        else:
+            row["wikiUrl"] = BASE + ms.milestone.lower().replace(" ", "_")
         metadata[milestone] = row
     with open(METADATA_PATH, "w") as f:
         json.dump(metadata, f, indent=2)
