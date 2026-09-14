@@ -83,6 +83,12 @@
     "id": "14",
     "wikiUrl": "https://oldschool.runescape.wiki/w/barrows_gloves"
   },
+  "Proselyte cuisse": {
+    "imgUrl": "/images/item_icons/9676.png",
+    "type": "",
+    "id": "201",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/proselyte_cuisse"
+  },
   "gem bag": {
     "imgUrl": "/images/item_icons/766.png",
     "type": "",
