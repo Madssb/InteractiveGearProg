@@ -173,12 +173,20 @@ def build_ids():
 def build_metadata():
     """Construct metadata file for milestones.
 
+    Gets metadata if missing.
+
     Raises:
         FileNotFoundError: Milestone metadata json not found.
     """
     try:
         check_assets()
+    except FileNotFoundError:
+        # assets are required for building metadata.
+        get_assets()
+    try:
+        check_ids()
     except ValueError:
+        # IDs also required for building metadata.
         build_ids()
     milestones = load_milestones()
     metadata = {}
