@@ -1,4 +1,7 @@
 {
+  "1.9.2":[
+    "Added Proselyte Cuisse to chart. Minimal cost, low to moderate gains in clarity for chart assumptions."
+  ],
   "1.9.1":[
     "Replaced hotlinking osrs wiki assets with locally hosted assets pulled from static runelite repo. (The chart does look a bit different as a result).",
     "Chartbuilder is more or less deactivated until further notice.",
