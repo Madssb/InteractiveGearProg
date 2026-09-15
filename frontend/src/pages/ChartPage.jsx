@@ -7,16 +7,14 @@ import Footer from '@/components/static/Footer.jsx';
 import '@/styles/ChartPage.css';
 import { apiUrl } from '@/utils/apiConfig';
 import migrateLegacySharedNodeStates from '@/utils/migrateState';
-import removeStarredItems from '@/utils/removeStarredItems.js';
-import updateSequenceLanceRule from '@/utils/sequenceRules.js';
 import { applyThemePreference, THEME_PREFERENCE_KEY } from '@/utils/themePreference';
 import { useLocalStorageSet, useLocalStorageState } from '@/utils/useLocalStorageState';
 import milestoneMetadata from '@data/generated/milestone-metadata.json';
-import milestoneSequenceBarebonesRaw from '@data/generated/milestone-sequence-barebones.json';
-import milestoneSequenceRetirementRaw from '@data/logic/milestone-sequence-retirement.json';
-import milestoneSequenceMainRaw from '@data/logic/milestone-sequence-main.json';
+import milestoneSequenceBarebones from '@data/generated/milestone-sequence-barebones.json';
+import milestoneSequenceRetirement from '@data/logic/milestone-sequence-retirement.json';
+import milestoneSequenceMain from '@data/logic/milestone-sequence-main.json';
 import { encodeProgress, decodeProgress } from '@/utils/progressEncoding';
-import React, { useState } from 'react';
+import React from 'react';
 import { useLocation } from 'react-router';
 import Annotations from "../components/Annotations";
 
@@ -34,9 +32,9 @@ async function submitProgressSnapshot(milestonesComplete) {
     const url = apiUrl("/submit-progress-snapshot");
     if (!url) return;
 
+    // make submission a maximum of once per day, per session
     const today = localDateKey();
     if (localStorage.getItem(PROGRESS_SNAPSHOT_DATE_KEY) === today) return;
-
     localStorage.setItem(PROGRESS_SNAPSHOT_DATE_KEY, today);
 
     try {
@@ -56,13 +54,14 @@ async function submitProgressSnapshot(milestonesComplete) {
 }
 
 async function submitHiddenMilestonesSnapshot(milestonesHidden) {
+    // do nothing if set of user-hidden milestones is zero
     if (!milestonesHidden.size) return;
     const url = apiUrl("/submit-hidden-milestones-snapshot");
     if (!url) return;
-
+    
+    // make submission a maximum of once per day, per session
     const today = localDateKey();
     if (localStorage.getItem(HIDDEN_MILESTONES_SNAPSHOT_DATE_KEY) === today) return;
-
     localStorage.setItem(HIDDEN_MILESTONES_SNAPSHOT_DATE_KEY, today);
 
     try {
@@ -116,10 +115,9 @@ async function getMilestoneAnnotations(milestone){
     }
 }
 
-
 const canonicalSequence = [
-    ...removeStarredItems(milestoneSequenceMainRaw),
-    ...milestoneSequenceRetirementRaw,
+    ...milestoneSequenceMain,
+    ...milestoneSequenceRetirement,
 ];
 const EMPTY_MILESTONES = new Set();
 
@@ -128,16 +126,12 @@ export default function ChartPage(){
     const location = useLocation();
     const isProgressShareView = new URLSearchParams(location.search).has("progress");
 
-    const [showRetirement, setShowRetirement] = useLocalStorageState('showRetirement', false);
-    const [showBareBones, setShowBareBones] = useLocalStorageState('showBareBones', false);
-    const [themePreference, setThemePreference] = useLocalStorageState(THEME_PREFERENCE_KEY, 'system');
-    const [showOptions, setShowOptions] = useState(false);
-    const [progressSnapshotReady, setProgressSnapshotReady] = useState(false);
     const progressSnapshotAttempted = React.useRef(false);
-    const [sharedMilestones, setSharedMilestones] = useState(null);
-    const [shareStatus, setShareStatus] = useState(null);
+    
+    const [shareStatus, setShareStatus] = React.useState(null);
 
     const [milestonesHidden, setMilestonesHidden] = useLocalStorageSet('milestonesHidden', new Set(), ['nodesHiddenState']);
+    // set of milestones marked as complete by user
     const [milestonesComplete, setMilestonesComplete] = useLocalStorageSet('milestonesComplete', new Set(), ['nodesCompleteState']);
     const [hide, setHide] = useLocalStorageState('hide', {
         item: false,
@@ -148,9 +142,10 @@ export default function ChartPage(){
         skill: false,
     });
 
-    const [annotations, setAnnotations] = useState([]);
-    const [annotationStatus, setAnnotationStatus] = useState('idle');
-    const [annotatedMilestone, setAnnotatedMilestone] = useState();
+    // Annotation management
+    const [annotations, setAnnotations] = React.useState([]);
+    const [annotationStatus, setAnnotationStatus] = React.useState('idle');
+    const [annotatedMilestone, setAnnotatedMilestone] = React.useState();
 
     async function handleShowAnnotations(milestone){
         setAnnotatedMilestone(milestone);
@@ -168,7 +163,8 @@ export default function ChartPage(){
     }
 
     function handleHideClick(milestone){
-        if (isProgressShareView) return;
+        // disabled in shareview
+        if (isProgressShareView) return; 
         setMilestonesHidden(prev => {
             const next = new Set(prev);
             if (next.has(milestone)) next.delete(milestone);
@@ -177,10 +173,12 @@ export default function ChartPage(){
         });
     }
     function handleShowClick(){
+        // disabled in shareview
         if (isProgressShareView) return;
         setMilestonesHidden(new Set());
     }
     function handleNodeClick(milestone) {
+        // disabled in shareview
         if (isProgressShareView) return;
         setMilestonesComplete(prev => {
             const next = new Set(prev);
@@ -190,14 +188,17 @@ export default function ChartPage(){
         });
     }
     // Context menu
-    const [menu, setMenu] = useState({
+    const [menu, setMenu] = React.useState({
         visible: false,
+        /** Pixel coordinates */
         x: 0,
         y: 0,
+        /** Milestone for which the menu is open */
         milestone: null,
     });
     function handleNodeContextMenu(e, milestone) {
         e.preventDefault();
+        // disabled in shareview
         if (isProgressShareView) return;
         const touch = e.touches?.[0] || e.changedTouches?.[0];
         const x = touch?.pageX ?? e.pageX;
@@ -212,6 +213,7 @@ export default function ChartPage(){
 
     // long press behaves like right click
     function handleNodeTouchStart(e, milestone) {
+        // disabled in shareview
         if (isProgressShareView) return;
         e.persist?.(); // keep event for later
         const timeoutId = setTimeout(() => {
@@ -224,11 +226,11 @@ export default function ChartPage(){
         const timeoutId = e.target.dataset.longPressTimeout;
         if (timeoutId) clearTimeout(timeoutId);
     }
-
+    
+    // clicks not on a milestone close the menu
     function handleCloseMenu() {
         setMenu({ ...menu, visible: false });
     }
-
     React.useEffect(() => {
         function handleClickOutside() {
             setMenu(prev => (prev.visible ? { ...prev, visible: false } : prev));
@@ -237,19 +239,22 @@ export default function ChartPage(){
         return () => document.removeEventListener("click", handleClickOutside);
     }, []);
 
-    let milestoneSequenceMain = removeStarredItems(milestoneSequenceMainRaw);
-    let milestoneSequenceBarebones = removeStarredItems(milestoneSequenceBarebonesRaw);
-    let milestoneSequenceRetirement = milestoneSequenceRetirementRaw;
-    
-    
-    // if scythe is missing, lance is worth getting at the same step where ferocious gloves lives.
-    const [milestoneSequenceMainFiltered, setMilestoneSequenceMainFiltered] = useState(milestoneSequenceMain);
-    const [milestoneSequenceBarebonesFiltered, setMilestoneSequenceBarebonesFiltered] = useState(milestoneSequenceBarebones)
+    // localstorage migration stuff
+    const [progressSnapshotReady, setProgressSnapshotReady] = React.useState(false);
     React.useEffect(() => {
-        setMilestoneSequenceMainFiltered(prev => updateSequenceLanceRule(milestonesHidden, prev));
-        setMilestoneSequenceBarebonesFiltered(prev => updateSequenceLanceRule(milestonesHidden, prev));
-    }, [milestonesHidden])
-    
+        migrateLegacySharedNodeStates(setMilestonesComplete);
+        setProgressSnapshotReady(true);
+    }, [setMilestonesComplete]);
+
+    // === Load things
+    // load theme preferences
+    const [themePreference, setThemePreference] = useLocalStorageState(THEME_PREFERENCE_KEY, 'system');
+    React.useEffect(() => {
+        applyThemePreference(themePreference);
+    }, [themePreference]);
+
+    // Load share state from encoded url param
+    const [sharedMilestones, setSharedMilestones] = React.useState(null);
     React.useEffect(() => {
         const params = new URLSearchParams(location.search);
         const progressParam = params.get("progress");
@@ -260,15 +265,8 @@ export default function ChartPage(){
         setSharedMilestones(decodeProgress(progressParam, canonicalSequence));
     }, [location.search]);
 
-    React.useEffect(() => {
-        migrateLegacySharedNodeStates(setMilestonesComplete);
-        setProgressSnapshotReady(true);
-    }, [setMilestonesComplete]);
-
-    React.useEffect(() => {
-        applyThemePreference(themePreference);
-    }, [themePreference]);
-
+    // === Submit things
+    // submit set of milestones marked complete
     React.useEffect(() => {
         if (!progressSnapshotReady) return;
         if (progressSnapshotAttempted.current) return;
@@ -276,14 +274,17 @@ export default function ChartPage(){
         submitProgressSnapshot(milestonesComplete);
     }, [progressSnapshotReady, milestonesComplete]);
 
+    // submit set of milestones hidden by player
     React.useEffect(() => {
         if (!progressSnapshotReady) return;
         submitHiddenMilestonesSnapshot(milestonesHidden);
     }, [progressSnapshotReady, milestonesHidden]);
 
+    // on click func for copying share url to clipboard
     async function handleShareProgress() {
         const base = window.location.origin + window.location.pathname;
         let shareUrl;
+        // dont redo url construction if already in shareview
         if (isProgressShareView) {
             shareUrl = `${base}#/${location.search}`;
         } else {
@@ -300,12 +301,20 @@ export default function ChartPage(){
         setTimeout(() => setShareStatus(null), 2000);
     }
 
+    // set of completed milestones from shares
     const displayedMilestonesComplete = isProgressShareView
         ? sharedMilestones ?? EMPTY_MILESTONES
         : milestonesComplete;
-    return (
+
+    // === Local storage states
+    const [showRetirement, setShowRetirement] = useLocalStorageState('showRetirement', false);
+    const [showBareBones, setShowBareBones] = useLocalStorageState('showBareBones', false);
+    
+    // Non-local states
+    const [showOptions, setShowOptions] = React.useState(false);
+    
+        return (
         <>
-            
             <div className="chart-page-header">
                     <div className="chart-page-title">
                         <h1>Interactive Ironman Progression Chart</h1>
@@ -343,7 +352,7 @@ export default function ChartPage(){
             )}
             {showBareBones && (
                 <Chart
-                    milestoneSequence={milestoneSequenceBarebonesFiltered}
+                    milestoneSequence={milestoneSequenceBarebones}
                     milestoneMetadata={milestoneMetadata}
                     milestonesComplete={displayedMilestonesComplete}
                     milestonesHidden={milestonesHidden}
@@ -362,7 +371,7 @@ export default function ChartPage(){
             )}
             {!showBareBones && (
                 <Chart
-                    milestoneSequence={milestoneSequenceMainFiltered}
+                    milestoneSequence={milestoneSequenceMain}
                     milestoneMetadata={milestoneMetadata}
                     milestonesComplete={displayedMilestonesComplete}
                     milestonesHidden={milestonesHidden}
@@ -434,7 +443,7 @@ export default function ChartPage(){
             )}
             <Acknowledgements />
             <FAQSection />
-            <Footer showImageAttribution={true} />
+            <Footer showImageAttribution={true}/>
         </>
     )
 }

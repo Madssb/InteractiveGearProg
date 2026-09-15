@@ -2,8 +2,7 @@ import Chart from "@/components/Chart";
 import "@/styles/chart.css";
 import "@/styles/ChartPage.css";
 import milestoneMetadata from '@data/generated/milestone-metadata.json';
-import milestoneSequenceMainRaw from '@data/logic/milestone-sequence-main.json';
-import removeStarredItems from '@/utils/removeStarredItems.js';
+import milestoneSequenceMain from '@data/logic/milestone-sequence-main.json';
 import { apiUrl } from "../utils/apiConfig";
 import { useState, useEffect } from "react";
 import { sanitizeId } from "../utils/textSanitizers";
@@ -114,7 +113,6 @@ export default function AnnotationCountPage(){
     }`;
         })
         .join("\n");
-    let milestoneSequenceMain = removeStarredItems(milestoneSequenceMainRaw);
 
     return (
         <>
