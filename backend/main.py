@@ -168,6 +168,10 @@ SKIP_PCTS = {
     "data": None,
     "date": datetime.now(OSLO).date(),
 }
+VIEWCOUNT = {
+    "data": None,
+    "date": datetime.now(OSLO).date(),
+}
 logger = logging.getLogger("backend.rate_limit")
 request_logger = logging.getLogger("backend.request")
 analytics_logger = logging.getLogger("backend.analytics")
@@ -468,10 +472,22 @@ async def fetch_annotation_statuses(request: Request):
 
 @app.get("/milestones-completed-count")
 async def get_milestones_completed_count(request: Request, num_days: int):
+    """Return viewcount as derived from ms completion set count.
+
+    Make one db query per day for 31 days and otherwise serve the cached one. Unimplemented
+    for the rest.
+
+    Args:
+        request (Request): Request for rate limiting, etc.
+        num_days (int): Number of days backwards to count ms completed sets count.
+    """
     enforce_rate_limit(request, "/milestones-completed-count")
     if num_days is None:
         raise HTTPException(status_code=422, detail="Missing num_days")
-    return await get_visit_count(num_days)
+    if not VIEWCOUNT["data"] or datetime.now(OSLO).date() > VIEWCOUNT["date"]:
+        VIEWCOUNT["date"] = datetime.now(OSLO).date()
+        VIEWCOUNT["data"] = await get_visit_count(num_days)
+    return VIEWCOUNT["data"]
 
 
 @app.get("/health")

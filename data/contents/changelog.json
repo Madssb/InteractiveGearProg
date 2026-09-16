@@ -1,4 +1,8 @@
 {
+  "1.9.3":[
+    "Removing conditional rendering of dragon hunter lance",
+    "Chart viewcount is now derived from the number of submitted milestone completion sets."
+  ],
   "1.9.2":[
     "Added Proselyte Cuisse to chart. Minimal cost, low to moderate gains in clarity for chart assumptions."
   ],
