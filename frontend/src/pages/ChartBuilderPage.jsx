@@ -4,10 +4,9 @@ import SequenceForm from '@/components/SequenceForm';
 import Footer from '@/components/static/Footer.jsx';
 import { apiUrl } from '@/utils/apiConfig';
 import { decodeProgress, encodeProgress } from '@/utils/progressEncoding';
-import removeStarredItems from '@/utils/removeStarredItems.js';
 import { handleLevels } from '@/utils/textSanitizers';
 import { useLocalStorageSet, useLocalStorageState } from '@/utils/useLocalStorageState';
-import milestoneSequenceMainRaw from '@data/logic/milestone-sequence-main.json';
+import milestoneSequenceMain from '@data/logic/milestone-sequence-main.json';
 import React, { useState } from 'react';
 import { useLocation } from "react-router";
 
@@ -143,11 +142,10 @@ export default function ChartBuilderPage() {
             if (!shouldReplace) return;
         }
 
-        const ladlorMilestoneSequence = removeStarredItems(milestoneSequenceMainRaw);
-        setMilestoneSequenceChartBuilder(ladlorMilestoneSequence);
+        setMilestoneSequenceChartBuilder(milestoneSequenceMain);
         try {
             setLoadingLadlorChart(true);
-            await fetchMissingMilestoneMetadata(ladlorMilestoneSequence, milestoneMetadata, setMilestoneMetadata);
+            await fetchMissingMilestoneMetadata(milestoneSequenceMain, milestoneMetadata, setMilestoneMetadata);
         } catch (error) {
             console.error(error);
             setLoadError("Could not load Ladlor chart milestone metadata. Please try again.");

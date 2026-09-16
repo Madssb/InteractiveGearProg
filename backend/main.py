@@ -21,6 +21,7 @@ from zoneinfo import ZoneInfo
 
 from db import (
     annotation_view_event,
+    get_visit_count,
     load_share,
     milestone_annotation_statuses,
     milestone_annotation_view_counts,
@@ -164,6 +165,10 @@ COMPLETION_PCTS = {
     "date": datetime.now(OSLO).date(),
 }
 SKIP_PCTS = {
+    "data": None,
+    "date": datetime.now(OSLO).date(),
+}
+VIEWCOUNT = {
     "data": None,
     "date": datetime.now(OSLO).date(),
 }
@@ -463,6 +468,26 @@ async def fetch_annotation_statuses(request: Request):
     # not affected
     enforce_rate_limit(request, "/annotation-statuses")
     return await milestone_annotation_statuses(MILESTONE_IDS_BY_NAME)
+
+
+@app.get("/milestones-completed-count")
+async def get_milestones_completed_count(request: Request, num_days: int):
+    """Return viewcount as derived from ms completion set count.
+
+    Make one db query per day for 31 days and otherwise serve the cached one. Unimplemented
+    for the rest.
+
+    Args:
+        request (Request): Request for rate limiting, etc.
+        num_days (int): Number of days backwards to count ms completed sets count.
+    """
+    enforce_rate_limit(request, "/milestones-completed-count")
+    if num_days is None:
+        raise HTTPException(status_code=422, detail="Missing num_days")
+    if not VIEWCOUNT["data"] or datetime.now(OSLO).date() > VIEWCOUNT["date"]:
+        VIEWCOUNT["date"] = datetime.now(OSLO).date()
+        VIEWCOUNT["data"] = await get_visit_count(num_days)
+    return VIEWCOUNT["data"]
 
 
 @app.get("/health")

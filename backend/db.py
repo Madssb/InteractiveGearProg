@@ -800,3 +800,23 @@ async def remove_annotation_record(annotation_id: int) -> bool:
         annotation_id,
     )
     return status == "DELETE 1"
+
+
+async def get_visit_count(num_days: int) -> int:
+    """Return the number of visits within the last num_days."""
+    pool = await get_pool()
+    row = await pool.fetchrow(
+        """
+        SELECT count(*)
+        FROM milestones_completed_snapshots
+        WHERE created_at >= now() - $1 * interval '1 day'   
+        """,
+        num_days,
+    )
+    return row["count"]
+
+
+if __name__ == "__main__":
+    import asyncio
+
+    print(asyncio.run(get_visit_count(7)))

@@ -24,7 +24,6 @@ createRoot(document.getElementById('root')).render(
         <Route path="/changelog" element={<ChangelogPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/faq" element={<FaqPage />} />
-        {/* <Route path="/bank" element={<BankPage />} /> */}
         <Route path="/chartbuilder" element={<ChartBuilderPage />} />
         <Route path="/customize" element={<ChartBuilderPage />} />
         <Route path="/annotation-count" element={<AnnotationCountPage />} />
