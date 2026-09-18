@@ -3,7 +3,7 @@ repos:
     hooks:
       - id: build-metadata
         name: Build metadata from milestones present in sequence files.
-        entry: uv run --project tools python tools/asset_cli.py build-metadata
+        entry: uv run --project tools python -m tools.asset_cli build-metadata
         language: system
         files: ^data/logic/(milestone-sequence-main|milestone-sequence-retirement|filter)\.json$
         pass_filenames: false

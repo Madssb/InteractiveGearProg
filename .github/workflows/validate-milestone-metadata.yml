@@ -23,7 +23,7 @@ jobs:
         uses: astral-sh/setup-uv@v10.0.1
 
       - name: Check all milestone resolve to icon assets
-        run: cd tools && uv run asset_cli.py check-assets
+        run: uv run --project tools python -m tools.asset_cli check-assets
 
       - name: Check set of milestones is subset of metadata keys
-        run: cd tools && uv run asset_cli.py check-metadata
+        run: uv run --project tools python -m tools.asset_cli check-metadata

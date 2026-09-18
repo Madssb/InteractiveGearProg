@@ -5,7 +5,8 @@ from argparse import ArgumentParser
 from pathlib import Path
 
 import pandas as pd
-from id_asset import IdAsset
+
+from shared.id_asset import IdAsset
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 NOTES_PATH = Path(ROOT_DIR / "data/cache/notes.json")

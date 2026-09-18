@@ -4,8 +4,8 @@ import json
 from argparse import ArgumentParser
 from pathlib import Path
 
-from id_asset import IdAsset
-from manual_asset import ManualAsset
+from shared.id_asset import IdAsset
+from tools.manual_asset import ManualAsset
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 IMAGES_DIR = Path(ROOT_DIR / "frontend/public")

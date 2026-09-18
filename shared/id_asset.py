@@ -49,7 +49,10 @@ class IdAsset:
     """
 
     def __init__(
-        self, milestone: str | None = None, item_id: int | str | None = None
+        self,
+        milestone: str | None = None,
+        item_id: int | str | None = None,
+        asset_dir: Path = ROOT_DIR / "frontend/public/images/item_icons",
     ) -> None:
         """Instantiate self.milestone, self.item_id, ansd self.path
 
@@ -108,9 +111,7 @@ class IdAsset:
                     f"Ingame item ID {self.item_id} not found in names.json"
                 )
 
-        self.path: Path = Path(
-            ROOT_DIR / f"frontend/public/images/item_icons/{self.item_id}.png"
-        )
+        self.path: Path = asset_dir / f"{self.item_id}.png"
         self.type = ""
         self.wiki_url = None
 
