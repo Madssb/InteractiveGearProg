@@ -10,15 +10,19 @@ from pathlib import Path
 from typing import Any
 
 import discord
-from bot.annotation_commands import log_reaction_change, register_annotation_commands
-from bot.metrics_commands import register_metrics_commands
-from bot.milestone_commands import register_milestone_commands
-from bot.moderation_commands import register_moderation_commands
-from bot.report_logs import send_report_log
-from db import user_report
 from discord import app_commands
 from dotenv import load_dotenv
-from milestones import load_main_milestone_groups, load_milestone_names_by_id
+
+from backend.bot.annotation_commands import (
+    log_reaction_change,
+    register_annotation_commands,
+)
+from backend.bot.metrics_commands import register_metrics_commands
+from backend.bot.milestone_commands import register_milestone_commands
+from backend.bot.moderation_commands import register_moderation_commands
+from backend.bot.report_logs import send_report_log
+from backend.database.reports import user_report
+from backend.milestones import load_main_milestone_groups, load_milestone_names_by_id
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 MILESTONE_METADATA_PATH = ROOT_DIR / "data/generated/milestone-metadata.json"

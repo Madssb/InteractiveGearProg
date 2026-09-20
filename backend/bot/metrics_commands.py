@@ -1,9 +1,13 @@
 """Commands for public chart metrics."""
 
 import discord
-from db import milestone_completion_rate, milestone_skip_rate
 from discord import app_commands
-from milestones import milestone_context_from_groups, skip_threshold
+
+from backend.database.chart_analytics import (
+    milestone_completion_rate,
+    milestone_skip_rate,
+)
+from backend.milestones import milestone_context_from_groups, skip_threshold
 
 
 def register_metrics_commands(
