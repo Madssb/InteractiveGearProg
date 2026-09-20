@@ -114,6 +114,7 @@ class IdAsset:
         self.path: Path = asset_dir / f"{self.item_id}.png"
         self.type = ""
         self.wiki_url = None
+        self.milestone_correct_caps = series.loc[str(self.item_id)]
 
     def intelligent_resolver(self):
         """Get Ingame item id
@@ -156,9 +157,8 @@ class IdAsset:
         res = s.get(download_url)
         res.raise_for_status()
         if res.status_code == 200:
-            with open(self.path, "wb") as file:
-                file.write(res.content)
-            print(f"Wrote to disk: {self.path}")
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            self.path.write_bytes(res.content)
 
     def all_item_ids(self) -> list[str]:
         """Get all item ids."""
