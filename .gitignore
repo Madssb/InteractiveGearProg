@@ -1,9 +1,5 @@
-visualize.py
-data/external/*
 .vscode/*
 .env
-.env.prod
-tools/scrape_slayer_rewards.py
 *.pyc
 
 # React rewrite build artefacts
@@ -30,8 +26,8 @@ __pycache__/
 .pytest_cache/
 .ruff_cache
 
-
-# do not ocmmit the credentials file. very important
-infra/cloudflared/*.json
-docs/backend-setup.md
+# The project has indeed used some codex.
 .codex
+
+# chartbuilder assets are fetched during runtime and excluded.
+data/chartbuilder-assets/*

@@ -16,8 +16,7 @@ npm run dev
 ### backend
 
 ```bash
-cd backend
-uv run uvicorn main:app --host 127.0.0.1 --port 8000
+uv run --project backend uvicorn backend.main:app --host 127.0.0.1 --port 8000
 ```
 
 Requires `cp .env.example .env` with `DATABASE_URL` targeting a database with tables as specified in `backend/schemas.sql`. (See [postgresql-bootstrapping](docs/postgresql-bootstrapping.md))
@@ -25,8 +24,7 @@ Requires `cp .env.example .env` with `DATABASE_URL` targeting a database with ta
 ### discord bot
 
 ```bash
-cd backend
-uv run python discord_bot.py
+uv run --project backend python3 -m backend.discord_bot
 ```
 
 Same requirements as backend.
