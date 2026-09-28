@@ -5,6 +5,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 from shared.id_asset import IdAsset
+from shared.manual_asset import ManualAsset
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 ASSETS_DIR = ROOT_DIR / "data/chartbuilder-assets"
@@ -23,7 +24,12 @@ def item_icon_path(milestone: str) -> tuple[Path, str]:
     Raises:
         ValueError: milestone not found in names.json.
     """
-    obj = IdAsset(milestone, asset_dir=ASSETS_DIR)
-    if not obj.path.exists():
-        obj.get_asset()
-    return obj.path, obj.milestone_correct_caps
+    try:
+        obj = IdAsset(milestone, asset_dir=ASSETS_DIR)
+        if not obj.path.exists():
+            obj.get_asset()
+        correct_caps = obj.milestone_correct_caps
+    except ValueError:
+        obj = ManualAsset(milestone)
+        correct_caps = obj.milestone
+    return obj.path, correct_caps

@@ -96,9 +96,13 @@ function Node({
       ? `milestone-${metadata.id}`
       : undefined;
 
+  const skillPat = /\d{1,2} \w+/;
+
   const type = isMainMetadata
       ? metadata.type
-      : undefined;
+      : (skillPat.test(milestone) 
+        ? "skill" 
+        : undefined);
 
   if (type == "skill") {
     let lvlNum = milestone.split(" ")[0];

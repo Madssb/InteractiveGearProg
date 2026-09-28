@@ -9,11 +9,6 @@ SKILL_ICONS_DIR = Path(ROOT_DIR / "frontend/public/images/skill_icons")
 SPELL_ICONS_DIR = Path(ROOT_DIR / "frontend/public/images/spell_icons")
 SLAYER_ICONS_DIR = Path(ROOT_DIR / "frontend/public/images/slayer_icons")
 LVL_PAT = re.compile(r"\d{1,2} (\w+)")
-SLAYER_KEYVALS = {
-    "Bigger_and_Badder.webp": "Bigger and Badder",
-    "Broad_arrowheads_5.webp": "Broader Fletching",
-    "Lizardmen_icon.png": "Reptile got Ripped",
-}
 BASE = "https://oldschool.runescape.wiki/w/"
 
 
