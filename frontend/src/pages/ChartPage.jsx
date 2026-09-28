@@ -7,13 +7,13 @@ import Footer from '@/components/static/Footer.jsx';
 import '@/styles/ChartPage.css';
 import { apiUrl } from '@/utils/apiConfig';
 import migrateLegacySharedNodeStates from '@/utils/migrateState';
+import { decodeProgress, encodeProgress } from '@/utils/progressEncoding';
 import { applyThemePreference, THEME_PREFERENCE_KEY } from '@/utils/themePreference';
 import { useLocalStorageSet, useLocalStorageState } from '@/utils/useLocalStorageState';
 import milestoneMetadata from '@data/generated/milestone-metadata.json';
 import milestoneSequenceBarebones from '@data/generated/milestone-sequence-barebones.json';
-import milestoneSequenceRetirement from '@data/logic/milestone-sequence-retirement.json';
 import milestoneSequenceMain from '@data/logic/milestone-sequence-main.json';
-import { encodeProgress, decodeProgress } from '@/utils/progressEncoding';
+import milestoneSequenceRetirement from '@data/logic/milestone-sequence-retirement.json';
 import React from 'react';
 import { useLocation } from 'react-router';
 import Annotations from "../components/Annotations";
@@ -335,7 +335,7 @@ export default function ChartPage(){
                         id="options-button"
                         aria-label="Show settings"
                     >
-                        <img src="https://oldschool.runescape.wiki/images/Settings.png"/>
+                        <img src="/images/misc_icons/Settings.png"/>
                     </button>
             </div>
             {showOptions && (
