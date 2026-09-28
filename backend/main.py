@@ -313,37 +313,6 @@ def LRU_cache(
     return cache_hits, cache_misses
 
 
-# endpoints
-
-
-# broken endpoint put out of commission.
-# @app.post("/fetch-milestone-metadata/")
-# async def populate_milestone_metadata(
-#     request: Request, milestones: Milestones
-# ) -> MilestoneMetadataResponse:
-#     """Metadata for chartbuilder"""
-#     # Definitely affected.
-#     enforce_rate_limit(request, "/sequence/")
-#     out: dict[str, ChartbuilderMetadataRecord] = {}
-#     cache_hits, cache_misses = LRU_cache(milestones, CACHE)
-#     try:
-#         # results = query_milestone_metadata(cache_misses)
-#         pass
-#     except Exception:
-#         logger.exception("Milestone metadata query failed")
-#         results = MilestoneMetadataQueryResult(
-#             milestoneMetadata={}, unresolvedMilestones=[]
-#         )
-#     for milestone, metadata in results.milestoneMetadata.items():
-#         CACHE.put(milestone, metadata)
-#         out[milestone] = metadata
-#     for cache_hit in cache_hits:
-#         out[cache_hit] = CACHE[cache_hit]
-#     return MilestoneMetadataResponse(
-#         milestoneMetadata=out, cacheHits=len(cache_hits), cacheMisses=len(cache_misses)
-#     )
-
-
 @app.post("/share/")
 async def create_share(request: Request, milestone_sequence: MilestoneSequence) -> str:
     """Submit chartbuilder-share record

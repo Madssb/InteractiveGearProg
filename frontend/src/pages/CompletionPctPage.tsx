@@ -1,11 +1,13 @@
 import Chart from "@/components/Chart";
 import "@/styles/chart.css";
 import "@/styles/ChartPage.css";
-import milestoneMetadata from '@data/generated/milestone-metadata.json';
+import milestoneMetadataRaw from '@data/generated/milestone-metadata.json';
 import mainMilestoneSequence from '@data/logic/milestone-sequence-main.json';
+import { MilestoneMetadata } from "@/components/Chart";
 import { apiUrl } from "../utils/apiConfig";
 import { useState, useEffect } from "react";
-import { sanitizeId } from "../utils/textSanitizers";
+
+const milestoneMetadata = milestoneMetadataRaw as MilestoneMetadata;
 
 type CompletionRateData = {
     completion_rate: number | null;
@@ -36,13 +38,7 @@ async function getCompletionPcts(setCompletionPcts: (completionPcts: CompletionR
         const response = await fetch(url);
         if (!response.ok) throw new Error(`Response status: ${response.status}`);
         const completionPcts: CompletionRates = await response.json();
-        const sanitized = Object.fromEntries(
-            Object.entries(completionPcts).map(([key, value]) => [
-                sanitizeId(key),
-                value,
-            ])
-        );
-        setCompletionPcts(sanitized);
+        setCompletionPcts(completionPcts);
     } catch (err) {
             console.error(err);
     }
@@ -54,10 +50,14 @@ export default function ComplectionPctPage(){
         getCompletionPcts(setCompletionPcts);
     }, []);
     const rules = Object.entries(completionPcts)
-        .map(([id, data]) => `
-    #${id} {
+        .map(([milestoneName, data]) => {
+            const id = milestoneMetadata[milestoneName]?.id;
+            if (id == null) return "";
+            return `
+    #milestone-${id} {
         background-color: ${pctToColor(data.completion_rate)};
-    }`)
+    }`;
+        })
         .join("\n");
     return (
         <>

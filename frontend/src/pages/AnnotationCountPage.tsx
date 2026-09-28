@@ -1,11 +1,11 @@
 import Chart from "@/components/Chart";
 import "@/styles/chart.css";
 import "@/styles/ChartPage.css";
-import milestoneMetadata from '@data/generated/milestone-metadata.json';
+import milestoneMetadataRaw from '@data/generated/milestone-metadata.json';
 import milestoneSequenceMain from '@data/logic/milestone-sequence-main.json';
 import { apiUrl } from "../utils/apiConfig";
 import { useState, useEffect } from "react";
-import { sanitizeId } from "../utils/textSanitizers";
+import { MilestoneMetadata } from "@/components/Chart";
 
 type AnnotationViewCountData = {
     view_count: number;
@@ -23,6 +23,8 @@ type CountRange = {
     min: number;
     max: number;
 };
+
+const milestoneMetadata = milestoneMetadataRaw as MilestoneMetadata;
 
 const LOW_COLOR = [232, 239, 247];
 const HIGH_COLOR = [219, 66, 72];
@@ -104,10 +106,12 @@ export default function AnnotationCountPage(){
     const range = viewCountRange(annotationViewCounts);
     const rules = Object.entries(annotationViewCounts)
         .map(([milestoneName, data]) => {
+            const id = milestoneMetadata[milestoneName]?.id;
+            if (id == null) return "";
             const hasAnnotation = annotationStatuses[milestoneName]?.has_annotation;
             const missingQueriedAnnotation = data.view_count > 0 && hasAnnotation === false;
             return `
-    #${sanitizeId(milestoneName)} {
+    #milestone-${id} {
         background-color: ${countToColor(data.view_count, range)};
         ${missingQueriedAnnotation ? "border-color: rgb(220 38 38);" : ""}
     }`;

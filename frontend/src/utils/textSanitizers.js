@@ -1,7 +1,3 @@
-export function sanitizeId(name) {
-    return name.replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').toLowerCase();
-}
-
 const pat = /\d+ (\w+)/;
 
 export function handleLevels(input) {
