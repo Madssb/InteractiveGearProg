@@ -1,4 +1,4 @@
-import '@/styles/config-menu.css'; 
+import './config-menu.css'; 
 
 function ToggleButton({ id, value, label, icon, onToggle }) {
   return (

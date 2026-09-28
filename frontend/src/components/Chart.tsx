@@ -1,4 +1,4 @@
-import Annotations, { type AnnotationData } from "@/components/Annotations";
+import Annotations, { type AnnotationData } from "@/mainchart/Annotations";
 import { questNameInitials } from "@/utils/questNameInitials";
 import React, { useMemo } from "react";
 import { ChartbuilderMetadata } from "@/chartbuilder/chartBuilderRequests";

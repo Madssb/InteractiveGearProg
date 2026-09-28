@@ -1,5 +1,5 @@
 import Chart from "@/components/Chart";
-import ConfigMenu from "@/components/ConfigMenu";
+import ConfigMenu from "@/mainchart/ConfigMenu";
 import ContextMenu from '@/components/ContextMenu.jsx';
 import Acknowledgements from '@/components/static/Acknowledgements.jsx';
 import FAQSection from '@/components/static/FAQSection.jsx';
@@ -16,7 +16,7 @@ import milestoneSequenceMain from '@data/logic/milestone-sequence-main.json';
 import milestoneSequenceRetirement from '@data/logic/milestone-sequence-retirement.json';
 import React from 'react';
 import { useLocation } from 'react-router';
-import Annotations from "../components/Annotations";
+import Annotations from "./Annotations";
 
 const PROGRESS_SNAPSHOT_DATE_KEY = "progressSnapshotSubmittedDate";
 const HIDDEN_MILESTONES_SNAPSHOT_DATE_KEY = "hiddenMilestonesSnapshotSubmittedDate";
@@ -85,17 +85,13 @@ async function submitAnnotationViewEvent(milestone) {
     const url = apiUrl("/submit-annotation-view-event");
     if (!url) return;
 
-    try {
-        const response = await fetch(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ milestone_name: milestone }),
-        });
+    const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ milestone_name: milestone }),
+    });
 
-        if (!response.ok) throw new Error(`Response status: ${response.status}`);
-    } catch (err) {
-        console.error("Failed to submit annotation view event", err);
-    }
+    if (!response.ok) throw new Error(`Response status: ${response.status}`);
 }
 
 async function getMilestoneAnnotations(milestone){

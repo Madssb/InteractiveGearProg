@@ -1,7 +1,7 @@
 import getSequenceFromInput from "@/chartbuilder/sequenceFromInput";
 import getStringifiedSequence from "@/chartbuilder/stringifySequence";
 import React, { useState } from "react";
-import "@/styles/SequenceForm.css";
+import "./SequenceForm.css";
 
 type SequenceFormProps = {
   setMilestoneSequence: React.Dispatch<React.SetStateAction<string[][]>>;

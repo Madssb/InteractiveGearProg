@@ -5,7 +5,7 @@ import {
 import { getShare } from "@/chartbuilder/chartBuilderRequests";
 import Chart from "@/components/Chart";
 import ContextMenu from "@/components/ContextMenu.jsx";
-import SequenceForm from "@/components/SequenceForm";
+import SequenceForm from "@/chartbuilder/SequenceForm";
 import Footer from "@/components/static/Footer.jsx";
 import { decodeProgress } from "@/utils/progressEncoding";
 import {
@@ -66,7 +66,15 @@ export default function ChartBuilderPage() {
     "nodesCompleteState",
     new Set<string>(),
   );
-  const [unresolved, setUnresolved] = useState<Set<string>>(new Set());
+
+  // Persistent unresolveds avoid repeated known bad searches.
+  const [unresolved, setUnresolved] = useLocalStorageSet(
+    "unresolved",
+    new Set<string>()
+  );
+
+  const [latestUnresolved, setLatestUnresolved] = useState<Set<string>>(new Set());
+
   const [sharedNodesComplete, setSharedNodesComplete] = useState<Set<string>>(
     new Set(),
   );
@@ -116,6 +124,11 @@ export default function ChartBuilderPage() {
         milestoneMetadata,
         unresolved,
       );
+      
+      const milestones = new Set(milestoneSequenceChartBuilder.flat());
+      setLatestUnresolved(new Set(
+          [...unresolved].filter((milestone) => milestones.has(milestone)),
+      ));
       // Expand existing metadata records.
       if (result !== undefined) {
         // only update metadata when there is something to update.
@@ -123,8 +136,9 @@ export default function ChartBuilderPage() {
           ...prev,
           ...result.resolved,
         }));
-        // Avoid repeated misses.
-        setUnresolved(result.unresolved);
+
+        // Cache unresolveds.
+        setUnresolved((prev) => new Set([...prev, ...result.unresolved]));
       }
     };
     updateMetadata();
@@ -271,7 +285,8 @@ export default function ChartBuilderPage() {
   const displayedNodesComplete = isProgressShareView
     ? (sharedNodesComplete ?? EMPTY_NODES_COMPLETE)
     : completedMilestones;
-  return (
+    console.log(`latest unresolved: ${latestUnresolved}`)
+    return (
     <>
       <div id="titleBar" style={{ position: "relative", height: "80px" }}>
         <div
@@ -315,9 +330,9 @@ export default function ChartBuilderPage() {
           initialSequence={milestoneSequenceChartBuilder}
         />
       )}
-      {unresolved.size > 0 && (
+      {latestUnresolved.size > 0 && (
         <p>
-          Couldnt resolve the following: {Array.from(unresolved).join(", ")}
+          Couldnt resolve the following: {Array.from(latestUnresolved).join(", ")}
         </p>
       )}
       {milestoneSequenceChartBuilder && milestoneMetadata && (
