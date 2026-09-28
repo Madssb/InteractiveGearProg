@@ -11,19 +11,17 @@ import os
 import secrets
 import threading
 import time
-from collections import OrderedDict, defaultdict, deque
-from collections.abc import Mapping
-from datetime import date, datetime, timedelta
+from collections import defaultdict, deque
+from datetime import datetime, timedelta
 from itertools import chain
 from pathlib import Path
 from typing import Annotated, TypedDict
 from zoneinfo import ZoneInfo
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import Body, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
-from pydantic import BaseModel, conlist
 
 from backend.assets import item_icon_path
 from backend.database.analytics import update_endpoint_hits
@@ -94,9 +92,6 @@ if not TRUSTED_HOSTS:
 
 # types
 
-FlatSequenceType = Annotated[list[str], conlist(str, min_length=1, max_length=500)]
-NestedSequenceType = list[list[str]]
-
 MilestoneSequence = list[list[str]]  # grouping-aware
 Milestones = list[str]
 
@@ -109,40 +104,6 @@ class ChartbuilderMetadataRecord(TypedDict):
 class ChartbuilderMetadataResponse(TypedDict):
     resolved: dict[str, ChartbuilderMetadataRecord]
     unresolved: list[str]
-
-
-class ShareCreate(BaseModel):
-    milestoneSequence: NestedSequenceType | None = None
-    sequence: NestedSequenceType | None = None
-
-
-class AnnotationViewEventCreate(BaseModel):
-    milestone_name: str
-
-
-class MilestoneAnnotationResponse(BaseModel):
-    """Schema for GET annotations/"""
-
-    annotation_id: int
-    up_count: int
-    down_count: int
-    chart_version: str
-    annotation_text: str
-    user_display_name: str
-    created_at: date
-
-
-class LRU[K, V](OrderedDict[K, V]):
-    def __init__(self, maxsize: int):
-        super().__init__()
-        self.maxsize = maxsize
-
-    def put(self, key: K, value: V) -> None:
-        if key in self:
-            self.move_to_end(key)
-        self[key] = value
-        if len(self) > self.maxsize:
-            self.popitem(last=False)
 
 
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
@@ -159,8 +120,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-CACHE: LRU[str, ChartbuilderMetadataRecord] = LRU(maxsize=5000)
 
 RATE_LIMIT_PER_SECOND = 3
 RATE_LIMIT_PER_MINUTE = 20
@@ -300,19 +259,6 @@ async def request_logging_middleware(request: Request, call_next):
     return response
 
 
-def LRU_cache(
-    payload: list[str], cache: Mapping[str, ChartbuilderMetadataRecord]
-) -> tuple[list[str], list[str]]:
-    cache_hits: list[str] = []
-    cache_misses: list[str] = []
-    for entity in payload:
-        if entity not in cache:
-            cache_misses.append(entity)
-        else:
-            cache_hits.append(entity)
-    return cache_hits, cache_misses
-
-
 @app.post("/share/")
 async def create_share(request: Request, milestone_sequence: MilestoneSequence) -> str:
     """Submit chartbuilder-share record
@@ -385,7 +331,7 @@ async def submit_hidden_milestones_snapshot(
 @app.post("/submit-annotation-view-event")
 async def submit_annotation_view_event(
     request: Request,
-    milestone_name: str,
+    milestone_name: Annotated[str, Body(embed=True)],
 ) -> None:
     """Record milestone annotation view event.
 
