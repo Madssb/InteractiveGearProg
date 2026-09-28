@@ -30,6 +30,11 @@ def item_icon_path(milestone: str) -> tuple[Path, str]:
             obj.get_asset()
         correct_caps = obj.milestone_correct_caps
     except ValueError:
-        obj = ManualAsset(milestone)
-        correct_caps = obj.milestone
+        try:
+            obj = ManualAsset(milestone)
+            correct_caps = obj.milestone
+        except FileNotFoundError:
+            raise ValueError(
+                "File could not be resolved by ID or manual asset resolvers."
+            )
     return obj.path, correct_caps
