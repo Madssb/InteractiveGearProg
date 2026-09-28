@@ -62,7 +62,6 @@ function quotesFormatInput(inputText: string): string[][] {
  */
 function noQuotesFormatInput(inputText: string): string[][] {
     const stripped = inputText.trim();
-    console.log(`stripped: ${stripped}`);
     
     // matches against [a], [a ], [ a ], [a,b], etc.
     // first group is a, a,b, etc.
@@ -99,6 +98,7 @@ function noQuotesFormatInput(inputText: string): string[][] {
  * Get sequence where milestones arent input as strings
  * @param inputText SequenceForm textbox input contents.
  * @returns User-submitted milestone sequence.
+ * @throws {Error} If input does not meet formatting requirements.
  */
 export default function getSequenceFromInput(inputText: string): SequenceAndFormat {
     try {

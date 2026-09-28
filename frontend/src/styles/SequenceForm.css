@@ -1,0 +1,45 @@
+.format-error {
+    display: flex;
+    justify-content: center;
+}
+
+.wrapper {
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.example-table {
+    display: flex;
+    flex-direction: column;
+    row-gap: 5px;
+    align-items: stretch;
+}
+
+.header {
+    display: flex;
+    text-align: left;
+    margin-bottom: 0.4rem;
+    justify-content: center;
+    color: rgb(190, 60, 60);
+
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.code {
+    background-color: rgb(0, 0, 0);
+    padding: 0.1rem 0.25rem;
+    font-family: monospace;
+}
+
+.bold {
+    font-weight: bold;
+}

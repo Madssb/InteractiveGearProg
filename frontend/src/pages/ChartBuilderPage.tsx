@@ -271,9 +271,6 @@ export default function ChartBuilderPage() {
   const displayedNodesComplete = isProgressShareView
     ? (sharedNodesComplete ?? EMPTY_NODES_COMPLETE)
     : completedMilestones;
-  console.log(
-    `unresolved: ${unresolved}, size: ${unresolved.size > 0}, type: ${typeof unresolved}`,
-  );
   return (
     <>
       <div id="titleBar" style={{ position: "relative", height: "80px" }}>
