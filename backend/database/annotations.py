@@ -4,15 +4,13 @@ import json
 from datetime import date, datetime
 from functools import cache
 from itertools import chain
-from pathlib import Path
 from typing import TypedDict
 
 from backend.database.shared import get_pool, validate_milestone_completion_rate_window
 from backend.milestones import load_main_milestone_groups, load_milestone_ids_by_name
+from shared.paths import CHANGELOG_PATH
 
-ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 MILESTONE_IDS_BY_NAME = load_milestone_ids_by_name()
-
 MAIN_SEQUENCE_GROUPS = load_main_milestone_groups()
 MAIN_SEQUENCE_FLAT = list(chain.from_iterable(MAIN_SEQUENCE_GROUPS))
 
@@ -44,8 +42,7 @@ class MilestoneAnnotationMessageRow(TypedDict):
 @cache
 def latest_chart_version() -> str:
     """Get latest chart version from changelog."""
-    changelog_path = ROOT_DIR / "data/contents/changelog.json"
-    with open(changelog_path, encoding="utf-8") as changelog:
+    with open(CHANGELOG_PATH, encoding="utf-8") as changelog:
         return next(iter(json.load(changelog)))
 
 

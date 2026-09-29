@@ -7,16 +7,12 @@ import math
 from datetime import datetime
 from functools import cache
 from itertools import chain
-from pathlib import Path
 
 from backend.database.chart_analytics import (
     SkipMetrics,
     fetch_completed_milestones_snapshots,
 )
-
-REPO_ROOT = Path(__file__).resolve().parents[1]
-MILESTONE_IDS_PATH = REPO_ROOT / "data/logic/milestone-ids.json"
-MILESTONE_SEQUENCE_MAIN_PATH = REPO_ROOT / "data/logic/milestone-sequence-main.json"
+from shared.paths import MAIN_SEQUENCE_PATH, MILESTONE_IDS_PATH
 
 
 @cache
@@ -42,7 +38,7 @@ def load_milestone_ids_by_name() -> dict[str, int]:
 @cache
 def load_main_milestone_groups() -> list[list[str]]:
     """Load grouping-aware main sequence."""
-    with MILESTONE_SEQUENCE_MAIN_PATH.open("r", encoding="utf-8") as f:
+    with MAIN_SEQUENCE_PATH.open("r", encoding="utf-8") as f:
         return json.load(f)
 
 

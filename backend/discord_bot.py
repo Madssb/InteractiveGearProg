@@ -6,7 +6,6 @@ Currently supports making annotation submissions for the milestones.
 import json
 import logging
 import os
-from pathlib import Path
 from typing import Any
 
 import discord
@@ -23,14 +22,10 @@ from backend.bot.moderation_commands import register_moderation_commands
 from backend.bot.report_logs import send_report_log
 from backend.database.reports import user_report
 from backend.milestones import load_main_milestone_groups, load_milestone_names_by_id
-
-ROOT_DIR = Path(__file__).resolve().parent.parent
-MILESTONE_METADATA_PATH = ROOT_DIR / "data/generated/milestone-metadata.json"
-
+from shared.paths import ENV_PATH, MILESTONE_METADATA_PATH
 
 # env variables
-
-load_dotenv(ROOT_DIR / ".env")
+load_dotenv(ENV_PATH)
 BOTLOR_TOKEN = os.getenv("BOTLOR_TOKEN")
 if not BOTLOR_TOKEN:
     raise SystemExit("BOTLOR_TOKEN is not set")

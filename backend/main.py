@@ -14,7 +14,6 @@ import time
 from collections import defaultdict, deque
 from datetime import datetime, timedelta
 from itertools import chain
-from pathlib import Path
 from typing import Annotated, TypedDict
 from zoneinfo import ZoneInfo
 
@@ -52,15 +51,9 @@ from backend.milestones import (
     fetch_skip_metrics,
     load_main_milestone_groups,
 )
+from shared.paths import ENV_PATH, MAIN_SEQUENCE_PATH, RETIREMENT_SEQUENCE_PATH
 
 # constants
-
-ROOT_DIR = Path(__file__).resolve().parent.parent
-
-MAIN_SEQUENCE_PATH = Path(ROOT_DIR / "data/logic/milestone-sequence-main.json")
-RETIREMENT_SEQUENCE_PATH = Path(
-    ROOT_DIR / "data/logic/milestone-sequence-retirement.json"
-)
 with MAIN_SEQUENCE_PATH.open() as r:
     MAIN_SEQUENCE = json.load(r)
 with RETIREMENT_SEQUENCE_PATH.open() as r:
@@ -75,7 +68,7 @@ MAIN_SEQUENCE_FLAT = list(chain.from_iterable(MAIN_SEQUENCE_GROUPS))
 RETIREMENT_SEQUENCE_FLAT = list(chain.from_iterable(RETIREMENT_SEQUENCE_GROUPS))
 COMBINED_SEQUENCE_FLAT = MAIN_SEQUENCE_FLAT + RETIREMENT_SEQUENCE_FLAT
 
-load_dotenv(ROOT_DIR / ".env")
+load_dotenv(ENV_PATH)
 
 CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS")
 if not CORS_ALLOWED_ORIGINS:

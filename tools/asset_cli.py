@@ -6,12 +6,14 @@ from pathlib import Path
 
 from shared.id_asset import IdAsset
 from shared.manual_asset import ManualAsset
+from shared.paths import (
+    IMAGES_DIR,
+    MAIN_SEQUENCE_PATH,
+    MILESTONE_IDS_PATH,
+    MILESTONE_METADATA_PATH,
+    RETIREMENT_SEQUENCE_PATH,
+)
 
-ROOT_DIR = Path(__file__).resolve().parent.parent
-IMAGES_DIR = Path(ROOT_DIR / "frontend/public")
-NAMES_JSON_PATH = Path(ROOT_DIR / "data/cache/names.json")
-METADATA_PATH = Path(ROOT_DIR / "data/generated/milestone-metadata.json")
-MILESTONE_IDS_PATH = Path(ROOT_DIR / "data/logic/milestone-ids.json")
 BASE = "https://oldschool.runescape.wiki/w/"
 
 
@@ -26,8 +28,8 @@ def load_json(path: Path) -> list:
 def load_milestones() -> list[str]:
     """Load all milestones."""
     sequence_sources = [
-        Path(ROOT_DIR / "data/logic/milestone-sequence-main.json"),
-        Path(ROOT_DIR / "data/logic/milestone-sequence-retirement.json"),
+        MAIN_SEQUENCE_PATH,
+        RETIREMENT_SEQUENCE_PATH,
     ]
     items_nested = []
     for path in sequence_sources:
@@ -215,7 +217,7 @@ def build_metadata():
         else:
             row["wikiUrl"] = BASE + ms.milestone.lower().replace(" ", "_")
         metadata[milestone] = row
-    with open(METADATA_PATH, "w") as f:
+    with open(MILESTONE_METADATA_PATH, "w") as f:
         json.dump(metadata, f, indent=2)
 
 
@@ -227,11 +229,11 @@ def check_metadata():
         ValueError: milestones records are missing from the metadata json.
     """
     check_ids()
-    if not METADATA_PATH.exists():
+    if not MILESTONE_METADATA_PATH.exists():
         raise FileNotFoundError(
-            "Milestone metadata json not found. Expected: ", METADATA_PATH
+            "Milestone metadata json not found. Expected: ", MILESTONE_METADATA_PATH
         )
-    with METADATA_PATH.open("r", encoding="utf-8") as f:
+    with MILESTONE_METADATA_PATH.open("r", encoding="utf-8") as f:
         metadata = set(json.load(f).keys())
     milestones = set(load_milestones())
     if not milestones.issubset(metadata):

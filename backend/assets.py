@@ -6,10 +6,11 @@ from dotenv import load_dotenv
 
 from shared.id_asset import IdAsset
 from shared.manual_asset import ManualAsset
+from shared.paths import ENV_PATH
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 ASSETS_DIR = ROOT_DIR / "data/chartbuilder-assets"
-load_dotenv(ROOT_DIR / ".env")
+load_dotenv(ENV_PATH)
 
 
 def item_icon_path(milestone: str) -> tuple[Path, str]:

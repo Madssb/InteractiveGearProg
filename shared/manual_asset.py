@@ -3,11 +3,13 @@
 import re
 from pathlib import Path
 
-ROOT_DIR = Path(__file__).resolve().parent.parent
-PRAYER_ICONS_DIR = Path(ROOT_DIR / "frontend/public/images/prayer_icons")
-SKILL_ICONS_DIR = Path(ROOT_DIR / "frontend/public/images/skill_icons")
-SPELL_ICONS_DIR = Path(ROOT_DIR / "frontend/public/images/spell_icons")
-SLAYER_ICONS_DIR = Path(ROOT_DIR / "frontend/public/images/slayer_icons")
+from shared.paths import (
+    PRAYER_ICONS_DIR,
+    SKILL_ICONS_DIR,
+    SLAYER_ICONS_DIR,
+    SPELL_ICONS_DIR,
+)
+
 LVL_PAT = re.compile(r"\d{1,2} (\w+)")
 BASE = "https://oldschool.runescape.wiki/w/"
 
