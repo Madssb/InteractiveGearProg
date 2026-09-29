@@ -3,8 +3,12 @@
 import math
 
 import discord
-from db import annotated_milestone_ids, milestone_annotation_message_lookup
 from discord import app_commands
+
+from backend.database.annotations import (
+    annotated_milestone_ids,
+    milestone_annotation_message_lookup,
+)
 
 MILESTONES_PER_PAGE = 20
 ANNOTATION_LINKS_PER_PAGE = 10

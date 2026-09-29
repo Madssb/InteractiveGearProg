@@ -1,9 +1,13 @@
 """Commands for public chart metrics."""
 
 import discord
-from db import milestone_completion_rate, milestone_skip_rate
 from discord import app_commands
-from milestones import milestone_context_from_groups, skip_threshold
+
+from backend.database.chart_analytics import (
+    milestone_completion_rate,
+    milestone_skip_rate,
+)
+from backend.milestones import get_skip_threshold, get_subsequent_milestones
 
 
 def register_metrics_commands(
@@ -33,16 +37,8 @@ def register_metrics_commands(
             )
             return
 
-        milestone_context = milestone_context_from_groups(
-            milestone_name,
-            milestone_groups,
-        )
-        snapshot_milestone_name = (
-            milestone_context[0] if milestone_context is not None else milestone_name
-        )
-
         await interaction.response.defer(thinking=True)
-        metric = await milestone_completion_rate(snapshot_milestone_name)
+        metric = await milestone_completion_rate(milestone_name)
         total_count = metric["total_count"]
         completed_count = metric["completed_count"]
         completion_rate_value = metric["completion_rate"]
@@ -78,26 +74,19 @@ def register_metrics_commands(
                 ephemeral=True,
             )
             return
-
-        milestone_context = milestone_context_from_groups(
-            milestone_name,
-            milestone_groups,
-        )
-        if milestone_context is None:
+        subsequent_milestones = get_subsequent_milestones(milestone_name)
+        if subsequent_milestones is None:
             await interaction.response.send_message(
-                f"I couldn't find milestone id {milestone_id} in the main chart sequence.",
+                f"Subsequent milestones couldn't be found for milestone {milestone_name}.",
                 ephemeral=True,
             )
             return
-
-        snapshot_milestone_name, subsequent_milestone_names = milestone_context
-        threshold = skip_threshold(len(subsequent_milestone_names))
-
+        skip_threshold = get_skip_threshold(len(subsequent_milestones))
         await interaction.response.defer(thinking=True)
         metric = await milestone_skip_rate(
-            snapshot_milestone_name,
-            subsequent_milestone_names,
-            threshold,
+            milestone_name,
+            subsequent_milestones,
+            skip_threshold,
         )
         eligible_count = metric["eligible_count"]
         skipped_count = metric["skipped_count"]

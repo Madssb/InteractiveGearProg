@@ -3,10 +3,10 @@
 import logging
 
 import discord
-from db import resolve_report, unresolved_reports
 from discord import app_commands
 
-from bot.report_logs import REPORT_PING_ROLE_ID
+from backend.bot.report_logs import REPORT_PING_ROLE_ID
+from backend.database.reports import resolve_report, unresolved_reports
 
 logger = logging.getLogger(__name__)
 MODERATOR_ROLE_ID = REPORT_PING_ROLE_ID

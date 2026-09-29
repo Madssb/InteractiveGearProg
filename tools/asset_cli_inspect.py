@@ -5,10 +5,10 @@ from argparse import ArgumentParser
 from pathlib import Path
 
 import pandas as pd
-from id_asset import IdAsset
 
-ROOT_DIR = Path(__file__).resolve().parent.parent
-NOTES_PATH = Path(ROOT_DIR / "data/cache/notes.json")
+from shared.id_asset import IdAsset
+from shared.paths import MAIN_SEQUENCE_PATH, NOTES_PATH, RETIREMENT_SEQUENCE_PATH
+
 with NOTES_PATH.open() as r:
     NOTES = json.load(r)
 
@@ -24,8 +24,8 @@ def load_json(path: Path) -> list:
 def load_milestones() -> list[str]:
     """Load all milestones."""
     sequence_sources = [
-        Path(ROOT_DIR / "data/logic/milestone-sequence-main.json"),
-        Path(ROOT_DIR / "data/logic/milestone-sequence-retirement.json"),
+        MAIN_SEQUENCE_PATH,
+        RETIREMENT_SEQUENCE_PATH,
     ]
     items_nested = []
     for path in sequence_sources:

@@ -6,6 +6,10 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "moduleResolution": "Bundler",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@data/*": ["../data/*"]
+    },
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -13,7 +17,7 @@
     "jsx": "react-jsx",
     "allowJs": true,
     "checkJs": false,
-    "strict": false,
+    "strict": true,
     "types": ["vite/client"]
   },
   "include": ["src"],

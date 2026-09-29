@@ -13,10 +13,8 @@ from pathlib import Path
 import pandas as pd
 import requests
 
-ROOT_DIR = Path(__file__).resolve().parent.parent
-NAMES_PATH = Path(ROOT_DIR / "data/cache/names.json")
-NOTES_PATH = Path(ROOT_DIR / "data/cache/notes.json")
-NAMES_VETTED_PATH = Path(ROOT_DIR / "data/cache/named_wiki_vetted.json")
+from shared.paths import ITEMS_ICON_DIR, NAMES_PATH
+
 OVERRIDES = {
     "Ultor ring": "28307",
     "Magus ring": "28313",
@@ -33,8 +31,6 @@ s.headers.update(
 )
 with NAMES_PATH.open() as r:
     NAMES = json.load(r)
-with NOTES_PATH.open() as r:
-    NOTES = json.load(r)
 series = pd.Series(data=NAMES)
 series = series.str.lower()
 
@@ -49,7 +45,10 @@ class IdAsset:
     """
 
     def __init__(
-        self, milestone: str | None = None, item_id: int | str | None = None
+        self,
+        milestone: str | None = None,
+        item_id: int | str | None = None,
+        asset_dir: Path = ITEMS_ICON_DIR,
     ) -> None:
         """Instantiate self.milestone, self.item_id, ansd self.path
 
@@ -108,11 +107,10 @@ class IdAsset:
                     f"Ingame item ID {self.item_id} not found in names.json"
                 )
 
-        self.path: Path = Path(
-            ROOT_DIR / f"frontend/public/images/item_icons/{self.item_id}.png"
-        )
+        self.path: Path = asset_dir / f"{self.item_id}.png"
         self.type = ""
         self.wiki_url = None
+        self.milestone_correct_caps = series.loc[str(self.item_id)]
 
     def intelligent_resolver(self):
         """Get Ingame item id
@@ -155,9 +153,8 @@ class IdAsset:
         res = s.get(download_url)
         res.raise_for_status()
         if res.status_code == 200:
-            with open(self.path, "wb") as file:
-                file.write(res.content)
-            print(f"Wrote to disk: {self.path}")
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            self.path.write_bytes(res.content)
 
     def all_item_ids(self) -> list[str]:
         """Get all item ids."""

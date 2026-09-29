@@ -11,48 +11,49 @@ import os
 import secrets
 import threading
 import time
-from collections import OrderedDict, defaultdict, deque
-from collections.abc import Mapping
-from datetime import date, datetime, timedelta
+from collections import defaultdict, deque
+from datetime import datetime, timedelta
 from itertools import chain
-from pathlib import Path
-from typing import Annotated
+from typing import Annotated, TypedDict
 from zoneinfo import ZoneInfo
 
-from db import (
+from dotenv import load_dotenv
+from fastapi import Body, FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, JSONResponse
+
+from backend.assets import item_icon_path
+from backend.database.analytics import update_endpoint_hits
+from backend.database.annotations import (
+    AnnotationRecord,
     annotation_view_event,
-    get_visit_count,
-    load_share,
-    milestone_annotation_statuses,
+    fetch_annotation_visibility_statuses,
     milestone_annotation_view_counts,
     milestone_annotations_lookup,
+)
+from backend.database.chart_analytics import (
+    CompletionMetrics,
+    SkipMetrics,
+    get_visit_count,
     milestone_completion_rates,
-    milestone_skip_rates,
-    milestones_completed_snapshots,
-    milestones_hidden_snapshots,
+)
+from backend.database.chartbuilder import (
+    insert_asset,
+    load_share,
+    lookup_asset,
     save_share,
-    update_endpoint_hits,
 )
-from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, Request
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-from milestones import (
+from backend.database.snapshots import (
+    record_completed_milestones_snapshot,
+    record_hidden_milestones_snapshot,
+)
+from backend.milestones import (
+    fetch_skip_metrics,
     load_main_milestone_groups,
-    load_milestone_ids_by_name,
-    milestone_context_from_groups,
-    skip_threshold,
 )
-from pydantic import BaseModel, conlist
+from shared.paths import ENV_PATH, MAIN_SEQUENCE_PATH, RETIREMENT_SEQUENCE_PATH
 
 # constants
-
-ROOT_DIR = Path(__file__).resolve().parent.parent
-
-MAIN_SEQUENCE_PATH = Path(ROOT_DIR / "data/logic/milestone-sequence-main.json")
-RETIREMENT_SEQUENCE_PATH = Path(
-    ROOT_DIR / "data/logic/milestone-sequence-retirement.json"
-)
 with MAIN_SEQUENCE_PATH.open() as r:
     MAIN_SEQUENCE = json.load(r)
 with RETIREMENT_SEQUENCE_PATH.open() as r:
@@ -67,7 +68,7 @@ MAIN_SEQUENCE_FLAT = list(chain.from_iterable(MAIN_SEQUENCE_GROUPS))
 RETIREMENT_SEQUENCE_FLAT = list(chain.from_iterable(RETIREMENT_SEQUENCE_GROUPS))
 COMBINED_SEQUENCE_FLAT = MAIN_SEQUENCE_FLAT + RETIREMENT_SEQUENCE_FLAT
 
-load_dotenv(ROOT_DIR / ".env")
+load_dotenv(ENV_PATH)
 
 CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS")
 if not CORS_ALLOWED_ORIGINS:
@@ -84,54 +85,18 @@ if not TRUSTED_HOSTS:
 
 # types
 
-FlatSequenceType = Annotated[list[str], conlist(str, min_length=1, max_length=500)]
-NestedSequenceType = list[list[str]]
-
-MilestoneSequence = list[list[str]]
+MilestoneSequence = list[list[str]]  # grouping-aware
 Milestones = list[str]
 
 
-class MilestoneMetadataRecord(BaseModel):
+class ChartbuilderMetadataRecord(TypedDict):
     imgUrl: str
     wikiUrl: str
 
 
-class MilestoneMetadataResponse(BaseModel):
-    milestoneMetadata: dict[str, MilestoneMetadataRecord]
-
-
-class ShareCreate(BaseModel):
-    milestoneSequence: NestedSequenceType | None = None
-    sequence: NestedSequenceType | None = None
-
-
-class AnnotationViewEventCreate(BaseModel):
-    milestone_name: str
-
-
-class MilestoneAnnotationResponse(BaseModel):
-    """Schema for GET annotations/"""
-
-    annotation_id: int
-    up_count: int
-    down_count: int
-    chart_version: str
-    annotation_text: str
-    user_display_name: str
-    created_at: date
-
-
-class LRU[K, V](OrderedDict[K, V]):
-    def __init__(self, maxsize: int):
-        super().__init__()
-        self.maxsize = maxsize
-
-    def put(self, key: K, value: V) -> None:
-        if key in self:
-            self.move_to_end(key)
-        self[key] = value
-        if len(self) > self.maxsize:
-            self.popitem(last=False)
+class ChartbuilderMetadataResponse(TypedDict):
+    resolved: dict[str, ChartbuilderMetadataRecord]
+    unresolved: list[str]
 
 
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
@@ -149,8 +114,6 @@ app.add_middleware(
 )
 
 
-CACHE: LRU[str, MilestoneMetadataRecord] = LRU(maxsize=5000)
-MILESTONE_IDS_BY_NAME = load_milestone_ids_by_name()
 RATE_LIMIT_PER_SECOND = 3
 RATE_LIMIT_PER_MINUTE = 20
 SEC_WINDOW_SECONDS = 1.0
@@ -289,71 +252,17 @@ async def request_logging_middleware(request: Request, call_next):
     return response
 
 
-def LRU_cache(
-    payload: list[str], cache: Mapping[str, MilestoneMetadataRecord]
-) -> tuple[list[str], list[str]]:
-    cache_hits: list[str] = []
-    cache_misses: list[str] = []
-    for entity in payload:
-        if entity not in cache:
-            cache_misses.append(entity)
-        else:
-            cache_hits.append(entity)
-    return cache_hits, cache_misses
-
-
-def main_sequence_skip_contexts() -> dict[str, tuple[list[str], int]]:
-    contexts: dict[str, tuple[list[str], int]] = {}
-    for milestone_name in MAIN_SEQUENCE_FLAT:
-        milestone_context = milestone_context_from_groups(
-            milestone_name,
-            MAIN_SEQUENCE_GROUPS,
-        )
-        if milestone_context is None:
-            continue
-        snapshot_milestone_name, subsequent_milestone_names = milestone_context
-        contexts[snapshot_milestone_name] = (
-            subsequent_milestone_names,
-            skip_threshold(len(subsequent_milestone_names)),
-        )
-    return contexts
-
-
-# endpoints
-
-
-# broken endpoint put out of commission.
-# @app.post("/fetch-milestone-metadata/")
-# async def populate_milestone_metadata(
-#     request: Request, milestones: Milestones
-# ) -> MilestoneMetadataResponse:
-#     """Metadata for chartbuilder"""
-#     # Definitely affected.
-#     enforce_rate_limit(request, "/sequence/")
-#     out: dict[str, MilestoneMetadataRecord] = {}
-#     cache_hits, cache_misses = LRU_cache(milestones, CACHE)
-#     try:
-#         # results = query_milestone_metadata(cache_misses)
-#         pass
-#     except Exception:
-#         logger.exception("Milestone metadata query failed")
-#         results = MilestoneMetadataQueryResult(
-#             milestoneMetadata={}, unresolvedMilestones=[]
-#         )
-#     for milestone, metadata in results.milestoneMetadata.items():
-#         CACHE.put(milestone, metadata)
-#         out[milestone] = metadata
-#     for cache_hit in cache_hits:
-#         out[cache_hit] = CACHE[cache_hit]
-#     return MilestoneMetadataResponse(
-#         milestoneMetadata=out, cacheHits=len(cache_hits), cacheMisses=len(cache_misses)
-#     )
-
-
 @app.post("/share/")
 async def create_share(request: Request, milestone_sequence: MilestoneSequence) -> str:
-    """Instantiate chartbuilder-share record"""
-    # Not directly affected by msm
+    """Submit chartbuilder-share record
+
+    Args:
+        request: tbd
+        milestone_sequence: User submitted milestone sequence.
+
+    Returns:
+        Token that resolves milestone_sequence on lookup.
+    """
     enforce_rate_limit(request, "/share/")
     if milestone_sequence is None:
         raise HTTPException(status_code=422, detail="Missing milestone sequence")
@@ -364,7 +273,14 @@ async def create_share(request: Request, milestone_sequence: MilestoneSequence) 
 
 @app.get("/share/")
 async def load_share_endpoint(token: str) -> MilestoneSequence:
-    """Retrieve `sequence` from chartbuilder-share record"""
+    """Retrieve `sequence` from chartbuilder-share record
+
+    Args:
+        token: Resolves user submitted milestone sequence.
+
+    Returns:
+        User submitted milestone sequence.
+    """
     # Not directly affected by msm
     milestone_sequence = await load_share(token)
     if milestone_sequence is None:
@@ -373,105 +289,147 @@ async def load_share_endpoint(token: str) -> MilestoneSequence:
 
 
 @app.post("/submit-progress-snapshot")
-async def submit_progress_snapshot(request: Request, milestones_completed: Milestones):
-    """Retrieve completed milestones from ChartPage on load."""
-    # Not affected
+async def submit_completed_milestones_snapshot(
+    request: Request, milestones_completed: list[str]
+) -> None:
+    """Record completed milestones.
+
+    Args:
+        request: TBD.
+        milestones_completed: Milestones completed by user ordered by completion.
+    """
+    # milestones_completed is a list
     if not milestones_completed:
         return
     enforce_rate_limit(request, "/submit-progress-snapshot")
-    await milestones_completed_snapshots(milestones_completed)
+    await record_completed_milestones_snapshot(milestones_completed)
 
 
 @app.post("/submit-hidden-milestones-snapshot")
 async def submit_hidden_milestones_snapshot(
-    request: Request, milestones_hidden: Milestones
-):
-    """Retrieve hidden milestones from ChartPage on load."""
-    # not affected
+    request: Request, milestones_hidden: set[str]
+) -> None:
+    """Record hidden milestones.
+
+    Args:
+        request: TBD.
+        milestones_hidden: Milestones hidden by user.
+    """
     if not milestones_hidden:
         return
     enforce_rate_limit(request, "/submit-hidden-milestones-snapshot")
-    await milestones_hidden_snapshots(milestones_hidden)
+    await record_hidden_milestones_snapshot(milestones_hidden)
 
 
 @app.post("/submit-annotation-view-event")
 async def submit_annotation_view_event(
     request: Request,
-    event: AnnotationViewEventCreate,
-):
-    """Record that a user opened annotations for a milestone."""
-    # not affected
-    milestone_name = event.milestone_name.strip()
+    milestone_name: Annotated[str, Body(embed=True)],
+) -> None:
+    """Record milestone annotation view event.
+
+    Args:
+        request: TBD.
+        milestone_name: Milestone with viewed annotation.
+    """
+    milestone_name = milestone_name.strip()
     if not milestone_name:
         return
     enforce_rate_limit(request, "/submit-annotation-view-event")
     await annotation_view_event(milestone_name)
 
 
-@app.get("/annotations", response_model=list[MilestoneAnnotationResponse])
-async def fetch_milestone_annotations(request: Request, milestone_id: int):
-    """Fetch annotations for milestone. omit annotations with ongoing reports."""
-    # not affected
+@app.get("/annotations")
+async def fetch_milestone_annotations(
+    request: Request, milestone_id: int
+) -> list[AnnotationRecord]:
+    """Fetch annotations for milestone. omit annotations with ongoing reports.
+
+    Args:
+        request: TBD.
+        milestone_id: Chart provisioned milestone ID.
+
+    Returns:
+
+    """
     enforce_rate_limit(request, "/annotations")
     return await milestone_annotations_lookup(milestone_id)
 
 
 @app.get("/completion-pcts")
-async def fetch_completion_pcts(request: Request):
-    """TBD"""
-    # not affected
+async def fetch_completion_pcts(request: Request) -> dict[str, CompletionMetrics]:
+    """Fetch completion metrics for all milestones.
+
+    Args:
+        request: tbd.
+    """
     enforce_rate_limit(request, "/completion-pcts")
-    if (
-        not COMPLETION_PCTS["data"]
-        or datetime.now(OSLO).date() > COMPLETION_PCTS["date"]
-    ):
-        COMPLETION_PCTS["date"] = datetime.now(OSLO).date()
-        now = datetime.now(OSLO)
-        COMPLETION_PCTS["data"] = await milestone_completion_rates(
-            COMBINED_SEQUENCE_FLAT, now - timedelta(days=7), now
-        )
+    if COMPLETION_PCTS["data"] and datetime.now(OSLO).date() == COMPLETION_PCTS["date"]:
+        # Avoid duplicate work.
+        return COMPLETION_PCTS["data"]
+    COMPLETION_PCTS["date"] = datetime.now(OSLO).date()
+    now = datetime.now(OSLO)
+    COMPLETION_PCTS["data"] = await milestone_completion_rates(
+        COMBINED_SEQUENCE_FLAT, now - timedelta(days=7), now
+    )
     return COMPLETION_PCTS["data"]
 
 
 @app.get("/skip-pcts")
-async def fetch_skip_pcts(request: Request):
-    """TBD"""
+async def fetch_skip_pcts(request: Request) -> dict[str, SkipMetrics]:
+    """Fetch skip metrics for all milestones.
+
+    Args:
+        request: TBD.
+    """
     # not affected
     enforce_rate_limit(request, "/skip-pcts")
-    if not SKIP_PCTS["data"] or datetime.now(OSLO).date() > SKIP_PCTS["date"]:
-        SKIP_PCTS["date"] = datetime.now(OSLO).date()
-        now = datetime.now(OSLO)
-        SKIP_PCTS["data"] = await milestone_skip_rates(
-            main_sequence_skip_contexts(),
-            now - timedelta(days=7),
-            now,
-        )
-    return SKIP_PCTS["data"]
+    if SKIP_PCTS["data"] and datetime.now(OSLO).date() == SKIP_PCTS["date"]:
+        # Avoid duplicate work.
+        return SKIP_PCTS["data"]
+    SKIP_PCTS["date"] = datetime.now(OSLO).date()
+    now = datetime.now(OSLO)
+    SKIP_PCTS["data"] = await fetch_skip_metrics(
+        now - timedelta(days=7),
+        now,
+    )
+    return SKIP_PCTS
 
 
 @app.get("/annotation-view-counts")
-async def fetch_annotation_view_counts(request: Request):
-    """TBD"""
-    # not affected
+async def fetch_annotation_view_counts(request: Request) -> dict[str, int]:
+    """Fetch annotation viewcounts.
+
+    Args:
+        request: TBD.
+
+    Returns:
+        Milestone-name:annotation-view-count key-val pairs.
+    """
     enforce_rate_limit(request, "/annotation-view-counts")
     now = datetime.now(OSLO)
     return await milestone_annotation_view_counts(
-        COMBINED_SEQUENCE_FLAT,
         now - timedelta(days=7),
         now,
     )
 
 
 @app.get("/annotation-statuses")
-async def fetch_annotation_statuses(request: Request):
-    """TBD"""
-    # not affected
+async def fetch_annotation_statuses(request: Request) -> set[str]:
+    """Fetch chart milestones with one or more visible annotations.
+
+    Args:
+        Request: TBD.
+
+    Returns:
+        Milestones with one or more visible annotations.
+    """
     enforce_rate_limit(request, "/annotation-statuses")
-    return await milestone_annotation_statuses(MILESTONE_IDS_BY_NAME)
+    return await fetch_annotation_visibility_statuses()
 
 
 @app.get("/milestones-completed-count")
-async def get_milestones_completed_count(request: Request, num_days: int):
+async def get_milestones_completed_count(request: Request, num_days: int) -> int:
     """Return viewcount as derived from ms completion set count.
 
     Make one db query per day for 31 days and otherwise serve the cached one. Unimplemented
@@ -485,9 +443,95 @@ async def get_milestones_completed_count(request: Request, num_days: int):
     if num_days is None:
         raise HTTPException(status_code=422, detail="Missing num_days")
     if not VIEWCOUNT["data"] or datetime.now(OSLO).date() > VIEWCOUNT["date"]:
-        VIEWCOUNT["date"] = datetime.now(OSLO).date()
-        VIEWCOUNT["data"] = await get_visit_count(num_days)
+        now = datetime.now(OSLO)
+        VIEWCOUNT["date"] = now.date()
+        VIEWCOUNT["data"] = await get_visit_count(
+            now - timedelta(days=num_days),
+            now,
+        )
     return VIEWCOUNT["data"]
+
+
+@app.get("/chartbuilder-asset")
+async def get_asset(milestone: str) -> FileResponse:
+    """Get milestone icon asset if it exists in chartbuilder_assets.
+
+    Args:
+        request: tbd.
+        milestone: Milestone to get icon asset for.
+
+    Returns:
+        Milestone icon asset.
+
+    Raises:
+        400 if milestone name contains commas.
+        404 if milestone icon asset doesn't exist.
+    """
+    # enforce_rate_limit(request, "/milestones-completed-count")
+    if "," in milestone:
+        # reject detactable junk
+        raise HTTPException(
+            status_code=400,
+            detail="Milestone names cannot contain commas.",
+        )
+    # Avoid duplicate work by checking cache.
+    exists, path = await lookup_asset(milestone)
+    if exists and path is not None:
+        return FileResponse(path)
+    raise HTTPException(status_code=404, detail="Milestone could not be found.")
+
+
+@app.post("/chartbuilder-metadata")
+async def get_metadata(
+    request: Request, milestones: set[str]
+) -> ChartbuilderMetadataResponse:
+    """Fetch Chartbuilder milestone metadata from chartbuilder_assets table if it exists.
+
+    If record is missing from chartbuilder_assets, attempt to resolve asset and record
+    its success or failure.
+
+    Args:
+        request: TBD.
+        milestones: Chartbuilder milestone assets to get metadata for.
+
+    Returns:
+        Chartbuilder metadata and unresolved milestones.
+    """
+    enforce_rate_limit(request, "/milestones-completed-count")
+    metadata: dict[str, ChartbuilderMetadataRecord] = {}
+    unresolved: set[str] = set()
+    pat = "/chartbuilder-asset?milestone="
+    wiki_base = "https://oldschool.runescape.wiki/w/"
+    for milestone_ in milestones:
+        milestone = milestone_.strip()
+        if "," in milestone:
+            # reject detectable junk early
+            unresolved.add(milestone)
+            continue
+        record: ChartbuilderMetadataRecord = {
+            "imgUrl": pat + milestone,
+            "wikiUrl": wiki_base + milestone.lower().replace(" ", "_"),
+        }
+        # avoid duplicate work.
+        exists, path = await lookup_asset(milestone)
+        if exists:
+            if path is not None:
+                # Asset exists from previous successful fetch.
+                metadata[milestone] = record
+            else:
+                # Previous asset fetch failed and this one would probably too.
+                unresolved.add(milestone)
+        else:
+            try:
+                path, canonical_name = item_icon_path(milestone)
+                # Cache asset fetch success.
+                await insert_asset(canonical_name, path)
+                metadata[milestone] = record
+            except ValueError:
+                # Cache asset fetch failure.
+                await insert_asset(milestone, None)
+                unresolved.add(milestone)
+    return {"resolved": metadata, "unresolved": list(unresolved)}
 
 
 @app.get("/health")

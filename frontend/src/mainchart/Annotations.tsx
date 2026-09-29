@@ -1,4 +1,4 @@
-import '@/styles/Annotations.css';
+import '@/mainchart/Annotations.css';
 
 export type AnnotationData = {
     annotation_id: number;

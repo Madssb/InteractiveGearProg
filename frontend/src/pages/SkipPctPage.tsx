@@ -1,11 +1,14 @@
 import Chart from "@/components/Chart";
 import "@/styles/chart.css";
 import "@/styles/ChartPage.css";
-import milestoneMetadata from '@data/generated/milestone-metadata.json';
+import milestoneMetadataRaw from '@data/generated/milestone-metadata.json';
 import mainMilestoneSequence from '@data/logic/milestone-sequence-main.json';
 import { apiUrl } from "../utils/apiConfig";
 import { useState, useEffect } from "react";
-import { sanitizeId } from "../utils/textSanitizers";
+import { MilestoneMetadata } from "@/components/Chart";
+
+
+const milestoneMetadata = milestoneMetadataRaw as MilestoneMetadata;
 
 type SkipRateData = {
     skip_rate: number | null;
@@ -36,13 +39,7 @@ async function getSkipPcts(setSkipPcts: (skipPcts: SkipRates) => void){
         const response = await fetch(url);
         if (!response.ok) throw new Error(`Response status: ${response.status}`);
         const skipPcts: SkipRates = await response.json();
-        const sanitized = Object.fromEntries(
-            Object.entries(skipPcts).map(([key, value]) => [
-                sanitizeId(key),
-                value,
-            ])
-        );
-        setSkipPcts(sanitized);
+        setSkipPcts(skipPcts);
     } catch (err) {
             console.error(err);
     }
@@ -54,10 +51,14 @@ export default function SkipPctPage(){
         getSkipPcts(setSkipPcts);
     }, []);
     const rules = Object.entries(skipPcts)
-        .map(([id, data]) => `
-    #${id} {
+        .map(([milestoneName, data]) => {
+            const id = milestoneMetadata[milestoneName]?.id;
+            if (id == null) return "";
+            return `
+    #milestone-${id} {
         background-color: ${pctToColor(data.skip_rate)};
-    }`)
+    }`;
+        })
         .join("\n");
     return (
         <>

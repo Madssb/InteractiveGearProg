@@ -7,8 +7,7 @@ This document describes implementation details for making the repo backend endpo
 This section describes using `uv` to make the repo backend api endpoints available on `127.0.01:8000`:
 
 ```bash
-cd backend
-uv run uvicorn main:app --host 127.0.0.1 --port 8000
+uv run --project backend uvicorn backend.main:app --host 127.0.0.1 --port 8000
 ```
 
 - Requires [uv](https://docs.astral.sh/uv/getting-started/installation/)

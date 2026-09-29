@@ -30,9 +30,6 @@ services:
       - TRUSTED_HOSTS=${TRUSTED_HOSTS}
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    depends_on:
-      env_guard:
-        condition: service_completed_successfully
     healthcheck:
       test:
         [
@@ -73,6 +70,8 @@ services:
     environment:
       TUNNEL_TOKEN: ${CLOUDFLARED_TUNNEL_TOKEN:-}
     depends_on:
+      env_guard:
+        condition: service_completed_successfully
       backend:
         condition: service_healthy
 

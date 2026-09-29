@@ -72,3 +72,16 @@ CREATE TABLE IF NOT EXISTS public.user_reports (
   created_at timestamptz NOT NULL DEFAULT now(),
   resolved_at timestamptz
 );
+
+CREATE TABLE IF NOT EXISTS public.chartbuilder_assets (
+  milestone_lowercase text PRIMARY KEY,
+  milestone_canonical text,
+  asset_path text
+);
+
+CREATE TABLE IF NOT EXISTS public.chartbuilder_asset_lookups (
+  id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  milestone text,
+  milestone_lowercase text,
+  created_at timestamptz NOT NULL DEFAULT now()
+);

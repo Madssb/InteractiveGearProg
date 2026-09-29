@@ -4,16 +4,16 @@ import logging
 import os
 
 import discord
-from db import (
-    annotation_report,
+from discord import app_commands
+
+from backend.bot.report_logs import send_report_log
+from backend.database.annotations import (
     annotation_submission,
     annotation_vote,
     get_annotation_owner_and_message_ids,
     remove_annotation_record,
 )
-from discord import app_commands
-
-from bot.report_logs import send_report_log
+from backend.database.reports import annotation_report
 
 logger = logging.getLogger(__name__)
 VOTE_EMOJIS = {"👍", "👎"}

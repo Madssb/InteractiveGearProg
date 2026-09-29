@@ -1,22 +1,35 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-function readSavedState(key) {
+/**
+ * Get JSON object from local storage if it exists.
+ * @param key Key of JSON Object
+ * @returns JSON object if it exists, or undefined.
+ */
+function readSavedState(key: string) {
   const saved = localStorage.getItem(key);
   return saved !== null ? JSON.parse(saved) : undefined;
 }
 
-export function useLocalStorageState(key, defaultValue, legacyKeys = []) {
+export function useLocalStorageState<T>(
+  key: string, 
+  defaultValue: T, 
+  legacyKeys: string[] = []
+): [T, React.Dispatch<React.SetStateAction<T>>]{
+  // why is this being done again?
   const legacyKeySignature = legacyKeys.join("|");
   const [state, setState] = useState(() => {
     try {
       const saved = readSavedState(key);
+      // found stored object
       if (saved !== undefined) return saved;
+
 
       const legacySaved = legacyKeys
         .map(readSavedState)
         .find(value => value !== undefined);
       return legacySaved !== undefined ? legacySaved : defaultValue;
     } catch {
+      // what are we catching
       return defaultValue;
     }
   });
@@ -54,13 +67,7 @@ export function useLocalStorageState(key, defaultValue, legacyKeys = []) {
   return [state, setState];
 }
 
-
-
-
-
-
-
-function readSavedSet(key) {
+function readSavedSet(key: string) {
   const saved = localStorage.getItem(key);
   if (!saved) return null;
 
@@ -68,7 +75,11 @@ function readSavedSet(key) {
   return Array.isArray(parsed) ? new Set(parsed) : null;
 }
 
-export function useLocalStorageSet(key, defaultValue = new Set(), legacyKeys = []) {
+export function useLocalStorageSet<T>(
+  key: string,
+  defaultValue: Set<T> = new Set(),
+  legacyKeys: string[] = []
+): [Set<T>, React.Dispatch<React.SetStateAction<Set<T>>>] {
   const legacyKeySignature = legacyKeys.join("|");
   const [setValue, setSetValue] = useState(() => {
     try {

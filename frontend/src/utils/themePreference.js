@@ -18,8 +18,8 @@ export function applyThemePreference(preference) {
   const root = document.documentElement;
 
   if (normalized === 'system') {
-    root.removeAttribute('data-theme');
-    root.style.removeProperty('color-scheme');
+    root.removeAttribute('datatheme');
+    root.style.removeProperty('colorscheme');
     return;
   }
 

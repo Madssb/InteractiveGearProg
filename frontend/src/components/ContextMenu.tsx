@@ -1,13 +1,45 @@
 
 import '@/styles/context-menu.css';
 import { useLayoutEffect, useRef, useState } from 'react';
+import { ChartbuilderMetadata } from '@/chartbuilder/chartBuilderRequests';
+import { MilestoneMetadata } from './Chart';
 
-export default function ContextMenu({ milestone, onClose, onHide, onDelete, onShowAnnotations, milestoneMetadata, x, y}){
+type ContextMenuProps = {
+    milestone: string;
+    milestoneMetadata: ChartbuilderMetadata | MilestoneMetadata;
+    x: number;
+    y: number;
+    onClose: () => void;
+    onHide?: (milestone: string) => void;
+    onDelete?: (milestone: string) => void;
+    onShowAnnotations?: (milestone: string) => Promise<void>;
+
+
+}
+
+/**
+ * Context menu for interacting with a milestone.
+ */
+export default function ContextMenu({
+    milestone,
+    onClose,
+    onHide,
+    onDelete,
+    onShowAnnotations,
+    milestoneMetadata,
+    x,
+    y
+}: ContextMenuProps) {
     
-    let wikiUrl = milestoneMetadata[milestone]["wikiUrl"];
-    let milestoneId = milestoneMetadata[milestone]["id"];
+    const metadata = milestoneMetadata[milestone];
+    
+    let wikiUrl = metadata["wikiUrl"];
+    
+    const isMainMetadata = "type" in metadata;
+    const milestoneId = isMainMetadata ? metadata["id"] : undefined;
+    
     // avoid menu screen clipping
-    const ref = useRef(null);
+    const ref = useRef<HTMLDivElement>(null);
     const [pos, setPos] = useState({ top: y, left: x });
     useLayoutEffect(() => {
         const el = ref.current;
