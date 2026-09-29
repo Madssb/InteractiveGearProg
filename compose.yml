@@ -48,7 +48,7 @@ services:
     build:
       context: .
       dockerfile: backend/Dockerfile
-    command: ["uv", "run", "python", "discord_bot.py"]
+    command: ["uv", "run", "--project", "backend", "--no-sync", "python", "-m", "backend.discord_bot"]
     restart: unless-stopped
     environment:
       - DATABASE_URL=${DATABASE_URL}
