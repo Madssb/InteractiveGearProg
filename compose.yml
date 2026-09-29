@@ -20,6 +20,10 @@ services:
 
   backend:
     image: ladlorchart-backend
+    volumes:
+      - type: bind
+        source: ./data/chartbuilder-assets
+        target: /app/data/chartbuilder-assets
     build:
       context: .
       dockerfile: backend/Dockerfile
