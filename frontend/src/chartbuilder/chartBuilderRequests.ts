@@ -94,5 +94,5 @@ export async function getShare(
 
     if (!response.ok) throw new Error(`Response status: ${response.status}, ${data.detail}`);
     
-    return await response.json();
+    return await data;
 }
