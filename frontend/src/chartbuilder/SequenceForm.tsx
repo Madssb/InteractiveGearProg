@@ -1,6 +1,7 @@
 import getSequenceFromInput from "@/chartbuilder/sequenceFromInput";
 import getStringifiedSequence from "@/chartbuilder/stringifySequence";
-import React, { useState } from "react";
+import { useLocalStorageState } from "@/utils/useLocalStorageState";
+import React from "react";
 import "./SequenceForm.css";
 
 type SequenceFormProps = {
@@ -44,11 +45,20 @@ export default function SequenceForm({
   setMilestoneSequence,
   initialSequence,
 }: SequenceFormProps) {
-  const [quotes, setQuotes] = useState(false);
-  const [multiline, setMultiline] = useState(true);
-  const [inputText, setInputText] = useState(() =>
-    getStringifiedSequence(initialSequence, quotes, multiline),
-  );
+    const [quotes, setQuotes] =
+        useLocalStorageState("chartbuilderQuotes", false);
+
+    const [multiline, setMultiline] =
+        useLocalStorageState("chartbuilderMultiline", true);
+
+    const [inputText, setInputText] =
+        useLocalStorageState(
+            "chartbuilderInputText",
+            getStringifiedSequence(initialSequence, quotes, multiline),
+        );
+
+    const [formatErr, setFormatErr] = 
+      useLocalStorageState("chartbuilderFormatErr",false);
 
   /**
    * Keep focus inside the textarea on Tab and insert a literal tab character.
@@ -69,7 +79,6 @@ export default function SequenceForm({
       textarea.selectionEnd = selectionStart + 1;
     });
   }
-  const [formatErr, setFormatErr] = useState(false);
   /**
    * Parses, normalizes, stores, then fetches metadata for new items.
    * Any thrown errors become inline messages under the form.
@@ -87,6 +96,8 @@ export default function SequenceForm({
       setFormatErr(false);
     } catch {
       setFormatErr(true);
+      // not sufficient.
+      setInputText(inputText);
     }
     
   }
