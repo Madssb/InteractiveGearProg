@@ -298,7 +298,6 @@ export default function ChartBuilderPage() {
           }}
         >
           <h1>Chart Builder</h1>
-          <span className="subtitle">Made by Ladlor</span>
         </div>
         <div
           style={{
