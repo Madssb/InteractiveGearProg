@@ -1,4 +1,8 @@
 {
+  "1.9.4":[
+    "Added Hallowfell",
+    "Postpone Ultor to post-scythe. Ultor is expected to save ~1 hour on scythe grind whereas Scythe plausibly saves way more at Vardorvis simply because killing vard early makes the boss heal less."
+  ],
   "1.9.3":[
     "Removing conditional rendering of dragon hunter lance.",
     "Chart viewcount is now derived from the number of submitted milestone completion sets."

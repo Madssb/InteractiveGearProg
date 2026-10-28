@@ -221,6 +221,12 @@
     "id": "69",
     "wikiUrl": "https://oldschool.runescape.wiki/w/arclight"
   },
+  "Hallowfell": {
+    "imgUrl": "/images/item_icons/34027.png",
+    "type": "",
+    "id": "202",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/hallowfell"
+  },
   "Broader Fletching": {
     "imgUrl": "/images/slayer_icons/Broader_Fletching.webp",
     "type": "slayer",
@@ -719,12 +725,6 @@
     "id": "113",
     "wikiUrl": "https://oldschool.runescape.wiki/w/oathplate_helm"
   },
-  "Ultor ring": {
-    "imgUrl": "/images/item_icons/28307.png",
-    "type": "",
-    "id": "114",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/ultor_ring"
-  },
   "Dizana's quiver": {
     "imgUrl": "/images/item_icons/28951.png",
     "type": "",
@@ -742,6 +742,12 @@
     "type": "",
     "id": "117",
     "wikiUrl": "https://oldschool.runescape.wiki/w/scythe_of_vitur"
+  },
+  "Ultor ring": {
+    "imgUrl": "/images/item_icons/28307.png",
+    "type": "",
+    "id": "114",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/ultor_ring"
   },
   "Tumeken's shadow": {
     "imgUrl": "/images/item_icons/27275.png",
