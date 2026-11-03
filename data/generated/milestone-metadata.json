@@ -461,12 +461,6 @@
     "id": "52",
     "wikiUrl": "https://oldschool.runescape.wiki/w/explorer's_ring_4"
   },
-  "Warped sceptre": {
-    "imgUrl": "/images/item_icons/28585.png",
-    "type": "",
-    "id": "70",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/warped_sceptre"
-  },
   "Reptile Got Ripped": {
     "imgUrl": "/images/slayer_icons/Reptile_Got_Ripped.png",
     "type": "slayer",
@@ -544,12 +538,6 @@
     "type": "",
     "id": "83",
     "wikiUrl": "https://oldschool.runescape.wiki/w/thread_of_elidinis"
-  },
-  "Lightbearer": {
-    "imgUrl": "/images/item_icons/25975.png",
-    "type": "",
-    "id": "84",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/lightbearer"
   },
   "Abyssal whip": {
     "imgUrl": "/images/item_icons/4151.png",
@@ -676,6 +664,12 @@
     "type": "",
     "id": "106",
     "wikiUrl": "https://oldschool.runescape.wiki/w/osmumten's_fang"
+  },
+  "Lightbearer": {
+    "imgUrl": "/images/item_icons/25975.png",
+    "type": "",
+    "id": "84",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/lightbearer"
   },
   "Ferocious gloves": {
     "imgUrl": "/images/item_icons/22981.png",
