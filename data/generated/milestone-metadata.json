@@ -221,6 +221,12 @@
     "id": "69",
     "wikiUrl": "https://oldschool.runescape.wiki/w/arclight"
   },
+  "Hallowfell": {
+    "imgUrl": "/images/item_icons/34027.png",
+    "type": "",
+    "id": "202",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/hallowfell"
+  },
   "Broader Fletching": {
     "imgUrl": "/images/slayer_icons/Broader_Fletching.webp",
     "type": "slayer",
@@ -455,12 +461,6 @@
     "id": "52",
     "wikiUrl": "https://oldschool.runescape.wiki/w/explorer's_ring_4"
   },
-  "Warped sceptre": {
-    "imgUrl": "/images/item_icons/28585.png",
-    "type": "",
-    "id": "70",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/warped_sceptre"
-  },
   "Reptile Got Ripped": {
     "imgUrl": "/images/slayer_icons/Reptile_Got_Ripped.png",
     "type": "slayer",
@@ -538,12 +538,6 @@
     "type": "",
     "id": "83",
     "wikiUrl": "https://oldschool.runescape.wiki/w/thread_of_elidinis"
-  },
-  "Lightbearer": {
-    "imgUrl": "/images/item_icons/25975.png",
-    "type": "",
-    "id": "84",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/lightbearer"
   },
   "Abyssal whip": {
     "imgUrl": "/images/item_icons/4151.png",
@@ -671,6 +665,12 @@
     "id": "106",
     "wikiUrl": "https://oldschool.runescape.wiki/w/osmumten's_fang"
   },
+  "Lightbearer": {
+    "imgUrl": "/images/item_icons/25975.png",
+    "type": "",
+    "id": "84",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/lightbearer"
+  },
   "Ferocious gloves": {
     "imgUrl": "/images/item_icons/22981.png",
     "type": "",
@@ -719,12 +719,6 @@
     "id": "113",
     "wikiUrl": "https://oldschool.runescape.wiki/w/oathplate_helm"
   },
-  "Ultor ring": {
-    "imgUrl": "/images/item_icons/28307.png",
-    "type": "",
-    "id": "114",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/ultor_ring"
-  },
   "Dizana's quiver": {
     "imgUrl": "/images/item_icons/28951.png",
     "type": "",
@@ -742,6 +736,12 @@
     "type": "",
     "id": "117",
     "wikiUrl": "https://oldschool.runescape.wiki/w/scythe_of_vitur"
+  },
+  "Ultor ring": {
+    "imgUrl": "/images/item_icons/28307.png",
+    "type": "",
+    "id": "114",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/ultor_ring"
   },
   "Tumeken's shadow": {
     "imgUrl": "/images/item_icons/27275.png",
