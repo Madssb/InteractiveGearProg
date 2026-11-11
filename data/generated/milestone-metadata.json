@@ -587,12 +587,6 @@
     "id": "93",
     "wikiUrl": "https://oldschool.runescape.wiki/w/burning_claws"
   },
-  "Ring of suffering (i)": {
-    "imgUrl": "/images/item_icons/19710.png",
-    "type": "",
-    "id": "94",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/ring_of_suffering_(i)"
-  },
   "Avernic treads": {
     "imgUrl": "/images/item_icons/31088.png",
     "type": "",
@@ -947,6 +941,12 @@
     "id": "140",
     "wikiUrl": "https://oldschool.runescape.wiki/w/elysian_spirit_shield"
   },
+  "Rondache": {
+    "imgUrl": "/images/item_icons/34719.png",
+    "type": "",
+    "id": "207",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/rondache"
+  },
   "Nightmare staff": {
     "imgUrl": "/images/item_icons/24422.png",
     "type": "",
@@ -1025,12 +1025,6 @@
     "id": "193",
     "wikiUrl": "https://oldschool.runescape.wiki/w/soulreaper_axe"
   },
-  "Virtus mask": {
-    "imgUrl": "/images/item_icons/26241.png",
-    "type": "",
-    "id": "185",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/virtus_mask"
-  },
   "Virtus robe top": {
     "imgUrl": "/images/item_icons/26243.png",
     "type": "",
@@ -1042,6 +1036,12 @@
     "type": "",
     "id": "186",
     "wikiUrl": "https://oldschool.runescape.wiki/w/virtus_robe_bottom"
+  },
+  "Virtus mask": {
+    "imgUrl": "/images/item_icons/26241.png",
+    "type": "",
+    "id": "185",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/virtus_mask"
   },
   "Twisted buckler": {
     "imgUrl": "/images/item_icons/21000.png",
