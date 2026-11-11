@@ -587,12 +587,6 @@
     "id": "93",
     "wikiUrl": "https://oldschool.runescape.wiki/w/burning_claws"
   },
-  "Ring of suffering (i)": {
-    "imgUrl": "/images/item_icons/19710.png",
-    "type": "",
-    "id": "94",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/ring_of_suffering_(i)"
-  },
   "Avernic treads": {
     "imgUrl": "/images/item_icons/31088.png",
     "type": "",
@@ -737,6 +731,12 @@
     "id": "117",
     "wikiUrl": "https://oldschool.runescape.wiki/w/scythe_of_vitur"
   },
+  "Zeal": {
+    "imgUrl": "/images/prayer_icons/Zeal.webp",
+    "type": "",
+    "id": "203",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/zeal"
+  },
   "Ultor ring": {
     "imgUrl": "/images/item_icons/28307.png",
     "type": "",
@@ -761,11 +761,29 @@
     "id": "120",
     "wikiUrl": "https://oldschool.runescape.wiki/w/twisted_bow"
   },
+  "Ascension crossbows": {
+    "imgUrl": "/images/item_icons/34681.png",
+    "type": "",
+    "id": "205",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/ascension_crossbows"
+  },
+  "Zorya's tome": {
+    "imgUrl": "/images/item_icons/34725.png",
+    "type": "",
+    "id": "206",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/zorya's_tome"
+  },
   "Dragon claws": {
     "imgUrl": "/images/item_icons/13652.png",
     "type": "",
     "id": "121",
     "wikiUrl": "https://oldschool.runescape.wiki/w/dragon_claws"
+  },
+  "Elder maul": {
+    "imgUrl": "/images/item_icons/21003.png",
+    "type": "",
+    "id": "125",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/elder_maul"
   },
   "Ancestral robe top": {
     "imgUrl": "/images/item_icons/21021.png",
@@ -784,12 +802,6 @@
     "type": "",
     "id": "124",
     "wikiUrl": "https://oldschool.runescape.wiki/w/ancestral_hat"
-  },
-  "Elder maul": {
-    "imgUrl": "/images/item_icons/21003.png",
-    "type": "",
-    "id": "125",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/elder_maul"
   },
   "Masori body (f)": {
     "imgUrl": "/images/item_icons/27238.png",
@@ -814,6 +826,12 @@
     "type": "",
     "id": "129",
     "wikiUrl": "https://oldschool.runescape.wiki/w/elidinis'_ward"
+  },
+  "Obligator": {
+    "imgUrl": "/images/item_icons/34715.png",
+    "type": "",
+    "id": "204",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/obligator"
   },
   "Venator bow": {
     "imgUrl": "/images/item_icons/27610.png",
@@ -923,6 +941,12 @@
     "id": "140",
     "wikiUrl": "https://oldschool.runescape.wiki/w/elysian_spirit_shield"
   },
+  "Rondache": {
+    "imgUrl": "/images/item_icons/34719.png",
+    "type": "",
+    "id": "207",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/rondache"
+  },
   "Nightmare staff": {
     "imgUrl": "/images/item_icons/24422.png",
     "type": "",
@@ -1001,12 +1025,6 @@
     "id": "193",
     "wikiUrl": "https://oldschool.runescape.wiki/w/soulreaper_axe"
   },
-  "Virtus mask": {
-    "imgUrl": "/images/item_icons/26241.png",
-    "type": "",
-    "id": "185",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/virtus_mask"
-  },
   "Virtus robe top": {
     "imgUrl": "/images/item_icons/26243.png",
     "type": "",
@@ -1018,6 +1036,12 @@
     "type": "",
     "id": "186",
     "wikiUrl": "https://oldschool.runescape.wiki/w/virtus_robe_bottom"
+  },
+  "Virtus mask": {
+    "imgUrl": "/images/item_icons/26241.png",
+    "type": "",
+    "id": "185",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/virtus_mask"
   },
   "Twisted buckler": {
     "imgUrl": "/images/item_icons/21000.png",
