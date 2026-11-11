@@ -83,15 +83,21 @@
   ["Oathplate chest", "Oathplate legs", "Oathplate helm"],
   ["Dizana's quiver"],
   ["Avernic defender", "Scythe of vitur"],
+  ["Zeal"],
   ["Ultor ring"],
   ["Tumeken's shadow", "Magus ring"],
+  ["Twisted bow"],
   [
-    "Twisted bow",
+    "Ascension crossbows",
+    "Zorya's tome"
+  ],
+  [
     "Dragon claws",
+    "Elder maul",
     "Ancestral robe top",
     "Ancestral robe bottom",
-    "Ancestral hat",
-    "Elder maul"
+    "Ancestral hat"
   ],
-  ["Masori body (f)", "Masori chaps (f)", "Masori mask (f)", "Elidinis' ward"]
+  ["Masori body (f)", "Masori chaps (f)", "Masori mask (f)", "Elidinis' ward"],
+  ["Obligator"]
 ]

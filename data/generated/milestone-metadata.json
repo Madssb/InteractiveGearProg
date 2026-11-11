@@ -737,6 +737,12 @@
     "id": "117",
     "wikiUrl": "https://oldschool.runescape.wiki/w/scythe_of_vitur"
   },
+  "Zeal": {
+    "imgUrl": "/images/prayer_icons/Zeal.webp",
+    "type": "",
+    "id": "203",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/zeal"
+  },
   "Ultor ring": {
     "imgUrl": "/images/item_icons/28307.png",
     "type": "",
@@ -761,11 +767,29 @@
     "id": "120",
     "wikiUrl": "https://oldschool.runescape.wiki/w/twisted_bow"
   },
+  "Ascension crossbows": {
+    "imgUrl": "/images/item_icons/34681.png",
+    "type": "",
+    "id": "205",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/ascension_crossbows"
+  },
+  "Zorya's tome": {
+    "imgUrl": "/images/item_icons/34725.png",
+    "type": "",
+    "id": "206",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/zorya's_tome"
+  },
   "Dragon claws": {
     "imgUrl": "/images/item_icons/13652.png",
     "type": "",
     "id": "121",
     "wikiUrl": "https://oldschool.runescape.wiki/w/dragon_claws"
+  },
+  "Elder maul": {
+    "imgUrl": "/images/item_icons/21003.png",
+    "type": "",
+    "id": "125",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/elder_maul"
   },
   "Ancestral robe top": {
     "imgUrl": "/images/item_icons/21021.png",
@@ -784,12 +808,6 @@
     "type": "",
     "id": "124",
     "wikiUrl": "https://oldschool.runescape.wiki/w/ancestral_hat"
-  },
-  "Elder maul": {
-    "imgUrl": "/images/item_icons/21003.png",
-    "type": "",
-    "id": "125",
-    "wikiUrl": "https://oldschool.runescape.wiki/w/elder_maul"
   },
   "Masori body (f)": {
     "imgUrl": "/images/item_icons/27238.png",
@@ -814,6 +832,12 @@
     "type": "",
     "id": "129",
     "wikiUrl": "https://oldschool.runescape.wiki/w/elidinis'_ward"
+  },
+  "Obligator": {
+    "imgUrl": "/images/item_icons/34715.png",
+    "type": "",
+    "id": "204",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/obligator"
   },
   "Venator bow": {
     "imgUrl": "/images/item_icons/27610.png",
